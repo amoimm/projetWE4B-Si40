@@ -6,10 +6,6 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once __DIR__ . '/../bdd/config.php';
 
-// =========================================================
-// 1. RÉCUPÉRATION DES FILTRES DEPUIS ANGULAR
-// (Angular utilise HttpParams en méthode GET)
-// =========================================================
 $recherche = $_GET['recherche'] ?? '';
 $langue_filtre = $_GET['filtre_langue'] ?? '';
 $matiere_filtre = $_GET['filtre_matiere'] ?? '';
@@ -18,9 +14,7 @@ $prix_max = $_GET['prix_max'] ?? '';
 $mode_filtre = $_GET['filtre_mode'] ?? '';
 $suivi_filtre = $_GET['filtre_suivi'] ?? '';
 
-// =========================================================
-// 2. CONSTRUCTION DYNAMIQUE DE LA REQUÊTE
-// =========================================================
+
 $sql = "SELECT 
             c.description,
             c.prix_heure,
@@ -45,7 +39,6 @@ $sql = "SELECT
 
 $params = [];
 
-// Ajout dynamique des conditions
 if (!empty($recherche)) {
     $sql .= " AND (m.nom LIKE :recherche OR u.prenom LIKE :recherche OR u.nom LIKE :recherche OR lg.nom LIKE :recherche)";
     $params['recherche'] = '%' . $recherche . '%';
@@ -76,10 +69,8 @@ if ($suivi_filtre !== '') {
     $params['suivi'] = (int)$suivi_filtre;
 }
 
-// Groupement obligatoire à cause des jointures et fonctions d'agrégation
 $sql .= " GROUP BY c.id_cours, c.description, c.prix_heure, c.mode_cours, c.camera_obligatoire, c.suivi, m.nom, u.nom, u.prenom";
 
-// Ajout du tri par avis
 if (!empty($avis_filtre)) {
     $sens = ($avis_filtre === 'croissant') ? 'ASC' : 'DESC';
     $sql .= " ORDER BY noteMoyenne $sens";
@@ -88,15 +79,11 @@ if (!empty($avis_filtre)) {
     $sql .= " ORDER BY c.id_cours DESC";
 }
 
-// =========================================================
-// 3. EXÉCUTION ET RENVOI DU JSON
-// =========================================================
 try {
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
     $coursTrouves = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // On convertit les types pour éviter qu'Angular ait des surprises (surtout pour les nombres)
     foreach ($coursTrouves as &$cours) {
         $cours['prix_heure'] = (float)$cours['prix_heure'];
         $cours['camera_obligatoire'] = (int)$cours['camera_obligatoire'];
@@ -104,7 +91,6 @@ try {
         $cours['noteMoyenne'] = $cours['noteMoyenne'] !== null ? (float)$cours['noteMoyenne'] : null;
     }
 
-    // On renvoie le résultat propre à Angular
     echo json_encode($coursTrouves);
 
 } catch (Exception $e) {

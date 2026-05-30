@@ -1,0 +1,33 @@
+<main class="chat-container">
+  <div class="search-container">
+    <h1>Mes Conversations</h1>
+    <p class="subtitle">Retrouvez ici tous vos échanges avec vos professeurs.</p>
+  </div>
+
+  <ol class="cours-list">
+    <p *ngIf="conversations.length === 0" class="no-results">
+      Aucune conversation pour le moment. Allez dans "Accueil" pour trouver un cours !
+    </p>
+
+    <li *ngFor="let msg of conversations">
+      <a [routerLink]="['/etudiant/chat/conversation', msg.id_cours]" class="cours-card-link">
+        <article>
+          <h2>
+            Cours de : {{ msg.nom_matiere || 'Inconnu' }}
+            <div class="auteur">{{ msg.prenom_prof }} {{ msg.nom_prof }}</div>
+          </h2>
+
+          <div class="content-wrapper">
+            <div class="txt-desc">
+              <p>{{ msg.description || 'Aucune description' }}</p>
+            </div>
+          </div>
+
+          <div *ngIf="msg.nb_non_lus > 0" class="badge-container">
+            <span class="badge-unread">{{ msg.nb_non_lus }} message(s) non lu(s)</span>
+          </div>
+        </article>
+      </a>
+    </li>
+  </ol>
+</main>

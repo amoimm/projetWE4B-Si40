@@ -1,0 +1,11 @@
+.badge-container {
+  margin-top: 15px;
+}
+.badge-unread {
+  background-color: #ef4444;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
