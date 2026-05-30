@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 })
 export class EtudiantService {
   // --- URLs d'API REST pointant vers le backend PHP ---
-  private apiUrl = 'http://localhost/WE4B-SI40/projet_we4b/backend-angular/etudiant/recuperer_etudiant.php';
-  private updateUrl = 'http://localhost/WE4B-SI40/projet_we4b/backend-angular/etudiant/modifier_etudiant.php';
-  private apiCoursUrl = 'http://localhost/WE4B-SI40/projet_we4b/backend-angular/etudiant/api-cours.php';
+  private apiUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/recuperer_etudiant.php';
+  private updateUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/modifier_etudiant.php';
+  private apiCoursUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-cours.php';
 
   constructor(private http: HttpClient) { }
 
