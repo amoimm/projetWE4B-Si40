@@ -10,10 +10,13 @@ import { EtudiantService } from './etudiant.service';
   templateUrl: './etudiant-profil.html',
   styleUrls: ['./etudiant-profil.css']
 })
+
 export class EtudiantProfilComponent implements OnInit {
   donneesEtudiant: any = null;
   enModeEdition: boolean = false;
-
+  ancienMdp: string = '';
+  nouveauMdp: string = '';
+  confirmeMdp: string = '';
   constructor(private etudiantService: EtudiantService) { }
 
   ngOnInit(): void {
@@ -40,16 +43,44 @@ export class EtudiantProfilComponent implements OnInit {
     });
   }
 
+
   validerModifications(): void {
-    if (this.enModeEdition) {
+      if (this.enModeEdition) {
+
+      // Sécurité côté client : on vérifie si l'utilisateur a tenté de remplir le nouveau mdp
+      if (this.nouveauMdp || this.ancienMdp || this.confirmeMdp) {
+        if (this.ancienMdp == this.nouveauMdp) {
+          alert("Le nouveau mot de passe doit être différent de l'ancien !");
+          return;
+        }
+        if (this.nouveauMdp !== this.confirmeMdp) {
+          alert("Le nouveau mot de passe et sa confirmation ne correspondent pas !");
+          return;
+        }
+        if (!this.ancienMdp) {
+          alert("Veuillez renseigner votre ancien mot de passe pour valider le changement.");
+          return;
+        }
+      }
+
       this.etudiantService.updateProfilEtudiant(7, {
         prenom: this.donneesEtudiant.prenom,
         nom: this.donneesEtudiant.nom,
-        email: this.donneesEtudiant.email
+        email: this.donneesEtudiant.email,
+        ancienMdp: this.ancienMdp,
+        nouveauMdp: this.nouveauMdp
       }).subscribe({
         next: (reponse) => {
-          alert('Informations mises à jour en BDD avec succès !');
-          this.enModeEdition = false;
+          if (reponse.succes) {
+            alert(reponse.message || 'Informations mises à jour avec succès !');
+            this.enModeEdition = false;
+            // On vide les champs de mot de passe par sécurité
+            this.ancienMdp = '';
+            this.nouveauMdp = '';
+            this.confirmeMdp = '';
+          } else {
+            alert('Erreur : ' + reponse.message);
+          }
         },
         error: (err) => console.error('Erreur modification profil :', err)
       });

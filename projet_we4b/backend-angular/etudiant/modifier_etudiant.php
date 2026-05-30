@@ -21,30 +21,53 @@ try {
 
     $user_id = intval($data['user_id']);
 
-    // Récupération de toutes les variables envoyées par Angular
-    $prenom = isset($data['prenom']) ? $data['prenom'] : null;
-    $nom    = isset($data['nom']) ? $data['nom'] : null;
-    $email  = isset($data['email']) ? $data['email'] : null;
-    $theme  = isset($data['theme']) ? $data['theme'] : null;
+    $prenom    = isset($data['prenom']) ? $data['prenom'] : null;
+    $nom       = isset($data['nom']) ? $data['nom'] : null;
+    $email     = isset($data['email']) ? $data['email'] : null;
+    $ancienMdp  = isset($data['ancienMdp']) ? $data['ancienMdp'] : null;
+    $nouveauMdp = isset($data['nouveauMdp']) ? $data['nouveauMdp'] : null;
+    $theme     = isset($data['theme']) ? $data['theme'] : null;
 
-    // SCÉNARIO A : On modifie le Prénom, le Nom et l'Email (Bouton Bleu)
     if ($prenom && $nom && $email) {
-        $query = $db->prepare("UPDATE utilisateurs SET prenom = :prenom, nom = :nom, email = :email WHERE id_utilisateurs = :id");
-        $resultat = $query->execute([
-            'prenom' => $prenom,
-            'nom'    => $nom,
-            'email'  => $email,
-            'id'     => $user_id
-        ]);
+
+        if (!empty($nouveauMdp)) {
+
+            $checkMdpQuery = $db->prepare("SELECT mdp FROM utilisateurs WHERE id_utilisateurs = :id");
+            $checkMdpQuery->execute(['id' => $user_id]);
+            $user = $checkMdpQuery->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user || !password_verify($ancienMdp, $user['mdp'])) {
+                echo json_encode(["succes" => false, "message" => "L'ancien mot de passe est incorrect."]);
+                exit;
+            }
+
+            $nouveauMdpHash = password_hash($nouveauMdp, PASSWORD_BCRYPT);
+
+            $query = $db->prepare("UPDATE utilisateurs SET prenom = :prenom, nom = :nom, email = :email, mdp = :mdp WHERE id_utilisateurs = :id");
+            $resultat = $query->execute([
+                'prenom' => $prenom,
+                'nom'    => $nom,
+                'email'  => $email,
+                'mdp'    => $nouveauMdpHash,
+                'id'     => $user_id
+            ]);
+        } else {
+            $query = $db->prepare("UPDATE utilisateurs SET prenom = :prenom, nom = :nom, email = :email WHERE id_utilisateurs = :id");
+            $resultat = $query->execute([
+                'prenom' => $prenom,
+                'nom'    => $nom,
+                'email'  => $email,
+                'id'     => $user_id
+            ]);
+        }
     }
-    // SCÉNARIO B : On modifie uniquement le thème (Boutons Clair/Sombre)
     else if ($theme) {
         $query = $db->prepare("UPDATE utilisateurs SET theme = :theme WHERE id_utilisateurs = :id");
         $resultat = $query->execute([
             'theme' => $theme,
             'id'    => $user_id
         ]);
-    } else {
+    }else {
         echo json_encode(["succes" => false, "message" => "Aucune donnée valide reçue"]);
         exit;
     }
