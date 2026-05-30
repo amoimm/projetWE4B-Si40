@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // <-- Import indispensable
+import { EtudiantService } from '../../services/etudiant.service';
 
 @Component({
   selector: 'app-etudiant-accueil',
@@ -12,39 +12,47 @@ import { HttpClient } from '@angular/common/http'; // <-- Import indispensable
   styleUrls: ['./etudiant-accueil.css']
 })
 export class EtudiantAccueilComponent implements OnInit {
+  // 1. Déclaration de TOUTES les variables utilisées dans le [(ngModel)] du HTML
   recherche: string = '';
   prixMax: number | null = null;
+  filtreMatiere: string = '';
+  filtreLangue: string = '';
+  filtreMode: string = '';
+  filtreSuivi: string = '';
+  filtreAvis: string = '';
 
-  // Tableau vide au départ, il va recevoir la BDD
+  // 2. Les tableaux de données pour remplir les <option> de tes menus déroulants
+  matieres = [
+    { id_matiere: '1', nom: 'LO43 - Bases de données' },
+    { id_matiere: '2', nom: 'WE4B - Applications Web' },
+    { id_matiere: '3', nom: 'LE01 - Anglais' }
+  ];
+
+  langues = [
+    { id_langue: '1', nom: 'Français' },
+    { id_langue: '2', nom: 'Anglais' }
+  ];
+
+  // 3. Le tableau qui recevra les vrais cours de la BDD
   coursFiltres: any[] = [];
 
-  // URL vers ton script PHP (ajuste le chemin selon ton dossier XAMPP)
-  private apiUrl = 'http://localhost/projet_we4b/api-cours.php';
-
-  // On injecte le client HTTP d'Angular dans le constructeur
-  constructor(private http: HttpClient) {}
+  constructor(private etudiantService: EtudiantService) {}
 
   ngOnInit(): void {
-    this.chargerCoursDepuisBDD();
+    this.appliquerFiltrage();
   }
 
-  // Cette fonction interroge ton PHP qui lui-même interroge MySQL
-  chargerCoursDepuisBDD(): void {
-    // On construit les paramètres de filtres pour l'URL (?recherche=...&prix_max=...)
-    const urlFiltree = `${this.apiUrl}?recherche=${this.recherche}&prix_max=${this.prixMax || ''}`;
-
-    this.http.get<any[]>(urlFiltree).subscribe({
+  appliquerFiltrage(): void {
+    // Pour l'instant on envoie la recherche et le prix au service.
+    // Tu pourras ajouter les autres filtres (matière, langue) plus tard dans ton service PHP si tu le souhaites !
+    this.etudiantService.rechercherCours(this.recherche, this.prixMax).subscribe({
       next: (donnees) => {
-        this.coursFiltres = donnees; // Tes cours de la BDD arrivent directement dans ton HTML !
+        // Optionnel : Si ton PHP n'est pas encore prêt, tu peux temporairement mettre des données en dur ici pour tester le visuel
+        this.coursFiltres = donnees || [];
       },
       error: (erreur) => {
-        console.error('Erreur lors de la récupération des cours :', erreur);
+        console.error('Erreur SQL via le service :', erreur);
       }
     });
-  }
-
-  // Dès qu'on tape dans la barre de recherche, on relance la requête SQL
-  appliquerFiltrage(): void {
-    this.chargerCoursDepuisBDD();
   }
 }
