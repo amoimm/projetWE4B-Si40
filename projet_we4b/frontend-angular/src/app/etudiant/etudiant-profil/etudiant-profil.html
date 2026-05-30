@@ -1,0 +1,28 @@
+<main *ngIf="donneesEtudiant; else chargement">
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>Mon profil Étudiant</h1>
+            <p>Connecté sur la plateforme UTBM</p>
+        </div>
+
+        <div class="profile-card">
+            <div class="profile-grid">
+                <div class="profile-box">
+                    <span>Préférence visuelle (BDD)</span>
+                    <strong>Thème: {{ donneesEtudiant.theme }}</strong>
+                </div>
+
+                <div class="profile-box">
+                    <span>Rôle applicatif</span>
+                    <strong>Étudiant standard</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<ng-template #chargement>
+    <div style="text-align: center; margin-top: 50px; font-family: sans-serif; color: #888;">
+        <p>Connexion à l'API PHP et chargement de la base de données relationnelle...</p>
+    </div>
+</ng-template>
