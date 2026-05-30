@@ -10,7 +10,7 @@ require_once __DIR__ . '/config.php';
 
 try {
     // 3. Récupérer l'ID de l'étudiant envoyé par Angular (ex: ?user_id=7)
-    $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : 7;
+    $user_id = 7;
 
     // 4. Exécution de la requête SQL
     $query = $db->prepare("SELECT * FROM utilisateurs WHERE id_utilisateurs = :id");
