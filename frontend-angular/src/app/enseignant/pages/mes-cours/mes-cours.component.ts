@@ -1,27 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EnseignantService } from '../../services/enseignant.service';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-mes-cours',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './mes-cours.component.html'
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './mes-cours.component.html',
+  styleUrls: ['./mes-cours.component.css']
 })
 export class MesCoursComponent implements OnInit {
-  listeDesCours: any[] = [];
+  coursList: any[] = [];
+  
+  recherche: string = '';
+  filtreMatiere: string = '';
+  filtreLangue: string = '';
+  filtreAvis: string = '';
 
-  constructor(private enseignantService: EnseignantService) {}
+  ngOnInit() {
+    this.chargerCours();
+  }
 
-  ngOnInit(): void {
-    // Appel du service au chargement de la page
-    this.enseignantService.getCours().subscribe({
-      next: (data) => {
-        this.listeDesCours = data;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des cours:', err);
-      }
-    });
+  chargerCours() {
+    // Ici, tu feras ton appel API (ex: this.coursService.getMesCours().subscribe(...))
+  }
+
+  supprimerCours(id: number) {
+    if (confirm('Voulez-vous vraiment supprimer ce cours ?')) {
+      // Appel au service pour supprimer
+    }
   }
 }

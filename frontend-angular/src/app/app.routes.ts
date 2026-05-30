@@ -6,7 +6,16 @@ import { EtudiantAccueilComponent } from './etudiant/pages/etudiant-accueil/etud
 import { EtudiantChatComponent } from './etudiant/pages/etudiant-chat/etudiant-chat';
 import { EtudiantConversationComponent } from './etudiant/pages/etudiant-conversation/etudiant-conversation';
 
-import { EnseignantModule } from './enseignant/enseignant.module';
+
+import { EnseignantLayout } from './enseignant/pages/enseignant-layout/enseignant-layout';
+import { EnseignantAccueilComponent } from './enseignant/pages/enseignant-accueil/enseignant-accueil.component';
+import { MesCoursComponent } from './enseignant/pages/mes-cours/mes-cours.component';
+import { NouveauCoursComponent } from './enseignant/pages/nouveau-cours/nouveau-cours.component';
+import { ConversationsComponent } from './enseignant/pages/conversations/conversations.component';
+import { ProfilEnseignantComponent } from './enseignant/pages/profil-enseignant/profil-enseignant.component';
+
+
+
 
 export const routes: Routes = [
   // 1. Groupe des pages ÉTUDIANT 
@@ -17,16 +26,24 @@ export const routes: Routes = [
       { path: 'accueil', component: EtudiantAccueilComponent },
       {  path: 'profil', component: EtudiantProfilComponent },
       { path: 'chat', component: EtudiantChatComponent },
-      { path: 'chat/conversation/:id', component: EtudiantConversationComponent }
+      { path: 'chat/conversation/:id', component: EtudiantConversationComponent },
       // Tu ajouteras tes futures pages ici, elles auront toutes la nav automatiquement !
-      // { path: 'accueil', component: EtudiantAccueilComponent },
+      { path: '', redirectTo: 'accueil', pathMatch: 'full' }
     ]
   },
 
   // 2. ENSEIGNANT
   {
     path: 'enseignant',
-    loadChildren: () => import('./enseignant/enseignant.module').then(m => m.EnseignantModule)
+    component: EnseignantLayout,
+    children: [
+    { path: 'accueil', component: EnseignantAccueilComponent },
+    { path: 'mes-cours', component: MesCoursComponent },
+    { path: 'nouveau-cours', component: NouveauCoursComponent },
+    { path: 'conversations', component: ConversationsComponent },
+    { path: 'profil', component: ProfilEnseignantComponent },
+    { path: '', redirectTo: 'accueil', pathMatch: 'full' }
+  ]
   },
 
 

@@ -1,1 +1,26 @@
-<p>conversations works!</p>
+<main>
+    <div class="conv-container">
+        <ol class="conversations-grid">
+            <li class="card-conv" *ngFor="let conv of conversations" (click)="selectionnerConv(conv.id)">
+                <article>
+                    <h2>{{ conv.nom_etudiant }}</h2>
+                    <p>{{ conv.dernier_message }}</p>
+                    <small>{{ conv.date_envoi }}</small>
+                </article>
+            </li>
+        </ol>
+
+        <div class="messagerie-box" *ngIf="convActiveId">
+            <div class="messages-list">
+                <div *ngFor="let msg of messages" [class]="msg.expediteur === 'enseignant' ? 'msg-enseignant' : 'msg-etudiant'">
+                    {{ msg.contenu }}
+                </div>
+            </div>
+            
+            <form (submit)="envoyer()">
+                <textarea [(ngModel)]="nouveauMessage" name="message" placeholder="Votre message..."></textarea>
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+    </div>
+</main>

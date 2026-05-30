@@ -1,1 +1,65 @@
-<p>enseignant-accueil works!</p>
+<main>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>Tableau de bord</h1>
+            <p>Voici un aperçu de votre activité</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div>
+                    <span class="stat-label">Cours actifs</span>
+                    <span class="stat-value">{{ stats?.nb_cours }}</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎓</div>
+                <div>
+                    <span class="stat-label">Élèves</span>
+                    <span class="stat-value">{{ stats?.nb_eleves }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-panel">
+                <h2>📅 Prochains rendez-vous</h2>
+                <div *ngIf="rdvs.length === 0; else listRdv">
+                    <p>Aucun rendez-vous à venir.</p>
+                </div>
+                <ng-template #listRdv>
+                    <div *ngFor="let rdv of rdvs" class="course-item">
+                        <div class="course-info">
+                            <strong>{{ rdv.matiere }} - {{ rdv.prenom }} {{ rdv.nom }}</strong>
+                            <span>{{ rdv.date_heure | date:'dd/MM/yyyy HH:mm' }}</span>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+
+            <div class="dashboard-panel">
+                <h2>💬 Messages récents</h2>
+                <div *ngIf="messages_new.length === 0; else listMsg">
+                    <p>Pas de nouveaux messages !</p>
+                </div>
+                <ng-template #listMsg>
+                    <div *ngFor="let mess of messages_new" class="message-preview">
+                        <a routerLink="/enseignant/conversations" [queryParams]="{id_conv: mess.id_conv}" class="message-link">
+                            <strong class="prenom">{{ mess.prenom }}</strong>
+                            <small class="heure">{{ mess.heure }}</small>
+                            <p>{{ mess.contenu }}</p>
+                        </a>
+                    </div>
+                </ng-template>
+            </div>
+
+            <div class="dashboard-panel actions-panel">
+                <h2>⚡ Actions rapides</h2>
+                <a routerLink="/enseignant/nouveau-cours" class="action-btn primary">➕ Nouveau cours</a>
+                <a routerLink="/enseignant/mes-cours" class="action-btn">📚 Mes cours</a>
+                <a routerLink="/enseignant/conversations" class="action-btn">💬 Messages</a>
+            </div>
+        </div>
+    </div>
+</main>
