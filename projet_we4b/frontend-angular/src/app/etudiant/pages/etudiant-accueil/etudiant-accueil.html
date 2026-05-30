@@ -1,0 +1,99 @@
+<main class="recherche-cours-container">
+
+  <div class="search-container">
+    <div class="search-main">
+      <input type="text" [(ngModel)]="recherche" (input)="appliquerFiltrage()" placeholder="Rechercher un prof ou un mot clé...">
+      <button (click)="appliquerFiltrage()">Rechercher</button>
+    </div>
+
+    <div class="filters">
+      <select [(ngModel)]="filtreMatiere" (change)="appliquerFiltrage()">
+        <option value="">Toutes les matières</option>
+        <option *ngFor="let m of matieres" [value]="m.id_matiere">{{ m.nom }}</option>
+      </select>
+
+      <select [(ngModel)]="filtreLangue" (change)="appliquerFiltrage()">
+        <option value="">Toutes les langues</option>
+        <option *ngFor="let l of langues" [value]="l.id_langue">{{ l.nom }}</option>
+      </select>
+
+      <input type="number" [(ngModel)]="prixMax" (input)="appliquerFiltrage()" placeholder="Prix max (€/h)" min="0" step="0.5">
+
+      <select [(ngModel)]="filtreMode" (change)="appliquerFiltrage()">
+        <option value="">Tous les modes</option>
+        <option value="presentiel">Présentiel</option>
+        <option value="visio">Visio</option>
+      </select>
+
+      <select [(ngModel)]="filtreSuivi" (change)="appliquerFiltrage()">
+        <option value="">Tous les formats</option>
+        <option value="1">Suivi sur la durée</option>
+        <option value="0">Cours ponctuel</option>
+      </select>
+
+      <select [(ngModel)]="filtreAvis" (change)="appliquerFiltrage()">
+        <option value="">Trier les avis par...</option>
+        <option value="croissant">Note croissante</option>
+        <option value="decroissant">Note décroissante</option>
+      </select>
+    </div>
+  </div>
+
+  <ol class="cours-list">
+    <p *ngIf="coursFiltres.length === 0" class="no-results">Aucun cours ne correspond à vos critères.</p>
+
+    <li *ngFor="let cours of coursFiltres">
+      <a [routerLink]="['/etudiant/conversation', cours.id_cours]" class="cours-card-link">
+        <article>
+          <h2>
+            Cours de : {{ cours.nom_matiere }}
+            <div class="auteur">{{ cours.prenom_prof }} {{ cours.nom_prof }}</div>
+          </h2>
+
+          <p class="langues">
+            <strong>Langues :</strong> {{ cours.langues || 'Non renseigné' }}
+          </p>
+
+          <div class="cours-infos">
+            <p>
+              <strong>Prix :</strong>
+              <span *ngIf="cours.prix_heure > 0; else gratuit">{{ cours.prix_heure | number:'1.2-2' }} € / heure</span>
+              <ng-template #gratuit><span class="badge-free">Gratuit</span></ng-template>
+            </p>
+            <p>
+              <strong>Mode :</strong> {{ cours.mode_cours | titlecase }}
+              <span *ngIf="cours.mode_cours === 'visio' && cours.camera_obligatoire === 1" class="badge-camera">
+                <em>(Caméra obligatoire)</em>
+              </span>
+            </p>
+            <p *ngIf="cours.suivi === 1">
+              <strong>Format :</strong> <span class="badge-suivi">Suivi sur la durée</span>
+            </p>
+          </div>
+
+          <div class="content-wrapper">
+            <div class="txt-desc">
+              {{ cours.description }}
+            </div>
+
+            <div class="note-aside">
+              <div *ngIf="cours.noteMoyenne !== null; else pasDeNote"
+                   class="rating-box"
+                   [ngClass]="{'excellent': cours.noteMoyenne >= 4, 'moyen': cours.noteMoyenne >= 2.5 && cours.noteMoyenne < 4, 'malheure': cours.noteMoyenne < 2.5}">
+                <span class="score">
+                  {{ cours.noteMoyenne | number:'1.1-1' }}<span class="star">★</span><span class="total">/5</span>
+                </span>
+              </div>
+              <ng-template #pasDeNote>
+                <div class="rating-box null">
+                  <span class="score">--</span>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </article>
+      </a>
+    </li>
+  </ol>
+
+</main>

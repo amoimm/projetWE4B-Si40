@@ -1,6 +1,5 @@
 <div class="app-layout">
-  <app-etudiant-nav userRole="etudiant"></app-etudiant-nav>
-
+   <app-main-nav userRole="etudiant" [globalRole]="realUserRole"></app-main-nav>
   <main class="app-content">
     <router-outlet></router-outlet>
   </main>

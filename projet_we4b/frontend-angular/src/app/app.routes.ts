@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { EtudiantLayoutComponent } from './etudiant/pages/etudiant-layout/etudiant-layout';
 import { EtudiantProfilComponent } from './etudiant/pages/etudiant-profil/etudiant-profil';
-// Importe ton composant de connexion ou enseignant ici plus tard
+import { EtudiantAccueilComponent } from './etudiant/pages/etudiant-accueil/etudiant-accueil';
 
 export const routes: Routes = [
   // 1. Groupe des pages ÉTUDIANT (avec la barre de navigation)
@@ -9,7 +9,8 @@ export const routes: Routes = [
     path: 'etudiant',
     component: EtudiantLayoutComponent, // Le parent avec la nav
     children: [
-      { path: 'profil', component: EtudiantProfilComponent },
+      { path: 'accueil', component: EtudiantAccueilComponent },
+      {  path: 'profil', component: EtudiantProfilComponent },
       // Tu ajouteras tes futures pages ici, elles auront toutes la nav automatiquement !
       // { path: 'accueil', component: EtudiantAccueilComponent },
     ]
@@ -21,5 +22,5 @@ export const routes: Routes = [
   // { path: 'enseignant/accueil', component: EnseignantAccueilComponent },
 
   // Redirection par défaut
-  { path: '', redirectTo: 'etudiant/profil', pathMatch: 'full' }
+  { path: '', redirectTo: 'etudiant/accueil', pathMatch: 'full' }
 ];
