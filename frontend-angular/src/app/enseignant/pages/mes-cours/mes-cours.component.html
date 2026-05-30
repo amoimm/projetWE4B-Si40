@@ -1,1 +1,19 @@
-<p>mes-cours works!</p>
+<div class="container">
+  <h1>Mes Cours</h1>
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nom du cours</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of data">
+        <td>{{ item.nom_cours }}</td> <td>
+          <button>Modifier</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
