@@ -36,5 +36,4 @@ $stmt = $db->prepare($sql);
 $stmt->execute($params);
 $cours = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// On envoie le résultat à Angular sous forme de JSON
 echo json_encode($cours);
