@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../bdd/config.php';
 
 try {
     $json = file_get_contents('php://input');
