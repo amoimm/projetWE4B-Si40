@@ -1,0 +1,68 @@
+<main class="chat-container-main">
+  <div class="chat-box">
+    <div class="chat-header">
+      <h2>{{ infoCours?.description || 'Chargement du cours...' }}</h2>
+    </div>
+
+    <div class="rdv-container" *ngIf="rdvs.length > 0">
+      <div class="rendez-vous" *ngFor="let rdv of rdvs">
+        <p><strong>📅 Date :</strong> {{ rdv.date_heure }} - <strong>📍 Lieu :</strong> {{ rdv.lieu }}</p>
+        <p><strong>Statut :</strong> <span [class.attente]="rdv.est_valide == 0" [class.valide]="rdv.est_valide == 1">{{ rdv.est_valide == 0 ? 'En attente' : 'Confirmé' }}</span></p>
+      </div>
+    </div>
+
+    <div class="messages-area">
+      <p *ngIf="messages.length === 0" class="no-messages">Aucun message pour le moment.</p>
+      <div *ngFor="let msg of messages" [ngClass]="{'message-eleve': msg.id_redacteur === idEtudiantTest, 'message-prof': msg.id_redacteur !== idEtudiantTest}">
+        <div class="bubble">
+          <p class="content">{{ msg.contenu }}</p>
+          <span class="time">{{ msg.heure | date:'HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="rdv-container" *ngIf="rdvs.length > 0">
+      <div class="rendez-vous" *ngFor="let rdv of rdvs">
+        <p>Date : {{ rdv.date_heure }} - Lieu : {{ rdv.lieu }}</p>
+        <p>Statut : <span [class.attente]="rdv.est_valide == 0" [class.valide]="rdv.est_valide == 1">{{ rdv.est_valide == 0 ? 'En attente' : 'Confirmé' }}</span></p>
+
+        <button class="btn-annuler">❌ Annuler</button>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <button class="btn-rdv" title="Demander un rendez-vous" (click)="ouvrirModale()">+</button>
+      <input type="text" [(ngModel)]="nouveauMessage" (keyup.enter)="envoyerMessage()" placeholder="Écrivez votre message..." class="message-input">
+      <button class="btn-send" (click)="envoyerMessage()">Envoyer</button>
+    </div>
+  </div>
+</main>
+
+<div class="modal-overlay" *ngIf="modaleOuverte">
+  <div class="modal-content">
+    <span class="close-btn" (click)="fermerModale()">&times;</span>
+    <h2>Demander un cours</h2>
+
+    <form (ngSubmit)="soumettreRdv()" class="modal-form">
+      <label>Date :</label>
+      <input type="date" [(ngModel)]="formRdv.date_cours" name="date" required>
+
+      <label>Heure :</label>
+      <input type="time" [(ngModel)]="formRdv.heure_cours" name="heure" required>
+
+      <label>Durée :</label>
+      <select [(ngModel)]="formRdv.duree_cours" name="duree" required>
+        <option value="30 min">30 min</option>
+        <option value="1h">1h</option>
+      </select>
+
+      <label>Lieu :</label>
+      <input type="text" [(ngModel)]="formRdv.lieu" name="lieu" required>
+
+      <label>Langue :</label>
+      <select [(ngModel)]="formRdv.langue_cours" name="langue" required>
+        <option *ngFor="let lang of languesProf" [value]="lang.nom">{{ lang.nom }}</option>
+      </select>
+
+      <button type="submit" class="btn-submit-rdv">Envoyer la demande</button>
+    </form>
+  </div>
+</div>
