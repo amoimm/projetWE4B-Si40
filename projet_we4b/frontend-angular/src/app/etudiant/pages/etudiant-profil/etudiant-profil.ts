@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EtudiantService } from './etudiant.service';
+import { EtudiantService } from '../../services/etudiant.service';
 
 @Component({
   selector: 'app-etudiant-profil',
@@ -67,6 +67,7 @@ export class EtudiantProfilComponent implements OnInit {
         prenom: this.donneesEtudiant.prenom,
         nom: this.donneesEtudiant.nom,
         email: this.donneesEtudiant.email,
+        presentation: this.donneesEtudiant.presentation,
         ancienMdp: this.ancienMdp,
         nouveauMdp: this.nouveauMdp
       }).subscribe({

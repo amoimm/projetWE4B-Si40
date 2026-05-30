@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { EtudiantProfilComponent } from './etudiant/etudiant-profil/etudiant-profil';
+import { EtudiantProfilComponent } from './etudiant/pages/etudiant-profil/etudiant-profil';
 
 export const routes: Routes = [
     // Redirection automatique vers la page profil si l'URL est vide
