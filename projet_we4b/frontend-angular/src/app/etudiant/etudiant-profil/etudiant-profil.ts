@@ -1,29 +1,60 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Import requis pour le *ngIf
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { EtudiantService } from './etudiant.service';
 
 @Component({
   selector: 'app-etudiant-profil',
   standalone: true,
-  imports: [CommonModule], // Ajout du module commun
+  imports: [CommonModule, FormsModule],
   templateUrl: './etudiant-profil.html',
   styleUrls: ['./etudiant-profil.css']
 })
 export class EtudiantProfilComponent implements OnInit {
   donneesEtudiant: any = null;
+  enModeEdition: boolean = false;
 
   constructor(private etudiantService: EtudiantService) { }
 
   ngOnInit(): void {
-    // On ajoute explicitement le type ': any' pour rendre le compilateur heureux
-    this.etudiantService.getProfilEtudiant(1).subscribe({
-      next: (data: any) => {
-        this.donneesEtudiant = data;
-        console.log('Thème chargé avec succès :', this.donneesEtudiant);
+    // Ton code actuel pour charger l'étudiant au démarrage (ex: ID 8)
+    this.etudiantService.getProfilEtudiant(7).subscribe(data => {
+      this.donneesEtudiant = data;
+    });
+  }
+
+  changerTheme(nouveauTheme: string): void {
+    const userId = 7;
+
+    this.etudiantService.updateProfilEtudiant(userId, { theme: nouveauTheme }).subscribe({
+      next: (reponse) => {
+        console.log('Serveur PHP :', reponse);
+        if (this.donneesEtudiant) {
+          this.donneesEtudiant.theme = nouveauTheme;
+        }
+        alert('Préférence enregistrée en BDD : Thème ' + nouveauTheme);
       },
-      error: (err: any) => {
-        console.error('Erreur de liaison REST avec PHP :', err);
+      error: (err) => {
+        console.error('Erreur lors de la modification :', err);
       }
     });
+  }
+
+  validerModifications(): void {
+    if (this.enModeEdition) {
+      this.etudiantService.updateProfilEtudiant(7, {
+        prenom: this.donneesEtudiant.prenom,
+        nom: this.donneesEtudiant.nom,
+        email: this.donneesEtudiant.email
+      }).subscribe({
+        next: (reponse) => {
+          alert('Informations mises à jour en BDD avec succès !');
+          this.enModeEdition = false;
+        },
+        error: (err) => console.error('Erreur modification profil :', err)
+      });
+    } else {
+      this.enModeEdition = true;
+    }
   }
 }

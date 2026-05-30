@@ -44,3 +44,16 @@
     color: #333333;
     font-size: 1.1rem;
 }
+
+/* Style appliqué uniquement quand la div est cliquable (mode affichage) */
+.profile-box.clicable {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Petit effet de survol pour inviter au clic */
+.profile-box.clicable:hover {
+  background-color: #f0f4f8; /* Devient légèrement bleuté/gris au survol */
+  border-color: #3b82f6;     /* La bordure s'illumine en bleu */
+  transform: translateY(-2px); /* Légère animation de surélévation */
+}
