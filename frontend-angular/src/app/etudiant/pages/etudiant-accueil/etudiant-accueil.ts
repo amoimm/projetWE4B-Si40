@@ -12,7 +12,7 @@ import { EtudiantService } from '../../services/etudiant.service';
   styleUrls: ['./etudiant-accueil.css']
 })
 export class EtudiantAccueilComponent implements OnInit {
-  // 1. Déclaration de TOUTES les variables utilisées dans le [(ngModel)] du HTML
+  // Variables des filtres
   recherche: string = '';
   prixMax: number | null = null;
   filtreMatiere: string = '';
@@ -21,33 +21,42 @@ export class EtudiantAccueilComponent implements OnInit {
   filtreSuivi: string = '';
   filtreAvis: string = '';
 
-  // 2. Les tableaux de données pour remplir les <option> de tes menus déroulants
-  matieres = [
-    { id_matiere: '1', nom: 'LO43 - Bases de données' },
-    { id_matiere: '2', nom: 'WE4B - Applications Web' },
-    { id_matiere: '3', nom: 'LE01 - Anglais' }
-  ];
-
-  langues = [
-    { id_langue: '1', nom: 'Français' },
-    { id_langue: '2', nom: 'Anglais' }
-  ];
-
-  // 3. Le tableau qui recevra les vrais cours de la BDD
+  // Tableaux dynamiques qui vont se remplir avec ta BDD
+  matieres: any[] = [];
+  langues: any[] = [];
   coursFiltres: any[] = [];
 
   constructor(private etudiantService: EtudiantService) {}
 
   ngOnInit(): void {
+    // 1. On charge les langues et matières depuis la BDD
+    this.etudiantService.getFiltresDisponibles().subscribe({
+      next: (data) => {
+        this.matieres = data.matieres;
+        this.langues = data.langues;
+      },
+      error: (err) => console.error('Erreur chargement des filtres:', err)
+    });
+
+    // 2. On affiche les cours par défaut
     this.appliquerFiltrage();
   }
 
   appliquerFiltrage(): void {
-    // Pour l'instant on envoie la recherche et le prix au service.
-    // Tu pourras ajouter les autres filtres (matière, langue) plus tard dans ton service PHP si tu le souhaites !
-    this.etudiantService.rechercherCours(this.recherche, this.prixMax).subscribe({
+    // On regroupe tous les choix de l'étudiant dans un seul objet
+    const tousLesFiltres = {
+      recherche: this.recherche,
+      prixMax: this.prixMax,
+      filtreMatiere: this.filtreMatiere,
+      filtreLangue: this.filtreLangue,
+      filtreMode: this.filtreMode,
+      filtreSuivi: this.filtreSuivi,
+      filtreAvis: this.filtreAvis
+    };
+
+    // On envoie le tout au service
+    this.etudiantService.rechercherCours(tousLesFiltres).subscribe({
       next: (donnees) => {
-        // Optionnel : Si ton PHP n'est pas encore prêt, tu peux temporairement mettre des données en dur ici pour tester le visuel
         this.coursFiltres = donnees || [];
       },
       error: (erreur) => {
