@@ -1,9 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-etudiant-nav',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './etudiant-nav.html',
-  styleUrl: './etudiant-nav.css',
+  styleUrls: ['./etudiant-nav.css']
 })
-export class EtudiantNav {}
+export class EtudiantNavComponent implements OnInit {
+  // Permet de recevoir le rôle (ex: 'etudiant', 'admin', 'enseignant')
+  @Input() userRole: string = 'etudiant';
+
+  constructor() { }
+
+  ngOnInit(): void { }
+}
