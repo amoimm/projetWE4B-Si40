@@ -18,7 +18,8 @@
     <ng-container *ngIf="userRole === 'enseignant'">
       <li><a routerLink="/enseignant/accueil" routerLinkActive="active">Tableau de bord</a></li>
       <li><a routerLink="/enseignant/mes-cours" routerLinkActive="active">Mes Cours</a></li>
-      <li><a routerLink="/enseignant/notes" routerLinkActive="active">Saisir Notes</a></li>
+      <li><a routerLink="/enseignant/NouveauCours" routerLinkActive="active">Nouvelle leçon</a></li>
+      <li><a routerLink="/enseignant/Conversations" routerLinkActive="active">Conversations</a></li>
     </ng-container>
 
     <ng-container *ngIf="userRole === 'admin'">
@@ -31,6 +32,7 @@
       <li *ngIf="globalRole === 'admin' && userRole !== 'admin'">
         <a routerLink="/admin/accueil">Vue Administrateur</a>
       </li>
+      
       <li *ngIf="userRole !== 'enseignant'">
         <a routerLink="/enseignant/accueil">Vue Prof</a>
       </li>
