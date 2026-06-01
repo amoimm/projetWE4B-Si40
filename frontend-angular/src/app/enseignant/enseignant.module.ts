@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EnseignantRoutingModule } from './enseignant-routing.module'; // Import du routing
+import { EnseignantRoutingModule } from './enseignant-routing.module';
+
 
 import { EnseignantAccueilComponent } from './pages/enseignant-accueil/enseignant-accueil.component';
 import { MesCoursComponent } from './pages/mes-cours/mes-cours.component';

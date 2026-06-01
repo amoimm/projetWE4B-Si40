@@ -1,1 +1,53 @@
-<p>mes-cours works!</p>
+<main>
+  <div class="main-content">
+    <form (submit)="chargerCours()">
+      <div class="search-container">
+        <div class="search-main">
+          <input [(ngModel)]="recherche" name="recherche" type="text" placeholder="Rechercher un mot clé...">
+          <button type="submit">Rechercher</button>
+        </div>
+
+        <div class="filters">
+          <select [(ngModel)]="filtreMatiere" name="matiere">
+            <option value="">Toutes les matières</option>
+            <!-- Faire un *ngFor pour lister les matières -->
+          </select>
+          <!-- Même principe pour langues et avis -->
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <ol class="cours-grid">
+    <li class="card" *ngFor="let msg of coursList">
+      <article>
+        <a [routerLink]="['/enseignant/modif-cours', msg.id_cours]" class="card-link"></a>
+        
+        <h2>{{ msg.nom_matiere }}</h2>
+
+        <div class="supp">
+          <button (click)="supprimerCours(msg.id_cours)" class="btn_supp_cours">
+            Supprimer
+          </button>
+        </div>
+
+        <span class="langues">{{ msg.langues || 'Non renseigné' }}</span>
+
+        <p class="meta-item">{{ msg.prix_heure }} €/h • {{ msg.mode_cours | titlecase }}</p>
+        
+        <p class="meta-item badge-info" *ngIf="msg.camera_obligatoire">Caméra obligatoire</p>
+        <p class="meta-item badge-info" *ngIf="msg.suivi">Suivi personnalisé</p>
+
+        <p class="meta-item">{{ msg.nb_rdv }} rendez-vous</p>
+
+        <div class="txt-desc" [innerHTML]="msg.description | slice:0:100"></div>
+            
+        <div class="note-aside">
+          <div class="rating-box" [ngClass]="{'excellent': msg.noteMoyenne >= 4, 'moyen': msg.noteMoyenne >= 2.5, 'malheure': msg.noteMoyenne < 2.5}">
+            <span class="score">{{ msg.noteMoyenne ? (msg.noteMoyenne | number:'1.1-1') : '--' }} ★</span>
+          </div>
+        </div>
+      </article>
+    </li>
+  </ol>
+</main>

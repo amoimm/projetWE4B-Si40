@@ -1,0 +1,79 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Configuration</h1>
+    <p>Gérez les matières et les langues de la plateforme</p>
+  </div>
+
+  <!-- Messages d'erreur/succès -->
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading">Chargement en cours...</div>
+
+  <ng-container *ngIf="!loading">
+    <div class="dashboard-grid">
+      <!-- SECTION MATIÈRES -->
+      <div class="dashboard-panel">
+        <h2>📚 Matières</h2>
+
+        <!-- Formulaire d'ajout -->
+        <div class="add-form">
+          <div class="form-group">
+            <input
+              type="text"
+              [(ngModel)]="newMatiere"
+              name="newMatiere"
+              placeholder="Nom de la matière..."
+              (keyup.enter)="ajouterMatiere()"
+            >
+            <button type="button" (click)="ajouterMatiere()" class="action-btn primary">
+              Ajouter
+            </button>
+          </div>
+        </div>
+
+        <!-- Liste des matières -->
+        <div class="config-list">
+          <div *ngFor="let m of matieres" class="config-row">
+            <span>{{ m.nom }}</span>
+          </div>
+          <div *ngIf="matieres.length === 0" class="empty-state">
+            Aucune matière
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION LANGUES -->
+      <div class="dashboard-panel">
+        <h2>🌍 Langues</h2>
+
+        <!-- Formulaire d'ajout -->
+        <div class="add-form">
+          <div class="form-group">
+            <input
+              type="text"
+              [(ngModel)]="newLangue"
+              name="newLangue"
+              placeholder="Nom de la langue..."
+              (keyup.enter)="ajouterLangue()"
+            >
+            <button type="button" (click)="ajouterLangue()" class="action-btn primary">
+              Ajouter
+            </button>
+          </div>
+        </div>
+
+        <!-- Liste des langues -->
+        <div class="config-list">
+          <div *ngFor="let l of langues" class="config-row">
+            <span>{{ l.nom }}</span>
+          </div>
+          <div *ngIf="langues.length === 0" class="empty-state">
+            Aucune langue
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
