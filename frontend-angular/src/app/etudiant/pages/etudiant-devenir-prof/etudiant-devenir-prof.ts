@@ -4,24 +4,28 @@ import { Router } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
 
 @Component({
-  selector: 'app-devenir-prof',
+  selector: 'app-etudiant-devenir-prof',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './etudiant-devenir-prof.html',
   styleUrls: ['./etudiant-devenir-prof.css']
 })
-export class DevenirProfComponent implements OnInit {
-  idUtilisateurTest: number = 8;
-  fichiersCertif: File[] = [];
+export class EtudiantDevenirProfComponent implements OnInit {
+  idUtilisateurTest: number = 8; // Ton ID de test actuel
+
   listeMatieres: any[] = [];
   listeLangues: any[] = [];
 
   matieresSelectionnees: Set<string> = new Set();
   languesSelectionnees: Set<string> = new Set();
 
+  // Le tableau qui va stocker les PDF
+  fichiersCertif: File[] = [];
+
   constructor(private etudiantService: EtudiantService, private router: Router) {}
 
   ngOnInit(): void {
+    // On charge les filtres (matières et langues) depuis la base de données
     this.etudiantService.getFiltresDisponibles().subscribe({
       next: (data) => {
         this.listeMatieres = data.matieres;
@@ -46,46 +50,27 @@ export class DevenirProfComponent implements OnInit {
     }
   }
 
-  soumettreFormulaire(): void {
-    if (this.matieresSelectionnees.size === 0 || this.languesSelectionnees.size === 0) {
-      alert("Erreur : Veuillez sélectionner au moins une matière ET une langue.");
-      return;
-    }
-
-    const arrayMatieres = Array.from(this.matieresSelectionnees);
-    const arrayLangues = Array.from(this.languesSelectionnees);
-
-    this.etudiantService.devenirProf(this.idUtilisateurTest, arrayMatieres, arrayLangues).subscribe({
-      next: (reponse) => {
-        if (reponse.succes) {
-          alert(reponse.message);
-          this.router.navigate(['/']);
-        } else {
-          alert(reponse.message);
-        }
-      },
-      error: (err) => console.error("Erreur d'enregistrement", err)
-    });
-  }
-
+  // Méthode déclenchée quand l'utilisateur choisit des fichiers PDF
   onFichiersSelectionnes(event: any): void {
     if (event.target.files && event.target.files.length > 0) {
-      // On convertit la liste de fichiers (FileList) en tableau classique
+      // On convertit la liste de fichiers en tableau classique
       this.fichiersCertif = Array.from(event.target.files);
     }
   }
 
+  // LA SEULE ET UNIQUE méthode soumettreFormulaire !
   soumettreFormulaire(): void {
     if (this.matieresSelectionnees.size === 0 || this.languesSelectionnees.size === 0) {
       alert("Erreur : Veuillez sélectionner au moins une matière ET une langue.");
       return;
     }
+
     if (this.fichiersCertif.length === 0) {
       alert("Erreur : Veuillez fournir au moins un certificat au format PDF.");
       return;
     }
 
-    // 🌟 On utilise FormData pour pouvoir envoyer des fichiers + du texte
+    // On utilise FormData pour pouvoir envoyer des fichiers + du texte
     const formData = new FormData();
     formData.append('id_utilisateur', this.idUtilisateurTest.toString());
 
@@ -94,7 +79,7 @@ export class DevenirProfComponent implements OnInit {
     formData.append('langues', JSON.stringify(Array.from(this.languesSelectionnees)));
 
     // On ajoute chaque PDF sélectionné au FormData
-    this.fichiersCertif.forEach((fichier, index) => {
+    this.fichiersCertif.forEach((fichier) => {
       formData.append('certificats[]', fichier, fichier.name);
     });
 

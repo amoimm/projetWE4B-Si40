@@ -5,7 +5,7 @@ import { EtudiantProfilComponent } from './etudiant/pages/etudiant-profil/etudia
 import { EtudiantAccueilComponent } from './etudiant/pages/etudiant-accueil/etudiant-accueil';
 import { EtudiantChatComponent } from './etudiant/pages/etudiant-chat/etudiant-chat';
 import { EtudiantConversationComponent } from './etudiant/pages/etudiant-conversation/etudiant-conversation';
-import { DevenirProfComponent } from './etudiant/pages/etudiant-devenir-prof/etudiant-devenir-prof';
+import { EtudiantDevenirProfComponent } from './etudiant/pages/etudiant-devenir-prof/etudiant-devenir-prof';
 
 
 
@@ -33,7 +33,7 @@ export const routes: Routes = [
       {  path: 'profil', component: EtudiantProfilComponent },
       { path: 'chat', component: EtudiantChatComponent },
       { path: 'chat/conversation/:id', component: EtudiantConversationComponent },
-      { path: 'devenir-prof', component: DevenirProfComponent },
+      { path: 'devenir-prof', component: EtudiantDevenirProfComponent },
 
       { path: '', redirectTo: 'accueil', pathMatch: 'full' }
     ]
