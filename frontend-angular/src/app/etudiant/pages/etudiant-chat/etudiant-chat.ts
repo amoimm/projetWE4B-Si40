@@ -12,7 +12,7 @@ import { EtudiantService } from '../../services/etudiant.service';
 })
 export class EtudiantChatComponent implements OnInit {
   conversations: any[] = [];
-  idEtudiantTest = 8; // Change ce chiffre par un vrai ID de ta BDD qui a des messages
+  idEtudiantTest = 8;
 
   constructor(private etudiantService: EtudiantService) {}
 

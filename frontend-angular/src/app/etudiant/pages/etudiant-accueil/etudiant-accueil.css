@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .recherche-cours-container {
   padding: 10px;
   font-family: Arial, sans-serif;
@@ -85,8 +89,10 @@ article h2 {
   margin-top: 0;
   margin-bottom: 10px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
 
 .auteur {
@@ -103,6 +109,7 @@ article h2 {
 
 .content-wrapper {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 15px;

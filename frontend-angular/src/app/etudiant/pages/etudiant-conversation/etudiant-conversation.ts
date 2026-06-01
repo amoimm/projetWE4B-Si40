@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy,ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-etudiant-conversation',
@@ -12,17 +13,19 @@ import { EtudiantService } from '../../services/etudiant.service';
   styleUrls: ['./etudiant-conversation.css']
 })
 export class EtudiantConversationComponent implements OnInit {
+  @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
+
   idCours: number = 18;
   idEtudiantTest: number = 8;
   infoCours: any = null;
   messages: any[] = [];
   nouveauMessage: string = '';
 
-  // --- NOUVEAU : Variables pour les RDV ---
   rdvs: any[] = [];
   languesProf: any[] = [];
 
-  // Variables de la modale
+  private actualisationAuto!: Subscription;
+
   modaleOuverte: boolean = false;
   formRdv = {
     date_cours: '',
@@ -37,21 +40,42 @@ export class EtudiantConversationComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.idCours = +params['id'];
+
       this.chargerDiscussion();
+
+      this.actualisationAuto = interval(2000).subscribe(() => {
+        this.chargerDiscussion();
+      });
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.actualisationAuto) {
+      this.actualisationAuto.unsubscribe();
+    }
+  }
+
+  scrollToBottom(): void {
+    setTimeout(() => {
+      try {
+        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      } catch(err) { }
+    }, 50);
+  }
   chargerDiscussion(): void {
     this.etudiantService.getConversation(this.idCours, this.idEtudiantTest).subscribe({
       next: (data) => {
+        const ancienNombreMessages = this.messages.length;
         this.infoCours = data.info_cours;
         this.messages = data.messages || [];
         this.rdvs = data.rdvs || [];
         this.languesProf = data.langues_prof || [];
 
-        // Sélectionner la première langue par défaut si elle existe
         if (this.languesProf.length > 0) {
           this.formRdv.langue_cours = this.languesProf[0].nom;
+        }
+        if (this.messages.length > ancienNombreMessages) {
+          this.scrollToBottom();
         }
       },
       error: (err) => console.error('Erreur :', err)
@@ -69,7 +93,7 @@ export class EtudiantConversationComponent implements OnInit {
       heure: new Date().toISOString()
     });
     this.nouveauMessage = '';
-
+    this.scrollToBottom();
     this.etudiantService.envoyerMessage(this.idCours, idConv, this.idEtudiantTest, contenuMsg).subscribe({
       next: (response) => {
         if (!this.infoCours) this.infoCours = {};
@@ -99,8 +123,25 @@ export class EtudiantConversationComponent implements OnInit {
         });
         this.fermerModale();
         alert('Demande envoyée au professeur !');
+        this.chargerDiscussion();
       },
       error: (err) => alert('Erreur lors de la demande')
+    });
+  }
+  annulerRdv(idRdv: number): void {
+    if (!confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
+      return;
+    }
+    this.rdvs = this.rdvs.filter(rdv => rdv.id_rdv !== idRdv);
+    this.etudiantService.annulerRdv(idRdv, this.idEtudiantTest).subscribe({
+      next: () => {
+        console.log('RDV annulé en base de données.');
+        this.chargerDiscussion();
+      },
+      error: (err) => {
+        alert('Erreur lors de l\'annulation du RDV.');
+        this.chargerDiscussion();
+      }
     });
   }
 }

@@ -15,6 +15,7 @@ export class EtudiantService {
   private apiConversationsUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-conversations.php';
   private apiEnvoiMessageUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-envoi-message.php';
   private apiDemandeRdvUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-demande-rdv.php';
+  private apiSupprimerRdvUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-supprimer-rdv.php';
 
   constructor(private http: HttpClient) { }
 
@@ -79,5 +80,8 @@ export class EtudiantService {
   }
   demanderRdv(payload: any): Observable<any> {
     return this.http.post<any>(this.apiDemandeRdvUrl, payload);
+  }
+  annulerRdv(idRdv: number, idEleve: number): Observable<any> {
+    return this.http.post<any>(this.apiSupprimerRdvUrl, { id_rdv: idRdv, id_eleve: idEleve });
   }
 }

@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <div class="messages-area">
+    <div class="messages-area" #scrollMe>
       <p *ngIf="messages.length === 0" class="no-messages">Aucun message pour le moment.</p>
       <div *ngFor="let msg of messages" [ngClass]="{'message-eleve': msg.id_redacteur === idEtudiantTest, 'message-prof': msg.id_redacteur !== idEtudiantTest}">
         <div class="bubble">
@@ -25,7 +25,7 @@
         <p>Date : {{ rdv.date_heure }} - Lieu : {{ rdv.lieu }}</p>
         <p>Statut : <span [class.attente]="rdv.est_valide == 0" [class.valide]="rdv.est_valide == 1">{{ rdv.est_valide == 0 ? 'En attente' : 'Confirmé' }}</span></p>
 
-        <button class="btn-annuler">❌ Annuler</button>
+        <button class="btn-annuler" (click)="annulerRdv(rdv.id_rdv)">❌ Annuler</button>
       </div>
     </div>
     <div class="chat-input-area">

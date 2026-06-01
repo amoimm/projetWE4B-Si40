@@ -43,7 +43,7 @@
     <p *ngIf="coursFiltres.length === 0" class="no-results">Aucun cours ne correspond à vos critères.</p>
 
     <li *ngFor="let cours of coursFiltres">
-      <a [routerLink]="['/etudiant/conversation', cours.id_cours]" class="cours-card-link">
+      <a [routerLink]="['/etudiant/chat/conversation', cours.id_cours]" class="cours-card-link">
         <article>
           <h2>
             Cours de : {{ cours.nom_matiere }}

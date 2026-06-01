@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .dashboard {
     padding: 20px;
 }
@@ -60,7 +65,7 @@
 
 /* 1. Style de base de la boîte de présentation */
 .presentation-box {
-  grid-column: span 2;      /* Force la boîte à prendre toute la largeur (2 colonnes) */
+  grid-column: 1 / -1;;      /* Force la boîte à prendre toute la largeur (2 colonnes) */
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
@@ -68,44 +73,40 @@
   /* SPACING INTERNE : 20px d'espace tout autour à l'intérieur de la boîte */
   padding: 20px;
 
-  /* SPACING EXTERNE : On s'assure qu'il y a 15px d'espace en bas pour ne pas coller le bouton bleu */
   margin-bottom: 15px;
 
   display: flex;
   flex-direction: column;
-  gap: 10px;                /* Crée 10px d'espace entre le petit titre "Présentation" et le texte/textarea */
+  gap: 10px;
 }
 
-/* 2. Le petit titre en haut du bloc */
 .presentation-box span {
   font-size: 0.85rem;
   text-transform: uppercase;
   color: #94a3b8;
   font-weight: 600;
-  letter-spacing: 0.05em;   /* Un petit espacement entre les lettres pour le style */
+  letter-spacing: 0.05em;
 }
 
-/* 3. Le texte affiché (quand on ne modifie pas) */
 .presentation-box strong {
   font-size: 1rem;
   color: #1e293b;
-  line-height: 1.6;         /* Augmente l'espacement entre les lignes de texte (hauteur de ligne) pour une meilleure lecture */
+  line-height: 1.6;
   font-weight: 500;
 }
 
-/* 4. Le champ de saisie (quand on passe en mode édition) */
 .presentation-box textarea.form-input {
   width: 100%;
-  border: 1px solid #3b82f6; /* Bordure bleue en mode édition */
+  border: 1px solid #3b82f6;
   border-radius: 8px;
   background-color: #f8fafc;
 
-  /* SPACING DANS L'INPUT : Évite que le texte tapé ne colle aux bords du textarea */
   padding: 12px;
 
   font-size: 1rem;
   color: #1e293b;
   line-height: 1.6;
-  resize: vertical;         /* Permet à l'étudiant d'agrandir le bloc verticalement si besoin */
+  resize: vertical;
   outline: none;
 }
+

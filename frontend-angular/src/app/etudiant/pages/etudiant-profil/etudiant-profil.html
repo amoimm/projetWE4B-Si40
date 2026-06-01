@@ -58,7 +58,7 @@
       <div class="profile-box presentation-box"
            [class.clicable]="!enModeEdition"
            (click)="!enModeEdition && enModeEdition = true"
-           style="grid-column: span 2; min-height: 100px;"> <span>Présentation</span>
+           style="min-height: 100px;"> <span>Présentation</span>
 
         <ng-container *ngIf="!enModeEdition">
           <strong *ngIf="donneesEtudiant.presentation && donneesEtudiant.presentation.trim() !== ''">
@@ -81,7 +81,7 @@
       <div class="password-section" *ngIf="enModeEdition" style="margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px dashed #ccc; border-radius: 8px;">
         <h4 style="margin-top: 0; color: #444;"> Changer le mot de passe </h4>
 
-        <div class="profile-grid" style="grid-template-columns: repeat(3, 1fr); gap: 15px;">
+        <div class="profile-grid">
           <div class="profile-box" style="background: white;" (click)="$event.stopPropagation()">
             <span>Ancien mot de passe</span>
             <input type="password" [(ngModel)]="ancienMdp" class="form-input" placeholder="••••••••">
