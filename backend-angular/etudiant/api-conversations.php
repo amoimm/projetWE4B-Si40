@@ -4,8 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . '/../bdd/config.php';
 
-// Pour l'instant, on récupère l'ID via l'URL (ex: ?id_eleve=1) pour tester facilement avec Angular
-$id_eleve = isset($_GET['id_eleve']) ? (int)$_GET['id_eleve'] : 1; // Remplace 1 par ton ID de test
+$id_eleve = isset($_GET['id_eleve']) ? (int)$_GET['id_eleve'] : 1;
 
 try {
     $sql = "SELECT 
