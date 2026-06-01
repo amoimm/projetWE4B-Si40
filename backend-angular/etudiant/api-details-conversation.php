@@ -57,6 +57,19 @@ try {
     $stmt_rdv->execute(['id_cours' => $id_cours, 'date_now' => $date_actuelle]);
     $rdvs = $stmt_rdv->fetchAll(PDO::FETCH_ASSOC);
 
+    // On met à jour les messages envoyés par le prof pour dire que l'élève les a lus
+    $sqlUpdate = "UPDATE message 
+              SET lu = 1 
+              WHERE id_conv = :id_conv 
+              AND id_redacteur != :id_eleve 
+              AND lu = 0";
+
+    $stmtUpdate = $db->prepare($sqlUpdate);
+    $stmtUpdate->execute([
+        'id_conv' => $id_conv,
+        'id_eleve' => $id_eleve
+    ]);
+
     // On renvoie TOUT à Angular
     echo json_encode([
         "info_cours" => $info,

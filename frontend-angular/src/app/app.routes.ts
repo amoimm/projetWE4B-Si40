@@ -25,13 +25,12 @@ export const routes: Routes = [
   // 1. Groupe des pages ÉTUDIANT
   {
     path: 'etudiant',
-    component: EtudiantLayoutComponent, // Le parent avec la nav
+    component: EtudiantLayoutComponent,
     children: [
       { path: 'accueil', component: EtudiantAccueilComponent },
       {  path: 'profil', component: EtudiantProfilComponent },
       { path: 'chat', component: EtudiantChatComponent },
       { path: 'chat/conversation/:id', component: EtudiantConversationComponent },
-      // Tu ajouteras tes futures pages ici, elles auront toutes la nav automatiquement !
       { path: '', redirectTo: 'accueil', pathMatch: 'full' }
     ]
   },
