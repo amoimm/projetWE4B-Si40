@@ -1,0 +1,76 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Espace Administrateur</h1>
+    <p>Vue d'ensemble de la plateforme <strong>ProjetWE4B</strong></p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading">
+    Chargement en cours...
+  </div>
+
+  <!-- Contenu -->
+  <ng-container *ngIf="!loading && !error">
+    <!-- SECTION STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Utilisateurs</span>
+        <span class="stat-value">{{ stats.users }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Cours créés</span>
+        <span class="stat-value">{{ stats.cours }}</span>
+      </div>
+      <div class="stat-card highlight">
+        <span class="stat-label">Messages totaux</span>
+        <span class="stat-value">{{ stats.messages }}</span>
+      </div>
+    </div>
+
+    <!-- SECTION UTILISATEURS RÉCENTS & ACCÈS RAPIDE -->
+    <div class="dashboard-grid">
+      <div class="dashboard-panel">
+        <h2>Utilisateurs récents</h2>
+
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Utilisateur</th>
+              <th>Email</th>
+              <th>Rôle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of utilisateursRecents">
+              <td><strong>{{ user.prenom }} {{ user.nom }}</strong></td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span [ngClass]="'badge ' + getBadgeRang(user.rang).classe">
+                  {{ getBadgeRang(user.rang).texte }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <br>
+        <a href="/admin/utilisateurs" class="action-btn">Voir tous les utilisateurs</a>
+      </div>
+
+      <div class="dashboard-panel actions-panel">
+        <h2>Accès rapide</h2>
+        <a href="/admin/config?action=add_matiere" class="action-btn primary">
+          Ajouter une matière
+        </a>
+        <a href="/admin/config?action=add_langue" class="action-btn">
+          Ajouter une langue
+        </a>
+      </div>
+    </div>
+  </ng-container>
+</div>

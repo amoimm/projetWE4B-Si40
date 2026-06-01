@@ -14,11 +14,15 @@ import { NouveauCoursComponent } from './enseignant/pages/nouveau-cours/nouveau-
 import { ConversationsComponent } from './enseignant/pages/conversations/conversations.component';
 import { ProfilEnseignantComponent } from './enseignant/pages/profil-enseignant/profil-enseignant.component';
 
-
+import { AdminLayout } from './admin/pages/admin-layout/admin-layout';
+import { AdminAccueil } from './admin/pages/admin-accueil/admin-accueil';
+import { AdminUtilisateurs } from './admin/pages/admin-utilisateurs/admin-utilisateurs';
+import { AdminCours } from './admin/pages/admin-cours/admin-cours';
+import { AdminConfig } from './admin/pages/admin-config/admin-config';
 
 
 export const routes: Routes = [
-  // 1. Groupe des pages ÉTUDIANT 
+  // 1. Groupe des pages ÉTUDIANT
   {
     path: 'etudiant',
     component: EtudiantLayoutComponent, // Le parent avec la nav
@@ -46,7 +50,20 @@ export const routes: Routes = [
   ]
   },
 
+  // 3. ADMIN
+  {
+    path: 'admin',
+    component: AdminLayout,
+    children: [
+      { path: 'accueil', component: AdminAccueil },
+      { path: 'utilisateurs', component: AdminUtilisateurs },
+      { path: 'cours', component: AdminCours },
+      { path: 'config', component: AdminConfig },
+      { path: '', redirectTo: 'accueil', pathMatch: 'full' }
+    ]
+  },
 
   // Redirection par défaut
   { path: '', redirectTo: 'etudiant/accueil', pathMatch: 'full' }
 ];
+

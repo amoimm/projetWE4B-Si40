@@ -1,0 +1,106 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Gestion des Utilisateurs</h1>
+    <p>{{ totalCount }} utilisateur(s) au total</p>
+  </div>
+
+  <!-- Messages d'erreur/succès -->
+  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading">Chargement en cours...</div>
+
+  <ng-container *ngIf="!loading">
+    <!-- FORMULAIRE DE RECHERCHE ET FILTRES -->
+    <form class="admin-toolbar">
+      <div class="form-row">
+        <input
+          type="text"
+          [(ngModel)]="search"
+          name="search"
+          placeholder="Rechercher par nom, prénom ou email..."
+        >
+        <select [(ngModel)]="rangFilter" name="rang">
+          <option value="">Tous les rôles</option>
+          <option value="0">Étudiant</option>
+          <option value="1">Professeur</option>
+          <option value="2">Admin</option>
+        </select>
+        <button type="button" (click)="filtrer()" class="action-btn primary">Filtrer</button>
+        <button type="button" (click)="reinitialiser()" class="action-btn">Réinitialiser</button>
+      </div>
+    </form>
+
+    <!-- TABLEAU DES UTILISATEURS -->
+    <div class="dashboard-panel">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nom & Prénom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of utilisateurs">
+            <td>{{ user.id_utilisateurs }}</td>
+            <td><strong>{{ user.prenom }} {{ user.nom }}</strong></td>
+            <td>{{ user.email }}</td>
+            <td>
+              <select
+                [(ngModel)]="selectedRangs[user.id_utilisateurs]"
+                class="rang-select"
+              >
+                <option value="0">Étudiant</option>
+                <option value="1">Professeur</option>
+                <option value="2">Admin</option>
+              </select>
+              <button
+                type="button"
+                (click)="modifierRang(user.id_utilisateurs)"
+                class="btn-sm edit"
+              >
+                OK
+              </button>
+            </td>
+            <td>
+              <button
+                type="button"
+                (click)="supprimerUtilisateur(user.id_utilisateurs)"
+                class="btn-sm danger"
+              >
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button
+        [disabled]="currentPage === 1"
+        (click)="allerPage(currentPage - 1)"
+        class="page-btn"
+      >
+        ← Précédent
+      </button>
+
+      <span class="page-info">
+        Page {{ currentPage }} / {{ totalPages }}
+      </span>
+
+      <button
+        [disabled]="currentPage === totalPages"
+        (click)="allerPage(currentPage + 1)"
+        class="page-btn"
+      >
+        Suivant →
+      </button>
+    </div>
+  </ng-container>
+</div>
