@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http'; // <-- Ajout de HttpParams ici !
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class EtudiantService {
   private apiEnvoiMessageUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-envoi-message.php';
   private apiDemandeRdvUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-demande-rdv.php';
   private apiSupprimerRdvUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-supprimer-rdv.php';
+  private apiDevenirProfUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-devenir-prof.php';
 
   constructor(private http: HttpClient) { }
 
@@ -78,10 +79,20 @@ export class EtudiantService {
     };
     return this.http.post<any>(this.apiEnvoiMessageUrl, payload);
   }
+
   demanderRdv(payload: any): Observable<any> {
     return this.http.post<any>(this.apiDemandeRdvUrl, payload);
   }
+
   annulerRdv(idRdv: number, idEleve: number): Observable<any> {
     return this.http.post<any>(this.apiSupprimerRdvUrl, { id_rdv: idRdv, id_eleve: idEleve });
+  }
+
+  // ==========================================
+  // SECTION DEVENIR PROF
+  // ==========================================
+
+  devenirProf(formData: FormData): Observable<any> {
+    return this.http.post<any>(this.apiDevenirProfUrl, formData);
   }
 }

@@ -33,7 +33,7 @@ export class ConversationsComponent implements OnInit {
         message: this.nouveauMessage
       }).subscribe(() => {
         this.nouveauMessage = '';
-        this.selectionnerConv(this.convActiveId!); // Rafraîchir
+        this.selectionnerConv(this.convActiveId!);
       });
     }
   }

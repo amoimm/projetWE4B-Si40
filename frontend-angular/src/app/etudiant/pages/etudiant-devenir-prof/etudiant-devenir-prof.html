@@ -1,0 +1,49 @@
+<div class="page-container">
+  <div class="header-section">
+    <h1>Devenir Professeur</h1>
+    <p>Complétez votre profil pour commencer à enseigner sur la plateforme.</p>
+  </div>
+
+  <div class="form-container">
+    <article>
+      <h2>Matières enseignées <span class="badge-title">Compétences</span></h2>
+      <div class="tags-grid">
+        <span
+          *ngFor="let m of listeMatieres"
+          class="tag-item"
+          [class.selected]="matieresSelectionnees.has(m.nom)"
+          (click)="toggleMatiere(m.nom)">
+          {{ m.nom }}
+        </span>
+      </div>
+    </article>
+
+    <article style="margin-top: 30px;">
+      <h2>Langues parlées <span class="badge-title">Communication</span></h2>
+      <div class="tags-grid">
+        <span
+          *ngFor="let l of listeLangues"
+          class="tag-item"
+          [class.selected]="languesSelectionnees.has(l.nom)"
+          (click)="toggleLangue(l.nom)">
+          {{ l.nom }}
+        </span>
+      </div>
+    </article>
+
+    <article style="margin-top: 30px;">
+      <h2>Certifications <span class="badge-title">Preuves en PDF</span></h2>
+      <div style="margin-top: 15px;">
+        <input type="file" (change)="onFichiersSelectionnes($event)" accept="application/pdf" multiple class="form-input" style="padding: 10px; border: 1px dashed #3b82f6; width: 100%; border-radius: 8px;">
+
+        <p *ngIf="fichiersCertif.length > 0" style="margin-top: 10px; font-size: 0.9rem; color: #166534; font-weight: bold;">
+          ✅ {{ fichiersCertif.length }} fichier(s) prêt(s) à être envoyé(s).
+        </p>
+      </div>
+    </article>
+
+    <button class="btn-submit" (click)="soumettreFormulaire()">
+      VALIDER MON PROFIL ENSEIGNANT
+    </button>
+  </div>
+</div>

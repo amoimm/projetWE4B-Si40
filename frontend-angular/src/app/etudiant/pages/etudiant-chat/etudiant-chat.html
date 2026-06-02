@@ -1,33 +1,30 @@
-<main class="chat-container">
-  <div class="search-container">
+<div class="chat-list-container">
+  <div class="header-section">
     <h1>Mes Conversations</h1>
-    <p class="subtitle">Retrouvez ici tous vos échanges avec vos professeurs.</p>
+    <p>Retrouvez ici tous vos échanges avec vos professeurs.</p>
   </div>
 
-  <ol class="cours-list">
-    <p *ngIf="conversations.length === 0" class="no-results">
-      Aucune conversation pour le moment. Allez dans "Accueil" pour trouver un cours !
-    </p>
+  <div class="conversations-list">
 
-    <li *ngFor="let msg of conversations">
-      <a [routerLink]="['/etudiant/chat/conversation', msg.id_cours]" class="cours-card-link">
-        <article>
-          <h2>
-            Cours de : {{ msg.nom_matiere || 'Inconnu' }}
-            <div class="auteur">{{ msg.prenom_prof }} {{ msg.nom_prof }}</div>
-          </h2>
+    <p *ngIf="conversations.length === 0" class="no-conv">Aucune conversation pour le moment.</p>
 
-          <div class="content-wrapper">
-            <div class="txt-desc">
-              <p>{{ msg.description || 'Aucune description' }}</p>
-            </div>
-          </div>
+    <a *ngFor="let conv of conversations" [routerLink]="['/etudiant/chat/conversation', conv.id_cours]" class="conv-card">
 
-          <div *ngIf="msg.nb_non_lus > 0" class="badge-container">
-            <span class="badge-unread">{{ msg.nb_non_lus }} message(s) non lu(s)</span>
-          </div>
-        </article>
-      </a>
-    </li>
-  </ol>
-</main>
+      <div class="conv-info">
+        <h3>Cours de : {{ conv.nom_matiere }}</h3>
+        <p class="desc">{{ conv.description }}</p>
+      </div>
+
+      <div class="conv-meta">
+
+        <span *ngIf="conv.nb_non_lus > 0" class="badge-unread">
+          {{ conv.nb_non_lus }} non lu(s)
+        </span>
+
+        <span class="badge-prof">{{ conv.prenom_prof }} {{ conv.nom_prof }}</span>
+
+      </div>
+    </a>
+
+  </div>
+</div>

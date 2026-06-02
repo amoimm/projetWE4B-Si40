@@ -5,6 +5,8 @@ import { EtudiantProfilComponent } from './etudiant/pages/etudiant-profil/etudia
 import { EtudiantAccueilComponent } from './etudiant/pages/etudiant-accueil/etudiant-accueil';
 import { EtudiantChatComponent } from './etudiant/pages/etudiant-chat/etudiant-chat';
 import { EtudiantConversationComponent } from './etudiant/pages/etudiant-conversation/etudiant-conversation';
+import { EtudiantDevenirProfComponent } from './etudiant/pages/etudiant-devenir-prof/etudiant-devenir-prof';
+
 
 
 import { EnseignantLayout } from './enseignant/pages/enseignant-layout/enseignant-layout';
@@ -25,13 +27,14 @@ export const routes: Routes = [
   // 1. Groupe des pages ÉTUDIANT
   {
     path: 'etudiant',
-    component: EtudiantLayoutComponent, // Le parent avec la nav
+    component: EtudiantLayoutComponent,
     children: [
       { path: 'accueil', component: EtudiantAccueilComponent },
       {  path: 'profil', component: EtudiantProfilComponent },
       { path: 'chat', component: EtudiantChatComponent },
       { path: 'chat/conversation/:id', component: EtudiantConversationComponent },
-      // Tu ajouteras tes futures pages ici, elles auront toutes la nav automatiquement !
+      { path: 'devenir-prof', component: EtudiantDevenirProfComponent },
+
       { path: '', redirectTo: 'accueil', pathMatch: 'full' }
     ]
   },
