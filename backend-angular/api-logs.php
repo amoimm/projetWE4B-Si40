@@ -11,35 +11,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once 'bdd/config_mongodb.php'; // On le charge une bonne fois pour toutes
+    $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
 
-    // Récupérer le contenu JSON envoyé par Angular
-    $json = file_get_contents('php://input');
-    $data = json_decode($json, true);
+    // =========================================================================
+    // CAS 1 : C'est la candidature Prof (reçue via FormData)
+    // =========================================================================
+    if (isset($_POST['type_log']) && $_POST['type_log'] === 'CANDIDATURE_PROF') {
 
-    if (!empty($data['message'])) {
-        require_once 'bdd/config_mongodb.php';
-
-        $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
+        // Attention : Ton Angular envoie 'subjects' et 'languages' !
+        $matieres = isset($_POST['subjects']) ? json_decode($_POST['subjects'], true) : [];
+        $langues = isset($_POST['languages']) ? json_decode($_POST['languages'], true) : [];
 
         $document = [
-            'level'     => $data['level'] ?? 'INFO',
-            'message'   => $data['message'],
-            'id_user'   => $data['id_user'],
-            'timestamp' => $dateFrance->format('d-m-Y H:i:s')
+            'level'     => 'INFO',
+            'message'   => $_POST['message'] ?? 'Devenir Prof: Soumission du profil enseignant.',
+            'id_user'   => $_POST['id_user'] ?? null,
+            'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
+
+            // Données spécifiques à la page (Context)
+            'context'   => [
+                'matieres'             => $matieres,
+                'langues'            => $langues,
+                'uploaded_files_names' => $_FILES['certifications']['name'] ?? [],
+                'status'               => 'attente_validation'
+            ]
         ];
 
         try {
-            // Insertion dans MongoDB
-            $result = $logsCollection->insertOne($document);
+            // Insertion spécifique dans la collection des PROFESSEURS
+            $result = $devenirprofCollection->insertOne($document);
             echo json_encode(["status" => "success", "id" => $result->getInsertedId()]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode(["status" => "error", "message" => $e->getMessage()]);
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(["status" => "error", "message" => "Données incomplètes."]);
+
     }
+    // =========================================================================
+    // CAS 2 : C'est le log classique de démarrage (reçu via JSON)
+    // =========================================================================
+    else {
+        // Récupérer le contenu JSON envoyé par Angular
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        if ($data && !empty($data['message'])) {
+            $document = [
+                'level'     => $data['level'] ?? 'INFO',
+                'message'   => $data['message'],
+                'id_user'   => $data['id_user'] ?? null,
+                'timestamp' => $dateFrance->format('d-m-Y H:i:s')
+            ];
+
+            try {
+                // Insertion dans la collection des LOGS D'ACTIVITÉ
+                $result = $activitylogsCollection->insertOne($document);
+                echo json_encode(["status" => "success", "id" => $result->getInsertedId()]);
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(["status" => "error", "message" => $e->getMessage()]);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Données incomplètes. Attendu: JSON avec clé 'message'."
+            ]);
+        }
+    }
+
 } else {
     http_response_code(405);
     echo json_encode(["status" => "error", "message" => "Méthode non autorisée."]);

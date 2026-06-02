@@ -14,7 +14,7 @@ import { LogService } from '../../../general/log/log.service';
 })
 export class EtudiantDevenirProfComponent implements OnInit {
   idUtilisateurTest: number = 8; // Ton ID de test actuel
-
+  idUtilisateurTestLog: string = "8";
   listeMatieres: any[] = [];
   listeLangues: any[] = [];
 
@@ -24,7 +24,11 @@ export class EtudiantDevenirProfComponent implements OnInit {
   // Le tableau qui va stocker les PDF
   fichiersCertif: File[] = [];
 
-  constructor(private etudiantService: EtudiantService, private router: Router) {}
+  constructor(
+    private etudiantService: EtudiantService,
+    private router: Router,
+    private logService: LogService
+  ) {}
 
   ngOnInit(): void {
     // On charge les filtres (matières et langues) depuis la base de données
@@ -72,6 +76,15 @@ export class EtudiantDevenirProfComponent implements OnInit {
       return;
     }
 
+
+    //Envoi du log "devnir prof" dans mongoDB
+    this.logService.LogDevenirProf(
+      this.idUtilisateurTestLog,
+      Array.from(this.matieresSelectionnees),
+      Array.from(this.languesSelectionnees),
+      this.fichiersCertif
+    );
+
     // On utilise FormData pour pouvoir envoyer des fichiers + du texte
     const formData = new FormData();
     formData.append('id_utilisateur', this.idUtilisateurTest.toString());
@@ -84,6 +97,8 @@ export class EtudiantDevenirProfComponent implements OnInit {
     this.fichiersCertif.forEach((fichier) => {
       formData.append('certificats[]', fichier, fichier.name);
     });
+
+
 
     // On envoie le FormData au service
     this.etudiantService.devenirProf(formData).subscribe({

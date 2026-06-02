@@ -7,7 +7,8 @@ try {
 
     // Sélection de la base de données et de la collection (équivalent d'une table)
     $db = $client->coursconnect_nosql;
-    $logsCollection = $db->activity_logs;
+    $activitylogsCollection = $db->activity_logs;
+    $devenirprofCollection = $db->demande_prof;
 
 } catch (Exception $e) {
     die("Erreur de connexion à MongoDB : " . $e->getMessage());

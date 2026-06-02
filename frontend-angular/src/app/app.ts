@@ -16,6 +16,6 @@ export class AppComponent implements OnInit {
   constructor(private logService: LogService) {}
   ngOnInit() {
     // Ce log sera envoyé automatiquement dès que l'application Angular démarrera
-    this.logService.envoyerLog(`L'utilisateur numéro ${this.userId} a démarré le site !`, "INFO",this.userId);
+    this.logService.LogConnexion(`L'utilisateur numéro ${this.userId} a démarré le site !`, "INFO",this.userId);
   }
 }
