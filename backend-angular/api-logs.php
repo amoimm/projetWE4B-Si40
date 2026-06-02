@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['type_log']) && $_POST['type_log'] === 'CANDIDATURE_PROF') {
 
         // Attention : Ton Angular envoie 'subjects' et 'languages' !
-        $matieres = isset($_POST['subjects']) ? json_decode($_POST['subjects'], true) : [];
-        $langues = isset($_POST['languages']) ? json_decode($_POST['languages'], true) : [];
+        $matieres = isset($_POST['matieres']) ? json_decode($_POST['matieres'], true) : [];
+        $langues = isset($_POST['langues']) ? json_decode($_POST['langues'], true) : [];
 
         $document = [
             'level'     => 'INFO',
