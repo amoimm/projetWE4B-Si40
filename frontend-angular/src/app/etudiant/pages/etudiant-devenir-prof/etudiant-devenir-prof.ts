@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
+import { LogService } from '../../../general/log/log.service';
+
 
 @Component({
   selector: 'app-etudiant-devenir-prof',
@@ -96,4 +98,5 @@ export class EtudiantDevenirProfComponent implements OnInit {
       error: (err) => console.error("Erreur d'enregistrement", err)
     });
   }
+
 }

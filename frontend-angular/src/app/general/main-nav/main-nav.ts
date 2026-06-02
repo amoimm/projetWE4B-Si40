@@ -10,6 +10,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./main-nav.css']
 })
 export class MainNavComponent {
-  @Input() userRole: string = 'etudiant';
-  @Input() globalRole: string = 'etudiant';
+  @Input() userRole: string = 'admin';
+  @Input() globalRole: string = 'admin';
 }

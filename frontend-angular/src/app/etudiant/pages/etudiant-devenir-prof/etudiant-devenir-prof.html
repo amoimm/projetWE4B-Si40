@@ -34,7 +34,7 @@
     <article style="margin-top: 30px;">
       <h2>Certifications <span class="badge-title">Preuves en PDF</span></h2>
       <div style="margin-top: 15px;">
-        <input type="file" (change)="onFichiersSelectionnes($event)" accept="application/pdf" multiple class="form-input" style="padding: 10px; border: 1px dashed #3b82f6; width: 100%; border-radius: 8px;">
+        <input type="file" (change)="onFichiersSelectionnes($event)" accept="application/pdf" multiple class="form-input" style="padding: 10px; border: 1px dashed #3b82f6; width: 100%; border-radius: 8px;" required>
 
         <p *ngIf="fichiersCertif.length > 0" style="margin-top: 10px; font-size: 0.9rem; color: #166534; font-weight: bold;">
           ✅ {{ fichiersCertif.length }} fichier(s) prêt(s) à être envoyé(s).

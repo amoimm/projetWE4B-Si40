@@ -10,6 +10,14 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/backend-angular/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/backend-angular/vendor/mongodb/mongodb" />
+      <path value="$PROJECT_DIR$/backend-angular/vendor/symfony/polyfill-php85" />
+      <path value="$PROJECT_DIR$/backend-angular/vendor/composer" />
+    </include_path>
+  </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.0">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
   </component>

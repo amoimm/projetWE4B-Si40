@@ -1,6 +1,7 @@
 <?php
 // api-logs.php
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
@@ -18,12 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($data['message'])) {
         require_once 'bdd/config_mongodb.php';
 
-        // Préparation du document à insérer dans MongoDB
+        $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
+
         $document = [
             'level'     => $data['level'] ?? 'INFO',
             'message'   => $data['message'],
             'id_user'   => $data['id_user'],
-            'timestamp' => new MongoDB\BSON\UTCDateTime(new DateTime()) // Date et heure actuelles
+            'timestamp' => $dateFrance->format('d-m-Y H:i:s')
         ];
 
         try {
