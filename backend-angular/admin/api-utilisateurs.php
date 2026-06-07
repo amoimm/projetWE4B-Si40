@@ -1,8 +1,16 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 header("Access-Control-Allow-Origin: http://localhost:4200");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json; charset=utf-8');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 require_once __DIR__ . '/../bdd/config.php';
 
@@ -41,9 +49,16 @@ try {
 
         // Récupère les utilisateurs
         $list_query = $db->prepare("SELECT * FROM utilisateurs $where_sql ORDER BY id_utilisateurs DESC LIMIT ? OFFSET ?");
-        $params[] = $per_page;
-        $params[] = $offset;
-        $list_query->execute($params);
+        
+        $idx = 1;
+        foreach ($params as $param) {
+            $list_query->bindValue($idx, $param);
+            $idx++;
+        }
+        $list_query->bindValue($idx, (int)$per_page, PDO::PARAM_INT);
+        $list_query->bindValue($idx + 1, (int)$offset, PDO::PARAM_INT);
+        
+        $list_query->execute();
         $utilisateurs = $list_query->fetchAll(PDO::FETCH_ASSOC);
 
         $total_pages = ceil($total / $per_page);
@@ -69,10 +84,50 @@ try {
         $nouveau_rang = isset($data['rang']) ? (int)$data['rang'] : 0;
 
         if ($id_utilisateur > 0) {
+            // Récupérer les infos de l'utilisateur avant modification
+            $user_info = $db->prepare("SELECT nom, prenom, email, rang FROM utilisateurs WHERE id_utilisateurs = ?");
+            $user_info->execute([$id_utilisateur]);
+            $user_data = $user_info->fetch(PDO::FETCH_ASSOC);
+
+            //Meis à jour du rang dans MySQL
             $stmt = $db->prepare("UPDATE utilisateurs SET rang = ? WHERE id_utilisateurs = ?");
             $stmt->execute([$nouveau_rang, $id_utilisateur]);
 
+            //Logger dans MongoDB
+            if ($user_data) {
+                try {
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $admin_id = $_SESSION['user_id'] ?? 'admin';
+                    
+                    $roles_map = [0 => 'Étudiant', 1 => 'Professeur', 2 => 'Admin'];
+                    $ancien_role = $roles_map[(int)$user_data['rang']] ?? 'Inconnu';
+                    $nouveau_role = $roles_map[$nouveau_rang] ?? 'Inconnu';
+
+                    require_once __DIR__ . '/../bdd/config_mongodb.php';
+                    $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
+                    $activitylogsCollection->insertOne([
+                        'level' => 'INFO',
+                        'category' => 'ADMIN',
+                        'action' => 'CHANGE_USER_ROLE',
+                        'message' => "L'administrateur a changé le rôle de l'utilisateur " . $user_data['prenom'] . " " . $user_data['nom'] . " (Email: " . $user_data['email'] . ") de " . $ancien_role . " à " . $nouveau_role,
+                        'id_user' => $admin_id,
+                        'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
+                        'details' => [
+                            'target_user_id' => $id_utilisateur,
+                            'target_user_email' => $user_data['email'],
+                            'ancien_rang' => (int)$user_data['rang'],
+                            'nouveau_rang' => $nouveau_rang
+                        ]
+                    ]);
+                } catch (Throwable $e_mongo) {
+                    // Ignorer les erreurs de log
+                }
+            }
+
             echo json_encode(['success' => true, 'message' => 'Rang mis à jour']);
+            
         } else {
             http_response_code(400);
             echo json_encode(['erreur' => 'ID utilisateur invalide']);
@@ -84,8 +139,45 @@ try {
         $id_utilisateur = isset($data['id_utilisateur']) ? (int)$data['id_utilisateur'] : 0;
 
         if ($id_utilisateur > 0) {
+            // 1. Récupérer les infos de l'utilisateur avant suppression
+            $user_info = $db->prepare("SELECT nom, prenom, email, rang FROM utilisateurs WHERE id_utilisateurs = ?");
+            $user_info->execute([$id_utilisateur]);
+            $user_data = $user_info->fetch(PDO::FETCH_ASSOC);
+
+            // 2. Supprimer l'utilisateur de MySQL
             $stmt = $db->prepare("DELETE FROM utilisateurs WHERE id_utilisateurs = ?");
             $stmt->execute([$id_utilisateur]);
+
+            // 3. Logger dans MongoDB
+            if ($user_data) {
+                try {
+                    if (session_status() === PHP_SESSION_NONE) {
+                        session_start();
+                    }
+                    $admin_id = $_SESSION['user_id'] ?? 'admin';
+                    
+                    $roles_map = [0 => 'Étudiant', 1 => 'Professeur', 2 => 'Admin'];
+                    $role_text = $roles_map[(int)$user_data['rang']] ?? 'Inconnu';
+
+                    require_once __DIR__ . '/../bdd/config_mongodb.php';
+                    $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
+                    $activitylogsCollection->insertOne([
+                        'level' => 'WARNING',
+                        'category' => 'ADMIN',
+                        'action' => 'DELETE_USER',
+                        'message' => "L'administrateur a supprimé l'utilisateur : " . $user_data['prenom'] . " " . $user_data['nom'] . " (Email: " . $user_data['email'] . ", Rôle: " . $role_text . ")",
+                        'id_user' => $admin_id,
+                        'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
+                        'details' => [
+                            'deleted_user_id' => $id_utilisateur,
+                            'deleted_user_email' => $user_data['email'],
+                            'deleted_user_rang' => (int)$user_data['rang']
+                        ]
+                    ]);
+                } catch (Throwable $e_mongo) {
+                    // Ignorer les erreurs de log
+                }
+            }
 
             echo json_encode(['success' => true, 'message' => 'Utilisateur supprimé']);
         } else {

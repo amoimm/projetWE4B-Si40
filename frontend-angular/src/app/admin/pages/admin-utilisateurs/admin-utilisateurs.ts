@@ -78,6 +78,8 @@ export class AdminUtilisateurs implements OnInit {
   // Modifier le rang d'un utilisateur
   modifierRang(idUtilisateur: number) {
     const newRang = this.selectedRangs[idUtilisateur];
+    this.error = null;
+    this.successMessage = null;
 
     this.adminService.modifierRangUtilisateur(idUtilisateur, newRang).subscribe({
       next: () => {
@@ -96,6 +98,9 @@ export class AdminUtilisateurs implements OnInit {
     if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       return;
     }
+
+    this.error = null;
+    this.successMessage = null;
 
     this.adminService.supprimerUtilisateur(idUtilisateur).subscribe({
       next: () => {
