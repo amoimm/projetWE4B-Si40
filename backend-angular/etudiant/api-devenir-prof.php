@@ -29,12 +29,12 @@ if (isset($_FILES['certificats'])) {
 
         if ($tmpFilePath != "" && $fileType === "application/pdf") {
             $fileData = base64_encode(file_get_contents($tmpFilePath));
-
+            $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
             $certificatsMongo[] = [
                 'nom_fichier' => $_FILES['certificats']['name'][$i],
                 'type' => 'application/pdf',
                 'donnees_base64' => $fileData,
-                'date_ajout' => new MongoDB\BSON\UTCDateTime()
+                'date_ajout' => $dateFrance->format('d-m-Y H:i:s')
             ];
         }
     }

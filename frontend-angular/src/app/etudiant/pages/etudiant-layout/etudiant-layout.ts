@@ -11,5 +11,5 @@ import { MainNavComponent } from '../../../general/main-nav/main-nav';
 })
 export class EtudiantLayoutComponent {
   // Plus tard, tu pourras injecter un service ici pour récupérer le vrai rôle de l'utilisateur connecté en BDD !
-  realUserRole: string = 'etudiant';
+  realUserRole: string = 'admin';
 }

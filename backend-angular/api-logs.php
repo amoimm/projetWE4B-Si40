@@ -55,15 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Récupérer le contenu JSON envoyé par Angular
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
-
         if ($data && !empty($data['message'])) {
             $document = [
                 'level'     => $data['level'] ?? 'INFO',
+                'category'  => $data['category'] ?? 'GENERAL',
+                'action'    => $data['action'] ?? 'ACTION',
                 'message'   => $data['message'],
                 'id_user'   => $data['id_user'] ?? null,
-                'timestamp' => $dateFrance->format('d-m-Y H:i:s')
-            ];
+                'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
 
+                // details contient des objets spécifiques (ex: filtres, tarifs...)
+                'details'   => $data['details'] ?? null
+            ];
             try {
                 // Insertion dans la collection des LOGS D'ACTIVITÉ
                 $result = $activitylogsCollection->insertOne($document);

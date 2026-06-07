@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
+import {LogService} from '../../../general/log/log.service';
 
 @Component({
   selector: 'app-etudiant-accueil',
@@ -12,6 +13,8 @@ import { EtudiantService } from '../../services/etudiant.service';
   styleUrls: ['./etudiant-accueil.css']
 })
 export class EtudiantAccueilComponent implements OnInit {
+  userId: string = '8'; // ID temporaire de l'utilisateur connecté
+
   // Variables des filtres
   recherche: string = '';
   prixMax: number | null = null;
@@ -26,7 +29,10 @@ export class EtudiantAccueilComponent implements OnInit {
   langues: any[] = [];
   coursFiltres: any[] = [];
 
-  constructor(private etudiantService: EtudiantService) {}
+  constructor(
+    private etudiantService: EtudiantService,
+    private logService: LogService
+  ) {}
 
   ngOnInit(): void {
     // 1. On charge les langues et matières depuis la BDD
@@ -63,5 +69,20 @@ export class EtudiantAccueilComponent implements OnInit {
         console.error('Erreur SQL via le service :', erreur);
       }
     });
+
+    this.logService.LogEvenement(
+      'STUDENT_SEARCH',
+      'APPLY_FILTERS',
+      `L'élève a filtré les cours`,
+      'INFO',
+      this.userId, // ID de l'utilisateur connecté
+      {
+        recherche: this.recherche,
+        matiere: this.filtreMatiere,
+        langue: this.filtreLangue,
+        prix_max: this.prixMax,
+        mode: this.filtreMode
+      }
+    );
   }
 }

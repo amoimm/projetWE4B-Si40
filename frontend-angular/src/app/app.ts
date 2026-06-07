@@ -12,7 +12,7 @@ import { LogService } from './general/log/log.service';
 
 export class AppComponent implements OnInit {
   title = 'frontend-angular';
-  userId: string = "8";
+  userId: string = "9";
   constructor(private logService: LogService) {}
   ngOnInit() {
     // Ce log sera envoyé automatiquement dès que l'application Angular démarrera

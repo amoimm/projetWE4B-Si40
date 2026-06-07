@@ -22,6 +22,30 @@ try {
             $stmt = $db->prepare("INSERT INTO matiere (nom) VALUES (?)");
             $stmt->execute([$nom_matiere]);
 
+            // Logger l'action dans MongoDB
+            try {
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $admin_id = $_SESSION['user_id'] ?? 'admin';
+
+                require_once __DIR__ . '/../bdd/config_mongodb.php';
+                $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
+                $activitylogsCollection->insertOne([
+                    'level' => 'INFO',
+                    'category' => 'ADMIN',
+                    'action' => 'ADD_MATIERE',
+                    'message' => "L'administrateur a ajouté une matière ",
+                    'id_user' => $admin_id,
+                    'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
+                    'details' => [
+                        'nom_matiere' => $nom_matiere
+                    ]
+                ]);
+            } catch (Exception $e_mongo) {
+                // Ignorer en cas d'erreur de log
+            }
+
             echo json_encode(['success' => true, 'message' => 'Matière ajoutée']);
         } else {
             http_response_code(400);

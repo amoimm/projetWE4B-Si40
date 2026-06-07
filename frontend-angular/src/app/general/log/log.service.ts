@@ -54,4 +54,26 @@ export class LogService {
     });
   }
 
+  LogEvenement(
+    category: string,
+    action: string,
+    message: string,
+    level: string = 'INFO',
+    id_user: string,
+    details: any = {}
+  ) {
+    const payload = {
+      level: level,
+      category: category,
+      action: action,
+      message: message,
+      id_user: id_user,
+      details: details
+    };
+    this.http.post(this.apiUrl, payload).subscribe({
+      next: (response) => console.log(`Log ${category}/${action} enregistré !`, response),
+      error: (error) => console.error('Erreur lors de l\'envoi du log', error)
+    });
+  }
+
 }
