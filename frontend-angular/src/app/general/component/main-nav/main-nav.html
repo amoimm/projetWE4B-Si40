@@ -1,0 +1,53 @@
+<nav class="sidebar-nav">
+  <h2 *ngIf="userRole === 'etudiant'">Espace Étudiant</h2>
+  <h2 *ngIf="userRole === 'enseignant'">Espace Enseignant</h2>
+  <h2 *ngIf="userRole === 'admin'">Espace Administrateur</h2>
+
+  <ul>
+    <li class="section-title">Menu</li>
+
+    <ng-container *ngIf="userRole === 'etudiant'">
+      <li><a routerLink="/etudiant/accueil" routerLinkActive="active">Accueil</a></li>
+      <li><a routerLink="/etudiant/chat" routerLinkActive="active">Chat</a></li>
+      <ng-container *ngIf="globalRole ==='etudiant'">
+        <li><a routerLink="/etudiant/devenir-prof" routerLinkActive="active">Devenir Prof</a></li>
+      </ng-container>
+    </ng-container>
+
+
+    <ng-container *ngIf="userRole === 'enseignant'">
+      <li><a routerLink="/enseignant/accueil" routerLinkActive="active">Tableau de bord</a></li>
+      <li><a routerLink="/enseignant/mes-cours" routerLinkActive="active">Mes Cours</a></li>
+      <li><a routerLink="/enseignant/nouveau-cours" routerLinkActive="active">Nouvelle leçon</a></li>
+      <li><a routerLink="/enseignant/conversations" routerLinkActive="active">Conversations</a></li>
+    </ng-container>
+
+    <ng-container *ngIf="userRole === 'admin'">
+      <li><a routerLink="/admin/accueil" routerLinkActive="active">Console Générale</a></li>
+      <li><a routerLink="/admin/utilisateurs" routerLinkActive="active">Gestion Comptes</a></li>
+    </ng-container>
+
+    <ng-container *ngIf="globalRole === 'admin' || globalRole === 'enseignant'">
+      <li class="section-title">Changer de vue</li>
+      <li *ngIf="globalRole === 'admin' && userRole !== 'admin'">
+        <a routerLink="/admin/accueil">Vue Administrateur</a>
+      </li>
+
+      <li *ngIf="userRole !== 'enseignant'">
+        <a routerLink="/enseignant/accueil">Vue Prof</a>
+      </li>
+      <li *ngIf="userRole !== 'etudiant'">
+        <a routerLink="/etudiant/accueil">Vue Étudiant</a>
+      </li>
+
+    </ng-container>
+
+    <li class="section-title">Profil</li>
+
+    <li>
+      <a [routerLink]="'/' + userRole + '/profil'" routerLinkActive="active">Profil</a>
+    </li>
+
+    <li><a (click)="deconnexion()" class="logout-link">Déconnexion</a></li>
+  </ul>
+</nav>

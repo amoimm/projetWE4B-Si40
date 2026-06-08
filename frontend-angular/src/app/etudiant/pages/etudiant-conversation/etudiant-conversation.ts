@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy,ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
 import { interval, Subscription } from 'rxjs';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-etudiant-conversation',
@@ -12,11 +13,12 @@ import { interval, Subscription } from 'rxjs';
   templateUrl: './etudiant-conversation.html',
   styleUrls: ['./etudiant-conversation.css']
 })
-export class EtudiantConversationComponent implements OnInit {
+export class EtudiantConversationComponent implements OnInit, OnDestroy {
   @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
 
   idCours: number = 18;
-  idEtudiantTest: number = 8;
+  monProfil: any = null;
+
   infoCours: any = null;
   messages: any[] = [];
   nouveauMessage: string = '';
@@ -35,9 +37,15 @@ export class EtudiantConversationComponent implements OnInit {
     langue_cours: ''
   };
 
-  constructor(private route: ActivatedRoute, private etudiantService: EtudiantService) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private etudiantService: EtudiantService
+  ) {}
 
   ngOnInit(): void {
+    this.monProfil = this.authService.getUtilisateurConnecte();
+
     this.route.params.subscribe(params => {
       this.idCours = +params['id'];
 
@@ -62,8 +70,11 @@ export class EtudiantConversationComponent implements OnInit {
       } catch(err) { }
     }, 50);
   }
+
   chargerDiscussion(): void {
-    this.etudiantService.getConversation(this.idCours, this.idEtudiantTest).subscribe({
+    if (!this.monProfil) return;
+
+    this.etudiantService.getConversation(this.idCours, this.monProfil.id).subscribe({
       next: (data) => {
         const ancienNombreMessages = this.messages.length;
         this.infoCours = data.info_cours;
@@ -71,7 +82,7 @@ export class EtudiantConversationComponent implements OnInit {
         this.rdvs = data.rdvs || [];
         this.languesProf = data.langues_prof || [];
 
-        if (this.languesProf.length > 0) {
+        if (this.languesProf.length > 0 && !this.formRdv.langue_cours) {
           this.formRdv.langue_cours = this.languesProf[0].nom;
         }
         if (this.messages.length > ancienNombreMessages) {
@@ -88,13 +99,15 @@ export class EtudiantConversationComponent implements OnInit {
     const idConv = this.infoCours?.id_conv || null;
 
     this.messages.push({
-      id_redacteur: this.idEtudiantTest,
+      id_redacteur: this.monProfil.id,
       contenu: contenuMsg,
       heure: new Date().toISOString()
     });
     this.nouveauMessage = '';
     this.scrollToBottom();
-    this.etudiantService.envoyerMessage(this.idCours, idConv, this.idEtudiantTest, contenuMsg).subscribe({
+
+    // Envoi à la BDD
+    this.etudiantService.envoyerMessage(this.idCours, idConv, this.monProfil.id, contenuMsg).subscribe({
       next: (response) => {
         if (!this.infoCours) this.infoCours = {};
         if (!this.infoCours.id_conv && response.id_conv) this.infoCours.id_conv = response.id_conv;
@@ -102,20 +115,19 @@ export class EtudiantConversationComponent implements OnInit {
     });
   }
 
-  // --- NOUVEAU : Fonctions de la Modale ---
+  // --- Fonctions de la Modale ---
   ouvrirModale() { this.modaleOuverte = true; }
   fermerModale() { this.modaleOuverte = false; }
 
   soumettreRdv() {
     const payload = {
       id_cours: this.idCours,
-      id_eleve: this.idEtudiantTest,
+      id_eleve: this.monProfil.id,
       ...this.formRdv
     };
 
     this.etudiantService.demanderRdv(payload).subscribe({
       next: () => {
-        // Ajout visuel immédiat pour l'utilisateur
         this.rdvs.push({
           date_heure: `${this.formRdv.date_cours} ${this.formRdv.heure_cours}:00`,
           lieu: this.formRdv.lieu,
@@ -128,12 +140,15 @@ export class EtudiantConversationComponent implements OnInit {
       error: (err) => alert('Erreur lors de la demande')
     });
   }
+
   annulerRdv(idRdv: number): void {
     if (!confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
       return;
     }
+
     this.rdvs = this.rdvs.filter(rdv => rdv.id_rdv !== idRdv);
-    this.etudiantService.annulerRdv(idRdv, this.idEtudiantTest).subscribe({
+
+    this.etudiantService.annulerRdv(idRdv, this.monProfil.id).subscribe({
       next: () => {
         console.log('RDV annulé en base de données.');
         this.chargerDiscussion();

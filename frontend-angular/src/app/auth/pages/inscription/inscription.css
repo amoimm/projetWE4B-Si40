@@ -1,0 +1,319 @@
+/* --- Variables de couleurs (identiques à la connexion) --- */
+:host {
+  --cream: #f5f0e8;
+  --border: #ddd5c4;
+  --label: #c8a96e;
+  --prof: #7a6bbf;
+  --student: #5c8fc7;
+  display: block;
+}
+
+/* --- Conteneur global --- */
+.main-container {
+  min-height: 100vh;
+  background-color: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  flex-direction: column;
+  /* Dégradé subtil en arrière-plan */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(200, 169, 110, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(200, 169, 110, 0.08) 0%, transparent 50%);
+  padding: 40px 20px; /* Plus de padding vertical car le formulaire est long */
+  position: relative;
+}
+
+/* --- La Carte d'Inscription --- */
+.main {
+  width: 100%;
+  max-width: 480px; /* Un peu plus large que la connexion pour respirer */
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 48px 44px 40px;
+  box-shadow:
+    0 4px 6px rgba(26,23,20,0.04),
+    0 15px 40px rgba(26,23,20,0.08);
+  z-index: 10;
+}
+
+.main h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2em;
+  font-weight: 600;
+  color: black;
+  line-height: 1.15;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+/* --- Sélecteur de Rôles (Étudiant / Prof) --- */
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.role-btn {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #faf8f5;
+  user-select: none;
+}
+
+/* Animation au survol */
+.role-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.role-btn .role-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.role-btn:hover .role-icon {
+  transform: scale(1.1); /* L'icône grossit légèrement */
+}
+
+.role-btn .role-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #7a6f63;
+  transition: color 0.3s;
+}
+
+.role-btn .role-desc {
+  font-size: 11px;
+  color: #b8ad9e;
+  margin-top: 4px;
+}
+
+/* État actif Étudiant */
+.role-btn.active-student {
+  border-color: var(--student);
+  background: rgb(241, 244, 255);
+  box-shadow: 0 0 0 4px rgba(92,143,199,0.15);
+}
+.role-btn.active-student .role-name { color: var(--student); }
+
+/* État actif Professeur */
+.role-btn.active-prof {
+  border-color: var(--prof);
+  background: rgb(236, 230, 255);
+  box-shadow: 0 0 0 4px rgba(122,107,191,0.15);
+}
+.role-btn.active-prof .role-name { color: var(--prof); }
+
+/* --- Séparateur Titre de Section --- */
+.titre-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--label);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.5px;
+}
+
+/* --- Les Champs du Formulaire --- */
+.ligne {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #7a6f63;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: black;
+  background: var(--cream);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input::placeholder { color: #b8ad9e; }
+
+input:focus {
+  border-color: var(--label);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(200,169,110,0.15);
+}
+
+/* --- Messages d'erreur et succès --- */
+.erreur-msg {
+  font-size: 13px;
+  color: #d9534f;
+  background: #f2dede;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #ebccd1;
+  font-weight: 500;
+}
+
+.succes-msg {
+  font-size: 13px;
+  color: #2b7a2b;
+  background: #e6f4e6;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  border: 1px solid #c3e6c3;
+  font-weight: 600;
+}
+
+/* --- Boutons et Ligne de séparation --- */
+.barre {
+  height: 1px;
+  background: var(--border);
+  margin: 28px 0;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 16px;
+  background-color: #111;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--label);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200,169,110,0.3);
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* --- Bas de la carte --- */
+.text-foot {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: #7a6f63;
+}
+
+.text-foot a {
+  color: var(--label);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.text-foot a:hover {
+  text-decoration: underline;
+}
+
+/* --- Grille des petits tags --- */
+.matieres-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Espace entre les bulles */
+  margin-bottom: 20px;
+}
+
+/* --- Style d'une bulle non sélectionnée --- */
+.matiere-tag {
+  display: inline-block;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 20px; /* Rend le bouton bien rond */
+  border: 1.5px solid var(--border);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7a6f63;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--cream);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Animation au survol */
+.matiere-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+/* --- Style d'une bulle SÉLECTIONNÉE --- */
+.matiere-tag.selected {
+  border-color: var(--prof); /* Contour violet */
+  background: rgba(122, 107, 191, 0.1); /* Fond légèrement violet */
+  color: var(--prof); /* Texte violet */
+  box-shadow: 0 0 0 2px rgba(122, 107, 191, 0.2);
+}
+
+textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: black;
+  background: var(--cream);
+  outline: none;
+  transition: all 0.3s ease;
+  resize: vertical;
+  min-height: 80px;
+}
+
+textarea:focus {
+  border-color: var(--label);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(200, 169, 110, 0.15);
+}
+
+input[type="file"] {
+  background: #faf8f5;
+  cursor: pointer;
+  color: #7a6f63;
+  font-size: 13px;
+}
+
+input[type="file"]:hover {
+  border-color: var(--prof);
+  background: #fff;
+}

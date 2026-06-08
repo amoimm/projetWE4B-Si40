@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import {LogService} from '../../../general/log/log.service';
 
 @Component({
@@ -13,9 +14,8 @@ import {LogService} from '../../../general/log/log.service';
   styleUrls: ['./etudiant-accueil.css']
 })
 export class EtudiantAccueilComponent implements OnInit {
-  userId: string = '8'; // ID temporaire de l'utilisateur connecté
+  monProfil: any = null;
 
-  // Variables des filtres
   recherche: string = '';
   prixMax: number | null = null;
   filtreMatiere: string = '';
@@ -24,18 +24,18 @@ export class EtudiantAccueilComponent implements OnInit {
   filtreSuivi: string = '';
   filtreAvis: string = '';
 
-  // Tableaux dynamiques qui vont se remplir avec ta BDD
   matieres: any[] = [];
   langues: any[] = [];
   coursFiltres: any[] = [];
 
   constructor(
     private etudiantService: EtudiantService,
-    private logService: LogService
+    private logService: LogService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // 1. On charge les langues et matières depuis la BDD
+    this.monProfil = this.authService.getUtilisateurConnecte();
     this.etudiantService.getFiltresDisponibles().subscribe({
       next: (data) => {
         this.matieres = data.matieres;
@@ -44,12 +44,10 @@ export class EtudiantAccueilComponent implements OnInit {
       error: (err) => console.error('Erreur chargement des filtres:', err)
     });
 
-    // 2. On affiche les cours par défaut
     this.appliquerFiltrage();
   }
 
   appliquerFiltrage(): void {
-    // On regroupe tous les choix de l'étudiant dans un seul objet
     const tousLesFiltres = {
       recherche: this.recherche,
       prixMax: this.prixMax,
@@ -60,13 +58,12 @@ export class EtudiantAccueilComponent implements OnInit {
       filtreAvis: this.filtreAvis
     };
 
-    // On envoie le tout au service
     this.etudiantService.rechercherCours(tousLesFiltres).subscribe({
       next: (donnees) => {
         this.coursFiltres = donnees || [];
       },
       error: (erreur) => {
-        console.error('Erreur SQL via le service :', erreur);
+        console.error('Erreur SQL via le services :', erreur);
       }
     });
 
@@ -75,7 +72,7 @@ export class EtudiantAccueilComponent implements OnInit {
       'APPLY_FILTERS',
       `L'élève a filtré les cours`,
       'INFO',
-      this.userId, // ID de l'utilisateur connecté
+      this.monProfil.id,
       {
         recherche: this.recherche,
         matiere: this.filtreMatiere,

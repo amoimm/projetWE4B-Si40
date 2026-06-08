@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
 import { interval, Subscription } from 'rxjs';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-etudiant-chat',
@@ -13,12 +14,17 @@ import { interval, Subscription } from 'rxjs';
 })
 export class EtudiantChatComponent implements OnInit {
   conversations: any[] = [];
-  idEtudiantTest = 8;
 
   private actualisationAuto!: Subscription;
-  constructor(private etudiantService: EtudiantService) {}
+  monProfil: any = null;
+  constructor(
+    private etudiantService: EtudiantService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
+    this.monProfil = this.authService.getUtilisateurConnecte();
+
     // 1. On charge la liste immédiatement au premier affichage de la page
     this.chargerConversations();
 
@@ -36,8 +42,8 @@ export class EtudiantChatComponent implements OnInit {
   }
 
   chargerConversations(): void {
-    // Fait appel à la route de ton service qui contacte api-conversations.php
-    this.etudiantService.getConversations(this.idEtudiantTest).subscribe({
+    // Fait appel à la route de ton services qui contacte api-conversations.php
+    this.etudiantService.getConversations(this.monProfil.id).subscribe({
       next: (data) => {
         this.conversations = data;
       },

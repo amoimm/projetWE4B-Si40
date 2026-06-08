@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
 import { LogService } from '../../../general/log/log.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { LogService } from '../../../general/log/log.service';
   styleUrls: ['./etudiant-devenir-prof.css']
 })
 export class EtudiantDevenirProfComponent implements OnInit {
-  idUtilisateurTest: number = 8; // Ton ID de test actuel
+  monProfil: any = null;
   idUtilisateurTestLog: string = "8";
   listeMatieres: any[] = [];
   listeLangues: any[] = [];
@@ -27,11 +28,12 @@ export class EtudiantDevenirProfComponent implements OnInit {
   constructor(
     private etudiantService: EtudiantService,
     private router: Router,
-    private logService: LogService
+    private logService: LogService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // On charge les filtres (matières et langues) depuis la base de données
+    this.monProfil = this.authService.getUtilisateurConnecte();
     this.etudiantService.getFiltresDisponibles().subscribe({
       next: (data) => {
         this.listeMatieres = data.matieres;
@@ -87,7 +89,7 @@ export class EtudiantDevenirProfComponent implements OnInit {
 
     // On utilise FormData pour pouvoir envoyer des fichiers + du texte
     const formData = new FormData();
-    formData.append('id_utilisateur', this.idUtilisateurTest.toString());
+    formData.append('id_utilisateur', this.monProfil.id.toString());
 
     // On transforme nos tableaux en chaînes JSON pour les faire passer dans le FormData
     formData.append('matieres', JSON.stringify(Array.from(this.matieresSelectionnees)));
@@ -100,7 +102,7 @@ export class EtudiantDevenirProfComponent implements OnInit {
 
 
 
-    // On envoie le FormData au service
+    // On envoie le FormData au services
     this.etudiantService.devenirProf(formData).subscribe({
       next: (reponse) => {
         if (reponse.succes) {

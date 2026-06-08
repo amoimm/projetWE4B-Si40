@@ -29,7 +29,7 @@ export class ConversationsComponent implements OnInit {
   envoyer() {
     if (this.nouveauMessage.trim() && this.convActiveId) {
       this.service.envoyerMessage({
-        id_destinataire: this.convActiveId, 
+        id_destinataire: this.convActiveId,
         message: this.nouveauMessage
       }).subscribe(() => {
         this.nouveauMessage = '';

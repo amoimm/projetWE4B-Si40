@@ -1,0 +1,38 @@
+<div class="main-container">
+  <div class="main">
+    <h1>Bienvenue !</h1>
+
+    <form (ngSubmit)="seConnecter()">
+      <div class="field">
+        <label class="email" for="email">Adresse mail</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="mon.email@example.com" required />
+      </div>
+
+      <div class="field">
+        <label class="psw" for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" [(ngModel)]="motDePasse" placeholder="••••••••" required />
+        <a routerLink="/oublie" class="forgot">Mot de passe oublié ?</a>
+      </div>
+
+      <div *ngIf="messageErreur" class="erreur-msg">
+        {{ messageErreur }}
+      </div>
+
+      <div class="barre"></div>
+
+      <button type="submit">
+        Se connecter
+      </button>
+    </form>
+
+    <p class="text-foot">Pas encore de compte ? <a routerLink="/auth/inscription">S'inscrire</a></p>
+  </div>
+
+  <footer>
+    <span>© 2026 CoursConnect — Site de réservation de cours</span>
+    <span class="sep">·</span>
+    <span>Mentions légales & CGU</span>
+    <span class="sep">·</span>
+    <span>Protection des données</span>
+  </footer>
+</div>

@@ -13,7 +13,7 @@
 
     <div class="messages-area" #scrollMe>
       <p *ngIf="messages.length === 0" class="no-messages">Aucun message pour le moment.</p>
-      <div *ngFor="let msg of messages" [ngClass]="{'message-eleve': msg.id_redacteur === idEtudiantTest, 'message-prof': msg.id_redacteur !== idEtudiantTest}">
+      <div *ngFor="let msg of messages" [ngClass]="{'message-eleve': msg.id_redacteur === monProfil?.id, 'message-prof': msg.id_redacteur !== monProfil?.id}">
         <div class="bubble">
           <p class="content">{{ msg.contenu }}</p>
           <span class="time">{{ msg.heure | date:'HH:mm' }}</span>

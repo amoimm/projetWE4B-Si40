@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
 })
 export class MesCoursComponent implements OnInit {
   coursList: any[] = [];
-  
+
   recherche: string = '';
   filtreMatiere: string = '';
   filtreLangue: string = '';
@@ -28,7 +28,7 @@ export class MesCoursComponent implements OnInit {
 
   supprimerCours(id: number) {
     if (confirm('Voulez-vous vraiment supprimer ce cours ?')) {
-      // Appel au service pour supprimer
+      // Appel au services pour supprimer
     }
   }
 }
