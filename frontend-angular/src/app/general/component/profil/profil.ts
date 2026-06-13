@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 // 🌟 On importe le services général
 import { ProfilServices } from '../../services/profil.services';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-profil',
@@ -18,12 +19,24 @@ export class ProfilComponent implements OnInit {
   nouveauMdp: string = '';
   confirmeMdp: string = '';
 
-  idUtilisateurConnecte: number = 7;
-  roleUtilisateurConnecte: string = 'etudiant';
+  idUtilisateurConnecte: number = 0;
+  roleUtilisateurConnecte: string = '' ;
 
-  constructor(private profilService: ProfilServices) { }
+  constructor(
+    private profilService: ProfilServices,
+    private authService: AuthService
+
+  ) { }
 
   ngOnInit(): void {
+    const user = this.authService.getUtilisateurConnecte();
+    if (user){
+      this.idUtilisateurConnecte = user.id;
+      this.roleUtilisateurConnecte = user.role;
+    }else{
+      console.warn("Aucun utilisateur n'est connecté");
+    }
+
     this.profilService.getProfil(this.idUtilisateurConnecte, this.roleUtilisateurConnecte).subscribe({
       next: (data) => {
         this.donneesUtilisateur = data;

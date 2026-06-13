@@ -1,0 +1,48 @@
+<div class="main-container">
+  <div class="main">
+    <h1>Reinitialisation</h1>
+
+    <form (ngSubmit)="envoyerDemande()">
+      <div class="field">
+        <label for="email">Adresse mail</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="mon.email@example.com" required [disabled]="enCours" />
+      </div>
+
+      <div class="field">
+        <label for="nouveauMdp">Nouveau mot de passe</label>
+        <input type="password" id="nouveauMdp" name="nouveauMdp" [(ngModel)]="nouveauMdp" placeholder="••••••••" required [disabled]="enCours" />
+      </div>
+
+      <div class="field">
+        <label for="confirmeMdp">Confirmer le mot de passe</label>
+        <input type="password" id="confirmeMdp" name="confirmeMdp" [(ngModel)]="confirmeMdp" placeholder="••••••••" required [disabled]="enCours" />
+      </div>
+
+      <!-- Messages de retour -->
+      <div *ngIf="messageErreur" class="erreur-msg">
+        {{ messageErreur }}
+      </div>
+      <div *ngIf="messageSucces" class="succes-msg">
+        {{ messageSucces }}
+      </div>
+
+      <div class="barre"></div>
+
+      <button type="submit" [disabled]="enCours">
+        {{ enCours ? 'Mise à jour...' : 'Réinitialiser le mot de passe' }}
+      </button>
+    </form>
+
+    <p class="text-foot">
+      <a routerLink="/auth/connexion">Retour à la connexion</a>
+    </p>
+  </div>
+
+  <footer>
+    <span>© 2026 CoursConnect — Site de réservation de cours</span>
+    <span class="sep">·</span>
+    <span>Mentions légales & CGU</span>
+    <span class="sep">·</span>
+    <span>Protection des données</span>
+  </footer>
+</div>

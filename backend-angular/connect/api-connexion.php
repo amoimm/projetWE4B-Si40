@@ -25,7 +25,7 @@ $user = $requete->fetch(PDO::FETCH_ASSOC);
 if($user && password_verify($password, $user['mdp'])){
     // Déduction du rôle
     if ($user['rang'] == 2) { $role = 'admin'; }
-    elseif ($user['rang'] == 1) { $role = 'enseigant'; }
+    elseif ($user['rang'] == 1) { $role = 'enseignant'; }
     else { $role = 'etudiant'; }
 
     echo json_encode([

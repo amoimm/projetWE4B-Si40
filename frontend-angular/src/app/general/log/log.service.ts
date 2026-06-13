@@ -12,7 +12,7 @@ export class LogService {
   LogConnexion(
     message: string,
     level: string = 'INFO',
-    id_user : string
+    id_user : number
   ) {
     const payload = { level: level, message: message, id_user: id_user};
 

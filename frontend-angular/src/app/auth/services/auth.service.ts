@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 export class AuthService {
   // L'URL vers ton fichier PHP créé juste avant
   private apiConnexionUrl = 'http://localhost/projetWE4B-Si40/backend-angular/connect/api-connexion.php';
-  private apiInscriptionUrl = 'http://localhost/TON_VRAI_CHEMIN/backend-angular/connect/api-inscription.php';
+  private apiInscriptionUrl = 'http://localhost/projetWE4B-Si40/backend-angular/connect/api-inscription.php';
+  private apiReinitialiserMdpUrl = 'http://localhost/projetWE4B-Si40/backend-angular/connect/api-reinitialiser-mdp.php';
 
 
   constructor(private http: HttpClient) { }
@@ -19,6 +20,10 @@ export class AuthService {
 
   inscription(donneesUtilisateur: any): Observable<any> {
     return this.http.post<any>(this.apiInscriptionUrl, donneesUtilisateur);
+  }
+
+  reinitialiserMdp(email: string, nouveauMdp: string): Observable<any> {
+    return this.http.post<any>(this.apiReinitialiserMdpUrl, { email, nouveauMdp });
   }
 
   sauvegarderSession(utilisateur: any): void {

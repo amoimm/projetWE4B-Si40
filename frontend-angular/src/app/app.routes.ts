@@ -25,6 +25,7 @@ import { AccueilComponent } from './general/pages/accueil/accueil';
 
 import {ConnexionComponent} from './auth/pages/connexion/connexion'
 import {InscriptionComponent} from './auth/pages/inscription/inscription';
+import { MotDePasseOublieComponent } from './auth/pages/mot-de-passe-oublie/mot-de-passe-oublie';
 export const routes: Routes = [
   { path: 'accueil', component: AccueilComponent },
 
@@ -75,7 +76,8 @@ export const routes: Routes = [
     path: 'auth',
     children: [
       { path: 'connexion', component: ConnexionComponent },
-      { path: 'inscription', component: InscriptionComponent}
+      { path: 'inscription', component: InscriptionComponent},
+      { path: 'mot-de-passe-oublie', component: MotDePasseOublieComponent }
     ]
   },
 

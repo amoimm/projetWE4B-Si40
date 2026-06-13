@@ -11,7 +11,7 @@
       <div class="field">
         <label class="psw" for="password">Mot de passe</label>
         <input type="password" id="password" name="password" [(ngModel)]="motDePasse" placeholder="••••••••" required />
-        <a routerLink="/oublie" class="forgot">Mot de passe oublié ?</a>
+        <a routerLink="/auth/mot-de-passe-oublie" class="forgot">Mot de passe oublié ?</a>
       </div>
 
       <div *ngIf="messageErreur" class="erreur-msg">
