@@ -28,6 +28,14 @@ if($user && password_verify($password, $user['mdp'])){
     elseif ($user['rang'] == 1) { $role = 'enseignant'; }
     else { $role = 'etudiant'; }
 
+    // Démarrage de la session et initialisation des variables de session
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    $_SESSION['user_id'] = (int)$user['id_utilisateurs'];
+    $_SESSION['user_nom'] = $user['prenom'] . " " . $user['nom'];
+    $_SESSION['user_role'] = $role;
+
     echo json_encode([
         "succes" => true,
         "utilisateur" => [

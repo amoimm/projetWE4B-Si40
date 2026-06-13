@@ -12,6 +12,7 @@ import { EnseignantLayout } from './enseignant/pages/enseignant-layout/enseignan
 import { EnseignantAccueilComponent } from './enseignant/pages/enseignant-accueil/enseignant-accueil.component';
 import { MesCoursComponent } from './enseignant/pages/mes-cours/mes-cours.component';
 import { NouveauCoursComponent } from './enseignant/pages/nouveau-cours/nouveau-cours.component';
+import { ModifCoursComponent } from './enseignant/pages/modif-cours/modif-cours.component';
 import { ConversationsComponent } from './enseignant/pages/conversations/conversations.component';
 
 import { AdminLayout } from './admin/pages/admin-layout/admin-layout';
@@ -52,6 +53,7 @@ export const routes: Routes = [
     { path: 'accueil', component: EnseignantAccueilComponent },
     { path: 'mes-cours', component: MesCoursComponent },
     { path: 'nouveau-cours', component: NouveauCoursComponent },
+    { path: 'modif-cours/:id', component: ModifCoursComponent },
     { path: 'conversations', component: ConversationsComponent },
     { path: 'profil', component: ProfilComponent },
     { path: '', redirectTo: 'accueil', pathMatch: 'full' }

@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 })
 export class AuthService {
   // L'URL vers ton fichier PHP créé juste avant
-  private apiConnexionUrl = 'http://localhost/projetWE4B-Si40/backend-angular/connect/api-connexion.php';
-  private apiInscriptionUrl = 'http://localhost/projetWE4B-Si40/backend-angular/connect/api-inscription.php';
-  private apiReinitialiserMdpUrl = 'http://localhost/projetWE4B-Si40/backend-angular/connect/api-reinitialiser-mdp.php';
+  private apiConnexionUrl = 'http://localhost/projetWE4B-SI40/backend-angular/connect/api-connexion.php';
+  private apiInscriptionUrl = 'http://localhost/projetWE4B-SI40/backend-angular/connect/api-inscription.php';
+  private apiReinitialiserMdpUrl = 'http://localhost/projetWE4B-SI40/backend-angular/connect/api-reinitialiser-mdp.php';
 
 
   constructor(private http: HttpClient) { }

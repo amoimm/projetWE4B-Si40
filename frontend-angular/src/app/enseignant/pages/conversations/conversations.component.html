@@ -3,16 +3,16 @@
         <ol class="conversations-grid">
             <li class="card-conv" *ngFor="let conv of conversations" (click)="selectionnerConv(conv.id)">
                 <article>
-                    <h2>{{ conv.nom_etudiant }}</h2>
+                    <h2>{{ conv.prenom }} {{ conv.nom }}</h2>
                     <p>{{ conv.dernier_message }}</p>
-                    <small>{{ conv.date_envoi }}</small>
+                    <small>{{ conv.date_message | date:'dd/MM HH:mm' }}</small>
                 </article>
             </li>
         </ol>
 
         <div class="messagerie-box" *ngIf="convActiveId">
             <div class="messages-list">
-                <div *ngFor="let msg of messages" [class]="msg.expediteur === 'enseignant' ? 'msg-enseignant' : 'msg-etudiant'">
+                <div *ngFor="let msg of messages" [class]="msg.id_redacteur == monId ? 'msg-enseignant' : 'msg-etudiant'">
                     {{ msg.contenu }}
                 </div>
             </div>

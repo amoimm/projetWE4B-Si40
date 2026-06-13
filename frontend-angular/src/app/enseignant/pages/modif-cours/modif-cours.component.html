@@ -1,6 +1,6 @@
 <main>
     <div class="form-container">
-        <h1>Envie d'enseigner une nouvelle leçon ?</h1>
+        <h1>Modifier le cours</h1>
 
         <div class="error-messages" *ngIf="erreurs.length > 0">
             <ul>
@@ -13,7 +13,7 @@
             <div class="form-group">
                 <label for="matiere">Matière enseignée</label>
                 <select [(ngModel)]="cours.matiere" name="matiere" id="matiere" required>
-                    <option value="" disabled selected>-- Sélectionnez une matière --</option>
+                    <option value="" disabled>-- Sélectionnez une matière --</option>
                     <option *ngFor="let m of matieres" [value]="m.id_matiere">{{ m.nom }}</option>
                 </select>
             </div>
@@ -64,7 +64,7 @@
             </div>
 
             <div class="actions">
-                <button type="submit" class="btn-submit">Créer le cours</button>
+                <button type="submit" class="btn-submit">Enregistrer les modifications</button>
                 <a routerLink="/enseignant/mes-cours" class="btn-cancel">Annuler</a>
             </div>
         </form>

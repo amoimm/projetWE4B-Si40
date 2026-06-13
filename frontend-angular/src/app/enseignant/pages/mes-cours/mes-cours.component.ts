@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { EnseignantService } from '../../services/enseignant.service';
 
 @Component({
   selector: 'app-mes-cours',
@@ -12,23 +13,74 @@ import { RouterModule } from '@angular/router';
 })
 export class MesCoursComponent implements OnInit {
   coursList: any[] = [];
+  matieres: any[] = [];
+  languesList: any[] = [];
 
   recherche: string = '';
   filtreMatiere: string = '';
   filtreLangue: string = '';
   filtreAvis: string = '';
 
+  constructor(private enseignantService: EnseignantService) {}
+
   ngOnInit() {
+    this.chargerFiltres();
     this.chargerCours();
   }
 
+  chargerFiltres() {
+    // Récupérer les matières pour le dropdown
+    this.enseignantService.getMatieres().subscribe({
+      next: (data) => this.matieres = data,
+      error: (err) => console.error('Erreur chargement matières :', err)
+    });
+
+    // Récupérer les langues pour le dropdown
+    this.enseignantService.getLangues().subscribe({
+      next: (data) => this.languesList = data,
+      error: (err) => console.error('Erreur chargement langues :', err)
+    });
+  }
+
   chargerCours() {
-    // Ici, tu feras ton appel API (ex: this.coursService.getMesCours().subscribe(...))
+    const params: any = {};
+    if (this.recherche.trim()) {
+      params.recherche = this.recherche.trim();
+    }
+    if (this.filtreMatiere) {
+      params.matiere = this.filtreMatiere;
+    }
+    if (this.filtreLangue) {
+      params.langue = this.filtreLangue;
+    }
+    if (this.filtreAvis) {
+      params.avis = this.filtreAvis;
+    }
+
+    this.enseignantService.getCours(params).subscribe({
+      next: (data) => {
+        this.coursList = data;
+      },
+      error: (err) => console.error('Erreur chargement cours :', err)
+    });
   }
 
   supprimerCours(id: number) {
     if (confirm('Voulez-vous vraiment supprimer ce cours ?')) {
-      // Appel au services pour supprimer
+      this.enseignantService.supprimerCours(id).subscribe({
+        next: (res) => {
+          if (res.success) {
+            alert(res.message);
+            this.chargerCours();
+          } else {
+            alert('Erreur : ' + res.message);
+          }
+        },
+        error: (err) => {
+          console.error('Erreur suppression cours :', err);
+          alert('Erreur lors de la suppression.');
+        }
+      });
     }
   }
 }
