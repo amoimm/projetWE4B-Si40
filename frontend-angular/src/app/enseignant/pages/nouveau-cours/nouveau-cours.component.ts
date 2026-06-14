@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
 import { LogService } from '../../../general/log/log.service';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-nouveau-cours',
@@ -13,9 +14,10 @@ import { LogService } from '../../../general/log/log.service';
   styleUrls: ['./nouveau-cours.component.css']
 })
 export class NouveauCoursComponent implements OnInit {
+  monProfil: any = null;
   matieres: any[] = [];
   languesList: any[] = [];
-  
+
   cours: any = {
     matiere: '',
     prix_heure: '',
@@ -31,18 +33,21 @@ export class NouveauCoursComponent implements OnInit {
   constructor(
     private service: EnseignantService,
     private logService: LogService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    this.monProfil = this.authService.getUtilisateurConnecte();
+
     // Charger les matières
-    this.service.getMatieres().subscribe({
+    this.service.getMatieres(this.monProfil.id).subscribe({
       next: (data) => this.matieres = data,
       error: (err) => console.error('Erreur chargement matières :', err)
     });
 
     // Charger les langues
-    this.service.getLangues().subscribe({
+    this.service.getLangues(this.monProfil.id).subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
     });
@@ -59,7 +64,7 @@ export class NouveauCoursComponent implements OnInit {
 
   onSubmit() {
     this.erreurs = [];
-    
+
     if (!this.cours.matiere) {
       this.erreurs.push("La matière est obligatoire.");
     }
@@ -91,7 +96,7 @@ export class NouveauCoursComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           alert('Cours créé avec succès !');
-          
+
           // Log de l'événement en NoSQL
           const loggedUser = JSON.parse(localStorage.getItem('utilisateurConnecte') || '{}');
           this.logService.LogEvenement(

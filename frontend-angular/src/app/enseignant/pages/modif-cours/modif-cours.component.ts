@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
 import { LogService } from '../../../general/log/log.service';
+import {AuthService} from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-modif-cours',
@@ -13,10 +14,11 @@ import { LogService } from '../../../general/log/log.service';
   styleUrls: ['./modif-cours.component.css']
 })
 export class ModifCoursComponent implements OnInit {
+  monProfil: any = null;
   idCours!: number;
   matieres: any[] = [];
   languesList: any[] = [];
-  
+
   cours: any = {
     matiere: '',
     prix_heure: '',
@@ -33,10 +35,12 @@ export class ModifCoursComponent implements OnInit {
     private service: EnseignantService,
     private logService: LogService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    this.monProfil = this.authService.getUtilisateurConnecte();
     // Récupérer l'ID dans l'URL
     this.idCours = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -47,13 +51,13 @@ export class ModifCoursComponent implements OnInit {
     }
 
     // Charger les matières
-    this.service.getMatieres().subscribe({
+    this.service.getMatieres(this.monProfil.id).subscribe({
       next: (data) => this.matieres = data,
       error: (err) => console.error('Erreur chargement matières :', err)
     });
 
     // Charger les langues
-    this.service.getLangues().subscribe({
+    this.service.getLangues(this.monProfil.id).subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
     });
@@ -90,7 +94,7 @@ export class ModifCoursComponent implements OnInit {
 
   onSubmit() {
     this.erreurs = [];
-    
+
     if (!this.cours.matiere) {
       this.erreurs.push("La matière est obligatoire.");
     }
@@ -123,7 +127,7 @@ export class ModifCoursComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           alert('Cours modifié avec succès !');
-          
+
           // Log de l'événement en NoSQL
           const loggedUser = JSON.parse(localStorage.getItem('utilisateurConnecte') || '{}');
           this.logService.LogEvenement(
