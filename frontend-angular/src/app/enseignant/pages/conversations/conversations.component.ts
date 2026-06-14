@@ -2,17 +2,29 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EnseignantService } from '../../services/enseignant.service';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-conversations',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './conversations.component.html'
+  imports: [CommonModule, FormsModule, RouterModule],
+  templateUrl: './conversations.component.html',
+  styleUrls: ['./conversations.component.css']
 })
 export class ConversationsComponent implements OnInit {
-  monId: number = 1;
-  conversations: any[] = [];
+  monProfil: any = null;
+  activeTab: 'active' | 'new' = 'active';
+  
+  // Données pour l'onglet "Actives"
+  conversationsList: any[] = [];
+  conversationsGrouped: any = {};
+  
+  // Données pour l'onglet "Cours"
+  mesCours: any[] = [];
+  selectedCours: any = null;
+  elevesDuCours: any[] = [];
+
   messages: any[] = [];
   nouveauMessage: string = '';
   convActiveId: number | null = null;
@@ -22,28 +34,63 @@ export class ConversationsComponent implements OnInit {
     private authService: AuthService
   ) {}
 
-  ngOnInit() {
-    const user = this.authService.getUtilisateurConnecte();
-    if (user && user.id) {
-      this.monId = Number(user.id);
-    }
-    this.service.getConversations(this.monId).subscribe(data => this.conversations = data);
+  ngOnInit(): void {
+    this.monProfil = this.authService.getUtilisateurConnecte();
+    this.chargerDonnees();
+  }
+
+  chargerDonnees() {
+    if (!this.monProfil) return;
+    const userId = this.monProfil.id;
+
+    // Chargement des conversations actives
+    this.service.getConversations(userId).subscribe({
+      next: (data) => {
+        this.conversationsList = data;
+        this.grouperConversations();
+      },
+      error: (err) => console.error('Erreur chargement convs :', err)
+    });
+
+    // Chargement des cours pour le 2ème onglet
+    this.service.getCours(userId).subscribe({
+      next: (data) => this.mesCours = data,
+      error: (err) => console.error('Erreur chargement cours :', err)
+    });
+    
+  }
+
+  grouperConversations() {
+    if (!this.monProfil) return;
+    const userId = this.monProfil.id;
+
+    this.conversationsGrouped = this.conversationsList.reduce((acc, conv) => {
+      (acc[conv.cours] = acc[conv.cours] || []).push(conv);
+      return acc;
+    }, {});
+  }
+
+  selectCours(cours: any) {
+    if (!this.monProfil) return;
+    const userId = this.monProfil.id;
+
+    this.selectedCours = cours;
+    this.elevesDuCours = [];
+    
+    this.service.getElevesParCours(userId, cours.id_cours).subscribe({
+        next: (data) => this.elevesDuCours = data,
+        error: (err) => console.error(err)
+    });
   }
 
   selectionnerConv(id: number) {
-    this.convActiveId = id;
-    this.service.getMessages(this.monId, id).subscribe(data => this.messages = data);
-  }
+    if (!this.monProfil) return;
+    const userId = this.monProfil.id;
 
-  envoyer() {
-    if (this.nouveauMessage.trim() && this.convActiveId) {
-      this.service.envoyerMessage(this.monId, {
-        id_conv: this.convActiveId,
-        message: this.nouveauMessage
-      }).subscribe(() => {
-        this.nouveauMessage = '';
-        this.selectionnerConv(this.convActiveId!);
-      });
-    }
+    this.convActiveId = id;
+    this.service.getMessages(userId, id).subscribe({
+      next: (data) => this.messages = data,
+      error: (err) => console.error('Erreur chargement messages :', err)
+    });
   }
 }

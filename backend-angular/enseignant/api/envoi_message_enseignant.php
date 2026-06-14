@@ -27,9 +27,17 @@ if ($id_utilisateur <= 0) {
 $data = json_decode(file_get_contents("php://input"), true);
 
 $id_conv = (int) ($data['id_conv'] ?? 0);
+$id_cours = (int) ($data['id_cours'] ?? 0);
+$id_eleve = (int) ($data['id_eleve'] ?? 0);
 $contenu = trim($data['message'] ?? '');
 
-if ($id_conv && $contenu !== '') {
+if ($id_conv === 0 && $id_eleve > 0 && $id_cours > 0) {
+    $stmt = $db->prepare("INSERT INTO conversation (id_eleve, id_cours) VALUES (?, ?)");
+    $stmt->execute([$id_eleve, $id_cours]);
+    $id_conv = (int)$db->lastInsertId();
+}
+
+if ($id_conv > 0 && $contenu !== '') {
     try {
         $stmt = $db->prepare("
             INSERT INTO message (id_conv, id_redacteur, contenu, lu) 
@@ -39,7 +47,7 @@ if ($id_conv && $contenu !== '') {
         echo json_encode(['success' => true]);
     } catch (Exception $e) {
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        echo json_encode(['success' => true, 'id_conv' => $id_conv]);
     }
 } else {
     http_response_code(400);

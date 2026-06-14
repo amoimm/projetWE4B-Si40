@@ -63,7 +63,15 @@ export class EnseignantService {
   }
 
   getConversations(userId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/Conversations.php`, { headers: this.getHeaders(userId) });
+    return this.http.get<any[]>(`${this.baseUrl}/Conversations.php`, { 
+      headers: this.getHeaders(userId) 
+    });
+  }
+
+  getElevesParCours(userId: number, idCours: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/get_eleves_cours.php?id_cours=${idCours}`, { 
+      headers: this.getHeaders(userId) 
+    });
   }
 
   getMessages(userId: number, conversationId: number): Observable<any[]> {
@@ -79,4 +87,15 @@ export class EnseignantService {
       headers: this.getHeaders(userId)
     });
   }
+
+  getRdv(idCours: number, idEleve: number, userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/get_rdv.php?id_cours=${idCours}&id_eleve=${idEleve}`, {
+      headers: this.getHeaders(userId)
+    });
+  }
+
+  gererRdv(idRdv: number, action: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/gestion_rdv.php`, { id_rdv: idRdv, action: action });
+  }
+
 }

@@ -22,32 +22,34 @@ if ($id_enseignant <= 0) {
 
 try {
     $stmt = $db->prepare("
-        SELECT 
-            c.id_conv AS id,
-            c.id_conv AS id_conv,
-            u.prenom, 
-            u.nom, 
-            co.description AS cours,
-            (SELECT contenu FROM message WHERE id_conv = c.id_conv ORDER BY heure DESC LIMIT 1) AS dernier_message,
-            (SELECT heure FROM message WHERE id_conv = c.id_conv ORDER BY heure DESC LIMIT 1) AS date_message,
-            (SELECT COUNT(*) FROM message WHERE id_conv = c.id_conv AND lu = 0 AND id_redacteur != :id_ens) AS nb_non_lus
+        SELECT c.id_conv, c.id_eleve, c.id_cours,
+               u.prenom, u.nom,
+               co.description AS cours,
+               (SELECT contenu FROM message WHERE id_conv = c.id_conv ORDER BY heure DESC LIMIT 1) AS dernier_message,
+               (SELECT heure FROM message WHERE id_conv = c.id_conv ORDER BY heure DESC LIMIT 1) AS date_message,
+               (SELECT COUNT(*) FROM message WHERE id_conv = c.id_conv AND lu = 0 AND id_redacteur != :id_ens) AS nb_non_lus
         FROM conversation c
         JOIN utilisateurs u ON u.id_utilisateurs = c.id_eleve
         JOIN cours co ON co.id_cours = c.id_cours
         JOIN enseignant_matiere em ON em.id_em = co.id_em
         WHERE em.id_utilisateur = :id_ens2
-        ORDER BY date_message DESC
+        AND NOT EXISTS (
+            SELECT 1 FROM rdv r
+            WHERE r.id_cours = c.id_cours
+            AND r.id_eleve = c.id_eleve
+            AND r.est_valide = 1
+        )
+        ORDER BY co.description, date_message DESC
     ");
-    $stmt->execute([
-        'id_ens' => $id_enseignant,
-        'id_ens2' => $id_enseignant
-    ]);
-
+    $stmt->execute([':id_ens' => $id_enseignant, ':id_ens2' => $id_enseignant]);
+    
     $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Typage des données
     foreach ($conversations as &$conv) {
-        $conv['id'] = (int)$conv['id'];
         $conv['id_conv'] = (int)$conv['id_conv'];
+        $conv['id_eleve'] = (int)$conv['id_eleve'];
+        $conv['id_cours'] = (int)$conv['id_cours'];
         $conv['nb_non_lus'] = (int)$conv['nb_non_lus'];
     }
 

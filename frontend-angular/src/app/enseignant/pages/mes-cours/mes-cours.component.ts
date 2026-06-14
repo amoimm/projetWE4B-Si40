@@ -30,7 +30,6 @@ export class MesCoursComponent implements OnInit {
 
   ngOnInit(): void {
     this.monProfil = this.authService.getUtilisateurConnecte();
-    console.log("Profil chargé dans mes-cours :", this.monProfil);
 
     this.chargerFiltres();
     this.chargerCours();

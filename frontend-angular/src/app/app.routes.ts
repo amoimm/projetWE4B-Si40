@@ -14,6 +14,7 @@ import { MesCoursComponent } from './enseignant/pages/mes-cours/mes-cours.compon
 import { NouveauCoursComponent } from './enseignant/pages/nouveau-cours/nouveau-cours.component';
 import { ModifCoursComponent } from './enseignant/pages/modif-cours/modif-cours.component';
 import { ConversationsComponent } from './enseignant/pages/conversations/conversations.component';
+import { MessagerieComponent } from './enseignant/pages/messagerie/messagerie.component';
 
 import { AdminLayout } from './admin/pages/admin-layout/admin-layout';
 import { AdminAccueil } from './admin/pages/admin-accueil/admin-accueil';
@@ -52,9 +53,10 @@ export const routes: Routes = [
     children: [
     { path: 'accueil', component: EnseignantAccueilComponent },
     { path: 'mes-cours', component: MesCoursComponent },
-    { path: 'nouveau-cours', component: NouveauCoursComponent },
     { path: 'modif-cours/:id', component: ModifCoursComponent },
+    { path: 'nouveau-cours', component: NouveauCoursComponent },
     { path: 'conversations', component: ConversationsComponent },
+    { path: 'messagerie', component: MessagerieComponent },
     { path: 'profil', component: ProfilComponent },
     { path: '', redirectTo: 'accueil', pathMatch: 'full' }
   ]

@@ -7,6 +7,7 @@ import { MesCoursComponent } from './pages/mes-cours/mes-cours.component';
 import { NouveauCoursComponent } from './pages/nouveau-cours/nouveau-cours.component';
 import { ModifCoursComponent } from './pages/modif-cours/modif-cours.component';
 import { ConversationsComponent } from './pages/conversations/conversations.component';
+import { MessagerieComponent } from './pages/messagerie/messagerie.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { ConversationsComponent } from './pages/conversations/conversations.comp
     NouveauCoursComponent,
     ModifCoursComponent,
     ConversationsComponent,
+    MessagerieComponent
   ]
 })
 export class EnseignantModule { }
