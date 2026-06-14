@@ -25,6 +25,8 @@
     <ng-container *ngIf="userRole === 'admin'">
       <li><a routerLink="/admin/accueil" routerLinkActive="active">Console Générale</a></li>
       <li><a routerLink="/admin/utilisateurs" routerLinkActive="active">Gestion Comptes</a></li>
+      <li><a routerLink="/admin/cours" routerLinkActive="active">Gestion cours</a></li>
+      <li><a routerLink="/admin/config" routerLinkActive="active">Gestion langues et matières</a></li>
     </ng-container>
 
     <ng-container *ngIf="globalRole === 'admin' || globalRole === 'enseignant'">
