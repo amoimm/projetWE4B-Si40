@@ -39,21 +39,21 @@ export class AdminAccueil implements OnInit {
     this.loading = true;
     this.error = null;
 
-    // Requête 1 : Récupérer les stats (contient aussi les stats MongoDB pour les diagrammes)
+    // Récupérer les stats (contient aussi les stats MongoDB pour les diagrammes)
     this.adminService.getStats().subscribe({
       next: (data) => {
         this.stats = data;
         console.log('Stats MySQL et MongoDB chargées :', data);
-        
-        // Requête 2 : Récupérer les utilisateurs récents
+
+        // Récupérer les utilisateurs récents
         this.adminService.getUtilisateursRecents().subscribe({
           next: (users) => {
             this.utilisateursRecents = users;
             this.loading = false;
-            
+
             // Forcer Angular à rafraîchir le DOM pour que les <canvas> soient créés
             this.cdr.detectChanges();
-            
+
             // Exécuter uniquement dans le navigateur
             if (isPlatformBrowser(this.platformId)) {
               setTimeout(() => {
