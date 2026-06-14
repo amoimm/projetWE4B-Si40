@@ -27,17 +27,17 @@ export class ConversationsComponent implements OnInit {
     if (user && user.id) {
       this.monId = Number(user.id);
     }
-    this.service.getConversations().subscribe(data => this.conversations = data);
+    this.service.getConversations(this.monId).subscribe(data => this.conversations = data);
   }
 
   selectionnerConv(id: number) {
     this.convActiveId = id;
-    this.service.getMessages(id).subscribe(data => this.messages = data);
+    this.service.getMessages(this.monId, id).subscribe(data => this.messages = data);
   }
 
   envoyer() {
     if (this.nouveauMessage.trim() && this.convActiveId) {
-      this.service.envoyerMessage({
+      this.service.envoyerMessage(this.monId, {
         id_conv: this.convActiveId,
         message: this.nouveauMessage
       }).subscribe(() => {

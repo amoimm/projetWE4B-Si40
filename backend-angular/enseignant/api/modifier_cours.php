@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,20 +9,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-if (!isset($_SESSION['user_id'])) {
+$id_session = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($id_session === 0) {
+    $headers = getallheaders();
+    $id_session = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
+
+if ($id_session <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé"]);
+    echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant dans les entêtes."]);
     exit;
 }
 
-verifierEnseignantOuAdmin();
-
-$id_session = $_SESSION['user_id'];
-$is_admin = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
+$is_admin = false;
 
 $data = json_decode(file_get_contents("php://input"), true);
 
@@ -72,7 +74,6 @@ if (!empty($erreurs)) {
 }
 
 try {
-    // 1. Récupérer le cours et s'assurer que l'utilisateur a les droits
     $sql = "SELECT c.id_em, em.id_utilisateur FROM cours c JOIN enseignant_matiere em ON c.id_em = em.id_em WHERE c.id_cours = ?";
     $stmt = $db->prepare($sql);
     $stmt->execute([$id_cours]);
@@ -95,17 +96,14 @@ try {
 
     $db->beginTransaction();
 
-    // 2. Mettre à jour la matière
     $sql = "UPDATE enseignant_matiere SET id_matiere = ? WHERE id_em = ?";
     $stmt = $db->prepare($sql);
     $stmt->execute([$matiere, $em]);
 
-    // 3. Mettre à jour le cours
     $sql = "UPDATE cours SET prix_heure = ?, mode_cours = ?, camera_obligatoire = ?, suivi = ?, description = ? WHERE id_cours = ?";
     $stmt = $db->prepare($sql);
     $stmt->execute([$prix_heure, $mode_cours, $camera_obligatoire, $suivi, $description, $id_cours]);
 
-    // 4. Mettre à jour les langues (Suppression + Insertion)
     $stmtDel = $db->prepare("DELETE FROM enseignant_langue WHERE id_em = ?");
     $stmtDel->execute([$em]);
 

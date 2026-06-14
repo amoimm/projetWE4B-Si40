@@ -1,7 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+// IMPORTANT : On ajoute 'X-User-Id' dans la liste des headers autorisés par le CORS
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,21 +10,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-if (!isset($_SESSION['user_id'])) {
+// Récupération de tous les headers HTTP envoyés par Angular
+$headers = getallheaders();
+
+// Extraction de notre header personnalisé 'X-User-Id'
+$id_session = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : 0;
+
+// Si le header n'existe pas ou est vide, on bloque l'accès immédiatement
+if ($id_session <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé"]);
+    echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant dans les entêtes."]);
     exit;
 }
 
 verifierEnseignantOuAdmin();
 
 $id_cours = (int) ($_GET['id'] ?? 0);
-$id_session = $_SESSION['user_id'];
-$is_admin = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
+$is_admin = false; // À adapter si tu passes aussi un rôle dans les headers (ex: X-User-Role)
 
 if ($id_cours <= 0) {
     http_response_code(400);
@@ -53,13 +58,12 @@ try {
     $stmt->execute([$id_cours]);
     $cours = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$cours || (!$is_admin && (int)$cours['id_utilisateur'] !== (int)$id_session)) {
+    if (!$cours || (!$is_admin && (int)$cours['id_utilisateur'] !== $id_session)) {
         http_response_code(404);
         echo json_encode(["error" => "Cours non trouvé ou accès refusé."]);
         exit;
     }
 
-    // Convertir les langues_ids de chaîne séparée par des virgules en tableau d'entiers
     $langues_ids = [];
     if (!empty($cours['langues_ids'])) {
         $langues_ids = array_map('intval', explode(',', $cours['langues_ids']));

@@ -1,7 +1,8 @@
 <?php
+// 1. Autorisation CORS complète, incluant X-User-Id
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,31 +10,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-$idUser = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0);
+$idUser = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($idUser === 0) {
+    $headers = getallheaders();
+    $idUser = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
 
 if ($idUser <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé. Session expirée ou ID utilisateur manquant."]);
+    echo json_encode(["error" => "Non autorisé. ID utilisateur manquant dans les entêtes."]);
     exit;
 }
 
-// Récupérer le nom de l'utilisateur si la session est vide
-$userNom = $_SESSION['user_nom'] ?? 'Enseignant';
-if ($userNom === 'Enseignant') {
-    $stmtUser = $db->prepare("SELECT prenom, nom FROM utilisateurs WHERE id_utilisateurs = ?");
-    $stmtUser->execute([$idUser]);
-    $u = $stmtUser->fetch(PDO::FETCH_ASSOC);
-    if ($u) {
-        $userNom = $u['prenom'] . ' ' . $u['nom'];
-    }
+$userNom = 'Enseignant';
+$stmtUser = $db->prepare("SELECT prenom, nom FROM utilisateurs WHERE id_utilisateurs = ?");
+$stmtUser->execute([$idUser]);
+$u = $stmtUser->fetch(PDO::FETCH_ASSOC);
+if ($u) {
+    $userNom = $u['prenom'] . ' ' . $u['nom'];
 }
 
 try {
-    // 1. Stats : nombre de cours actifs et d'élèves uniques
     $req = $db->prepare("
         SELECT 
             COUNT(DISTINCT c.id_cours) AS nb_cours, 
@@ -46,7 +46,6 @@ try {
     $req->execute([$idUser]);
     $stats = $req->fetch(PDO::FETCH_ASSOC);
 
-    // 2. Stats messages non lus
     $req1 = $db->prepare("
         SELECT COUNT(*) AS nb_nouveau_messages 
         FROM message m 
@@ -58,7 +57,6 @@ try {
     $req1->execute([$idUser, $idUser]);
     $messages = $req1->fetch(PDO::FETCH_ASSOC);
 
-    // 3. Prochains RDVs validés
     $req3 = $db->prepare("
         SELECT 
             r.date_heure, 
@@ -79,7 +77,6 @@ try {
     $req3->execute([$idUser]);
     $rdvs = $req3->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. Messages récents non lus (liste)
     $req2 = $db->prepare("
         SELECT 
             m.id_conv, 
@@ -100,7 +97,6 @@ try {
     $req2->execute([$idUser, $idUser]);
     $messages_new = $req2->fetchAll(PDO::FETCH_ASSOC);
 
-    // 5. Demandes de rendez-vous en attente
     $req4 = $db->prepare("
         SELECT COUNT(*) AS nb_rdv_en_attente
         FROM rdv r

@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,18 +9,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-$data = json_decode(file_get_contents("php://input"), true);
-$idUser = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (isset($data['user_id']) ? (int)$data['user_id'] : 0);
+$idUser = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($idUser === 0) {
+    $headers = getallheaders();
+    $idUser = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
 
 if ($idUser <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé. Session expirée ou ID utilisateur manquant."]);
+    echo json_encode(["success" => false, "message" => "Non autorisé. ID utilisateur manquant."]);
     exit;
 }
+
+$data = json_decode(file_get_contents("php://input"), true);
 $idCours = isset($data['id_cours']) ? (int)$data['id_cours'] : 0;
 
 if ($idCours <= 0) {
@@ -30,9 +34,8 @@ if ($idCours <= 0) {
 }
 
 try {
-    // Vérifier si le cours appartient bien à l'enseignant connecté (ou s'il est admin)
-    $is_admin = (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin');
-    
+    $is_admin = false;
+
     $stmt = $db->prepare("
         SELECT c.id_em 
         FROM cours c
@@ -48,7 +51,6 @@ try {
         exit;
     }
 
-    // Récupérer l'ID enseignant lié à ce cours
     $stmtOwner = $db->prepare("SELECT id_utilisateur FROM enseignant_matiere WHERE id_em = ?");
     $stmtOwner->execute([$result['id_em']]);
     $owner = $stmtOwner->fetch(PDO::FETCH_ASSOC);
@@ -61,18 +63,36 @@ try {
 
     $id_em = (int)$result['id_em'];
 
-    // Démarrer une transaction
     $db->beginTransaction();
 
-    // 1. Supprimer le cours
+    $stmtDelMsg = $db->prepare("DELETE FROM message WHERE id_conv IN (SELECT id_conv FROM conversation WHERE id_cours = :id)");
+    $stmtDelMsg->execute(['id' => $idCours]);
+
+    $stmtDelConv = $db->prepare("DELETE FROM conversation WHERE id_cours = :id");
+    $stmtDelConv->execute(['id' => $idCours]);
+
+    $stmtDelRdv = $db->prepare("DELETE FROM rdv WHERE id_cours = :id");
+    $stmtDelRdv->execute(['id' => $idCours]);
+
+    $stmtGetAvis = $db->prepare("SELECT id_avis FROM avis_cours WHERE id_cours = :id");
+    $stmtGetAvis->execute(['id' => $idCours]);
+    $avisIds = $stmtGetAvis->fetchAll(PDO::FETCH_COLUMN);
+
+    $stmtDelAvisCours = $db->prepare("DELETE FROM avis_cours WHERE id_cours = :id");
+    $stmtDelAvisCours->execute(['id' => $idCours]);
+
+    if (!empty($avisIds)) {
+        $inQuery = implode(',', array_fill(0, count($avisIds), '?'));
+        $stmtDelAvis = $db->prepare("DELETE FROM avis WHERE id_avis IN ($inQuery)");
+        $stmtDelAvis->execute($avisIds);
+    }
+
     $stmtDelCours = $db->prepare("DELETE FROM cours WHERE id_cours = :id");
     $stmtDelCours->execute(['id' => $idCours]);
 
-    // 2. Supprimer les langues associées
     $stmtDelLang = $db->prepare("DELETE FROM enseignant_langue WHERE id_em = :id_em");
     $stmtDelLang->execute(['id_em' => $id_em]);
 
-    // 3. Supprimer la liaison matière
     $stmtDelEM = $db->prepare("DELETE FROM enseignant_matiere WHERE id_em = :id_em");
     $stmtDelEM->execute(['id_em' => $id_em]);
 
@@ -84,7 +104,7 @@ try {
     if ($db->inTransaction()) {
         $db->rollBack();
     }
-    http_response_code(500);
-    echo json_encode(["success" => false, "message" => "Erreur suppression : " . $e->getMessage()]);
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Erreur de suppression SQL : " . $e->getMessage()]);
 }
 ?>

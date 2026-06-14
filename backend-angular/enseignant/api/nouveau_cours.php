@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,18 +9,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-$data = json_decode(file_get_contents("php://input"), true);
-$id_enseignant = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (isset($data['user_id']) ? (int)$data['user_id'] : 0);
+$id_enseignant = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($id_enseignant === 0) {
+    $headers = getallheaders();
+    $id_enseignant = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
 
 if ($id_enseignant <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé. Session expirée ou ID utilisateur manquant."]);
+    echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant dans les entêtes."]);
     exit;
 }
+
+$data = json_decode(file_get_contents("php://input"), true);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $matiere = (int) ($data['matiere'] ?? 0);
@@ -64,18 +68,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $db->beginTransaction();
 
-        // 1. Liaison enseignant - matière
         $sql = "INSERT INTO enseignant_matiere (id_utilisateur, id_matiere) VALUES (?, ?)";
         $stmt = $db->prepare($sql);
         $stmt->execute([$id_enseignant, $matiere]);
         $em = $db->lastInsertId();
 
-        // 2. Création du cours
         $sql = "INSERT INTO cours (id_em, prix_heure, mode_cours, camera_obligatoire, suivi, description) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
         $stmt->execute([$em, $prix_heure, $mode_cours, $camera_obligatoire, $suivi, $description]);
 
-        // 3. Liaison langues
         $sql = "INSERT INTO enseignant_langue (id_el, id_em) VALUES (?, ?)";
         $stmt = $db->prepare($sql);
         foreach ($langues_selectionnees as $id_langue) {

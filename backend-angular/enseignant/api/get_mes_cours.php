@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -10,13 +10,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-$idUser = $_SESSION['user_id'] ?? ($_GET['user_id'] ?? null);
+$idUser = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($idUser === 0) {
+    $headers = getallheaders();
+    $idUser = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
 
 if ($idUser <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé. Session expirée ou ID utilisateur manquant."]);
+    echo json_encode(["error" => "Non autorisé. ID utilisateur manquant dans les entêtes."]);
     exit;
 }
 
@@ -83,7 +87,6 @@ try {
     $stmt->execute($params);
     $cours = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Cast types for JSON consistency
     foreach ($cours as &$c) {
         $c['id_cours'] = (int)$c['id_cours'];
         $c['prix_heure'] = (float)$c['prix_heure'];

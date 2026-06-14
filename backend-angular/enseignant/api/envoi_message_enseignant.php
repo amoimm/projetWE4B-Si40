@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,19 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-if (!isset($_SESSION['user_id'])) {
+$id_utilisateur = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($id_utilisateur === 0) {
+    $headers = getallheaders();
+    $id_utilisateur = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
+
+if ($id_utilisateur <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé"]);
+    echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant dans les entêtes."]);
     exit;
 }
 
-verifierEnseignantOuAdmin();
-
-$id_utilisateur = (int) $_SESSION['user_id'];
 $data = json_decode(file_get_contents("php://input"), true);
 
 $id_conv = (int) ($data['id_conv'] ?? 0);

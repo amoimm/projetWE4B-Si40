@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MainNavComponent } from '../../../general/component/main-nav/main-nav';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-enseignant-layout',
@@ -10,5 +11,9 @@ import { MainNavComponent } from '../../../general/component/main-nav/main-nav';
   styleUrl: './enseignant-layout.css',
 })
 export class EnseignantLayout {
-  realUserRole: string = 'admin';
+  monProfil: any = null;
+  constructor(private authService: AuthService) {}
+  ngOnInit(): void {
+    this.monProfil = this.authService.getUtilisateurConnecte();
+  }
 }

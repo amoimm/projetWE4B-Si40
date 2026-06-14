@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import { LogService } from '../../../general/log/log.service';
 
 @Component({
@@ -13,9 +14,10 @@ import { LogService } from '../../../general/log/log.service';
   styleUrls: ['./nouveau-cours.component.css']
 })
 export class NouveauCoursComponent implements OnInit {
+  userId!: number;
   matieres: any[] = [];
   languesList: any[] = [];
-  
+
   cours: any = {
     matiere: '',
     prix_heure: '',
@@ -30,19 +32,25 @@ export class NouveauCoursComponent implements OnInit {
 
   constructor(
     private service: EnseignantService,
+    private authService: AuthService,
     private logService: LogService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    // Charger les matières
-    this.service.getMatieres().subscribe({
+    const user = this.authService.getUtilisateurConnecte();
+    if (!user || !user.id) {
+      this.router.navigate(['/connexion']);
+      return;
+    }
+    this.userId = user.id;
+
+    this.service.getMatieres(this.userId).subscribe({
       next: (data) => this.matieres = data,
       error: (err) => console.error('Erreur chargement matières :', err)
     });
 
-    // Charger les langues
-    this.service.getLangues().subscribe({
+    this.service.getLangues(this.userId).subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
     });
@@ -59,7 +67,7 @@ export class NouveauCoursComponent implements OnInit {
 
   onSubmit() {
     this.erreurs = [];
-    
+
     if (!this.cours.matiere) {
       this.erreurs.push("La matière est obligatoire.");
     }
@@ -87,19 +95,17 @@ export class NouveauCoursComponent implements OnInit {
       description: this.cours.description
     };
 
-    this.service.creerCours(payload).subscribe({
+    this.service.creerCours(this.userId, payload).subscribe({
       next: (res) => {
         if (res.success) {
           alert('Cours créé avec succès !');
-          
-          // Log de l'événement en NoSQL
-          const loggedUser = JSON.parse(localStorage.getItem('utilisateurConnecte') || '{}');
+
           this.logService.LogEvenement(
             'TEACHER_COURSE',
             'CREATE_COURSE',
             `Nouveau cours créé pour la matière ID: ${this.cours.matiere}`,
             'INFO',
-            loggedUser.id ? String(loggedUser.id) : 'unknown',
+            String(this.userId),
             {
               matiere: this.cours.matiere,
               suivi: this.cours.suivi,

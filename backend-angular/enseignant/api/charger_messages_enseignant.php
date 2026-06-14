@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,20 +9,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-if (!isset($_SESSION['user_id'])) {
+
+
+$id_utilisateur = isset($_SERVER['HTTP_X_USER_ID']) ? (int)$_SERVER['HTTP_X_USER_ID'] : 0;
+
+if ($id_utilisateur === 0) {
+    $headers = getallheaders();
+    $id_utilisateur = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : (isset($headers['x-user-id']) ? (int)$headers['x-user-id'] : 0);
+}
+
+if ($id_utilisateur <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé"]);
+    echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant."]);
     exit;
 }
 
-verifierEnseignantOuAdmin();
-
 $id_conv = (int) ($_GET['id'] ?? $_GET['id_conv'] ?? 0);
-$id_utilisateur = (int) $_SESSION['user_id'];
 
 if ($id_conv <= 0) {
     http_response_code(400);
@@ -31,7 +35,6 @@ if ($id_conv <= 0) {
 }
 
 try {
-    // Mettre à jour les messages de l'autre rédacteur comme lus
     $stmtUpdate = $db->prepare("
         UPDATE message 
         SET lu = 1 
@@ -39,7 +42,6 @@ try {
     ");
     $stmtUpdate->execute([$id_conv, $id_utilisateur]);
 
-    // Charger tous les messages
     $stmt = $db->prepare("
         SELECT 
             m.id_message,
@@ -56,7 +58,6 @@ try {
     $stmt->execute([$id_conv]);
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Cast types
     foreach ($messages as &$msg) {
         $msg['id_message'] = (int)$msg['id_message'];
         $msg['id_redacteur'] = (int)$msg['id_redacteur'];

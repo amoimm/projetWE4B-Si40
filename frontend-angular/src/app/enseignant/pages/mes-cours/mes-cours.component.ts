@@ -31,22 +31,21 @@ export class MesCoursComponent implements OnInit {
   ngOnInit(): void {
     this.monProfil = this.authService.getUtilisateurConnecte();
     console.log("Profil chargé dans mes-cours :", this.monProfil);
-    
+
     this.chargerFiltres();
     this.chargerCours();
   }
 
   chargerFiltres() {
     if (!this.monProfil) return;
-  
+
     const userId = this.monProfil.id;
-    
+
     this.enseignantService.getMatieres(userId).subscribe({
       next: (data) => this.matieres = data,
       error: (err) => console.error('Erreur chargement matières :', err)
     });
 
-    // Récupérer les langues pour le dropdown
     this.enseignantService.getLangues(userId).subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
@@ -80,8 +79,11 @@ export class MesCoursComponent implements OnInit {
   }
 
   supprimerCours(id: number) {
+    if (!this.monProfil) return;
+    const userId = this.monProfil.id;
+
     if (confirm('Voulez-vous vraiment supprimer ce cours ?')) {
-      this.enseignantService.supprimerCours(id).subscribe({
+      this.enseignantService.supprimerCours(userId, id).subscribe({
         next: (res) => {
           if (res.success) {
             alert(res.message);

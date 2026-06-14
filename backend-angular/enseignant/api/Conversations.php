@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-User-Id");
 header("Content-Type: application/json; charset=UTF-8");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -9,20 +9,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
-require_once('../../connect/Verif_connection.php');
 
-$id_enseignant = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : (isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0);
+$headers = getallheaders();
+$id_enseignant = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : 0;
 
 if ($id_enseignant <= 0) {
     http_response_code(401);
-    echo json_encode(["error" => "Non autorisé. Session expirée ou ID utilisateur manquant."]);
+    echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant."]);
     exit;
 }
 
 try {
-    // Sélectionner les conversations de l'enseignant
     $stmt = $db->prepare("
         SELECT 
             c.id_conv AS id,
@@ -44,10 +42,9 @@ try {
         'id_ens' => $id_enseignant,
         'id_ens2' => $id_enseignant
     ]);
-    
+
     $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Cast values
+
     foreach ($conversations as &$conv) {
         $conv['id'] = (int)$conv['id'];
         $conv['id_conv'] = (int)$conv['id_conv'];

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
+import { AuthService } from '../../../auth/services/auth.service';
 import { LogService } from '../../../general/log/log.service';
 
 @Component({
@@ -14,9 +15,10 @@ import { LogService } from '../../../general/log/log.service';
 })
 export class ModifCoursComponent implements OnInit {
   idCours!: number;
+  userId!: number;
   matieres: any[] = [];
   languesList: any[] = [];
-  
+
   cours: any = {
     matiere: '',
     prix_heure: '',
@@ -31,13 +33,20 @@ export class ModifCoursComponent implements OnInit {
 
   constructor(
     private service: EnseignantService,
+    private authService: AuthService,
     private logService: LogService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit() {
-    // Récupérer l'ID dans l'URL
+    const user = this.authService.getUtilisateurConnecte();
+    if (!user || !user.id) {
+      this.router.navigate(['/connexion']);
+      return;
+    }
+    this.userId = user.id;
+
     this.idCours = Number(this.route.snapshot.paramMap.get('id'));
 
     if (!this.idCours) {
@@ -46,20 +55,17 @@ export class ModifCoursComponent implements OnInit {
       return;
     }
 
-    // Charger les matières
-    this.service.getMatieres().subscribe({
+    this.service.getMatieres(this.userId).subscribe({
       next: (data) => this.matieres = data,
       error: (err) => console.error('Erreur chargement matières :', err)
     });
 
-    // Charger les langues
-    this.service.getLangues().subscribe({
+    this.service.getLangues(this.userId).subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
     });
 
-    // Charger les détails du cours
-    this.service.getCoursDetails(this.idCours).subscribe({
+    this.service.getCoursDetails(this.userId, this.idCours).subscribe({
       next: (data) => {
         this.cours = {
           matiere: data.id_matiere,
@@ -90,7 +96,7 @@ export class ModifCoursComponent implements OnInit {
 
   onSubmit() {
     this.erreurs = [];
-    
+
     if (!this.cours.matiere) {
       this.erreurs.push("La matière est obligatoire.");
     }
@@ -119,19 +125,17 @@ export class ModifCoursComponent implements OnInit {
       description: this.cours.description
     };
 
-    this.service.modifierCours(payload).subscribe({
+    this.service.modifierCours(this.userId, payload).subscribe({
       next: (res) => {
         if (res.success) {
           alert('Cours modifié avec succès !');
-          
-          // Log de l'événement en NoSQL
-          const loggedUser = JSON.parse(localStorage.getItem('utilisateurConnecte') || '{}');
+
           this.logService.LogEvenement(
             'TEACHER_COURSE',
             'UPDATE_COURSE',
             `Cours ID: ${this.idCours} mis à jour.`,
             'INFO',
-            loggedUser.id ? String(loggedUser.id) : 'unknown',
+            String(this.userId),
             {
               id_cours: this.idCours,
               matiere: this.cours.matiere,

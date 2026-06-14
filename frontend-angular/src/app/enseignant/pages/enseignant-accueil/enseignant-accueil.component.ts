@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-enseignant-accueil',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './enseignant-accueil.component.html'
+  templateUrl: './enseignant-accueil.component.html',
+  styleUrls: ['./enseignant-accueil.component.css']
 })
 export class EnseignantAccueilComponent implements OnInit {
   stats: any = { nb_cours: 0, nb_eleves: 0 };
@@ -17,10 +19,16 @@ export class EnseignantAccueilComponent implements OnInit {
   nbRdvEnAttente: number = 0;
   userName: string = 'test';
 
-  constructor(private enseignantService: EnseignantService) {}
+  constructor(
+    private enseignantService: EnseignantService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.enseignantService.getDashboard().subscribe({
+    const user = this.authService.getUtilisateurConnecte();
+    if (!user || !user.id) return;
+
+    this.enseignantService.getDashboard(user.id).subscribe({
       next: (data: any) => {
         this.stats = data.stats;
         this.nbNouveauMessages = data.messages?.nb_nouveau_messages || 0;
