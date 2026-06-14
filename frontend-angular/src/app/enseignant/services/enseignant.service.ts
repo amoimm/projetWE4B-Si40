@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EnseignantService {
-  private baseUrl = 'http://localhost/projetWE4B-Si40/backend-angular/enseignant/api';
+  private baseUrl = 'http://localhost/projetWE4B-SI40/backend-angular/enseignant/api';
 
   constructor(private http: HttpClient) { }
 
