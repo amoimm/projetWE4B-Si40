@@ -89,10 +89,11 @@ export class AdminService {
   }
 
   // Ajoute une nouvelle matière
-  ajouterMatiere(nomMatiere: string): Observable<any> {
+  ajouterMatiere(nomMatiere: string, idUser: String): Observable<any> {
     return this.http.post<any>(this.matieresUrl, {
       action: 'add',
-      nom_matiere: nomMatiere
+      nom_matiere: nomMatiere,
+      id_user: idUser
     });
   }
 
@@ -102,10 +103,11 @@ export class AdminService {
   }
 
   // Ajoute une nouvelle langue
-  ajouterLangue(nomLangue: string): Observable<any> {
+  ajouterLangue(nomLangue: string, idUser: String): Observable<any> {
     return this.http.post<any>(this.languesUrl, {
       action: 'add',
-      nom_langue: nomLangue
+      nom_langue: nomLangue,
+      id_user: idUser
     });
   }
 }

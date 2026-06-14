@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-admin-config',
@@ -11,6 +12,7 @@ import { AdminService } from '../../services/admin.service';
   styleUrl: './admin-config.css',
 })
 export class AdminConfig implements OnInit {
+  monProfil: any = null;
   // Matières
   matieres: any[] = [];
   newMatiere = '';
@@ -24,9 +26,13 @@ export class AdminConfig implements OnInit {
   error: string | null = null;
   successMessage: string | null = null;
 
-  constructor(private adminService: AdminService) {}
+  constructor(
+    private adminService: AdminService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
+    this.monProfil = this.authService.getUtilisateurConnecte();
     this.chargerDonnees();
   }
 
@@ -67,7 +73,9 @@ export class AdminConfig implements OnInit {
       return;
     }
 
-    this.adminService.ajouterMatiere(this.newMatiere.trim()).subscribe({
+    const adminId = this.monProfil ? this.monProfil.id : 'admin';
+
+    this.adminService.ajouterMatiere(this.newMatiere.trim(),adminId).subscribe({
       next: () => {
         this.successMessage = 'Matière ajoutée avec succès.';
         setTimeout(() => this.successMessage = null, 3000);
@@ -87,8 +95,9 @@ export class AdminConfig implements OnInit {
       alert('Veuillez entrer un nom de langue');
       return;
     }
+    const adminId = this.monProfil ? this.monProfil.id : 'admin';
 
-    this.adminService.ajouterLangue(this.newLangue.trim()).subscribe({
+    this.adminService.ajouterLangue(this.newLangue.trim(), adminId).subscribe({
       next: () => {
         this.successMessage = 'Langue ajoutée avec succès.';
         setTimeout(() => this.successMessage = null, 3000);
