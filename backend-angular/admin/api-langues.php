@@ -24,10 +24,7 @@ try {
 
             // Logger l'action dans MongoDB
             try {
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                $admin_id = $_SESSION['user_id'] ?? 'admin';
+                $admin_id = isset($data['id_user']) ? $data['id_user'] : 'admin';
 
                 require_once __DIR__ . '/../bdd/config_mongodb.php';
                 $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));

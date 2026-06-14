@@ -151,10 +151,7 @@ try {
             // 3. Logger dans MongoDB
             if ($user_data) {
                 try {
-                    if (session_status() === PHP_SESSION_NONE) {
-                        session_start();
-                    }
-                    $admin_id = $_SESSION['user_id'] ?? 'admin';
+                    $admin_id = isset($data['id_user']) ? $data['id_user'] : 'admin';
                     
                     $roles_map = [0 => 'Étudiant', 1 => 'Professeur', 2 => 'Admin'];
                     $role_text = $roles_map[(int)$user_data['rang']] ?? 'Inconnu';
