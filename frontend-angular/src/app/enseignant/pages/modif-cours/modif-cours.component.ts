@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
 import { LogService } from '../../../general/log/log.service';
 
 @Component({
-  selector: 'app-nouveau-cours',
+  selector: 'app-modif-cours',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './nouveau-cours.component.html',
-  styleUrls: ['./nouveau-cours.component.css']
+  templateUrl: './modif-cours.component.html',
+  styleUrls: ['./modif-cours.component.css']
 })
-export class NouveauCoursComponent implements OnInit {
+export class ModifCoursComponent implements OnInit {
+  idCours!: number;
   matieres: any[] = [];
   languesList: any[] = [];
   
@@ -31,10 +32,20 @@ export class NouveauCoursComponent implements OnInit {
   constructor(
     private service: EnseignantService,
     private logService: LogService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit() {
+    // Récupérer l'ID dans l'URL
+    this.idCours = Number(this.route.snapshot.paramMap.get('id'));
+
+    if (!this.idCours) {
+      alert("Identifiant de cours incorrect.");
+      this.router.navigate(['/enseignant/mes-cours']);
+      return;
+    }
+
     // Charger les matières
     this.service.getMatieres().subscribe({
       next: (data) => this.matieres = data,
@@ -45,6 +56,26 @@ export class NouveauCoursComponent implements OnInit {
     this.service.getLangues().subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
+    });
+
+    // Charger les détails du cours
+    this.service.getCoursDetails(this.idCours).subscribe({
+      next: (data) => {
+        this.cours = {
+          matiere: data.id_matiere,
+          prix_heure: data.prix_heure,
+          mode_cours: data.mode_cours,
+          camera_obligatoire: data.camera_obligatoire,
+          suivi: data.suivi,
+          description: data.description
+        };
+        this.languesSelectionnees = data.langues || [];
+      },
+      error: (err) => {
+        console.error('Erreur chargement cours :', err);
+        alert("Impossible de charger les détails de ce cours.");
+        this.router.navigate(['/enseignant/mes-cours']);
+      }
     });
   }
 
@@ -78,6 +109,7 @@ export class NouveauCoursComponent implements OnInit {
     }
 
     const payload = {
+      id_cours: this.idCours,
       matiere: this.cours.matiere,
       langues: this.languesSelectionnees,
       prix_heure: this.cours.prix_heure,
@@ -87,22 +119,22 @@ export class NouveauCoursComponent implements OnInit {
       description: this.cours.description
     };
 
-    this.service.creerCours(payload).subscribe({
+    this.service.modifierCours(payload).subscribe({
       next: (res) => {
         if (res.success) {
-          alert('Cours créé avec succès !');
+          alert('Cours modifié avec succès !');
           
           // Log de l'événement en NoSQL
           const loggedUser = JSON.parse(localStorage.getItem('utilisateurConnecte') || '{}');
           this.logService.LogEvenement(
             'TEACHER_COURSE',
-            'CREATE_COURSE',
-            `Nouveau cours créé pour la matière ID: ${this.cours.matiere}`,
+            'UPDATE_COURSE',
+            `Cours ID: ${this.idCours} mis à jour.`,
             'INFO',
             loggedUser.id ? String(loggedUser.id) : 'unknown',
             {
+              id_cours: this.idCours,
               matiere: this.cours.matiere,
-              suivi: this.cours.suivi,
               prix: this.cours.prix_heure
             }
           );
@@ -113,7 +145,7 @@ export class NouveauCoursComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Erreur lors de la création du cours :', err);
+        console.error('Erreur lors de la modification du cours :', err);
         this.erreurs = [err.error?.errors?.[0] || 'Erreur de connexion au serveur.'];
       }
     });
