@@ -9,9 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
 require_once('../../connect/Verif_connection.php');
+
+$idUser = $_SESSION['user_id'] ?? ($_GET['user_id'] ?? null);
 
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);

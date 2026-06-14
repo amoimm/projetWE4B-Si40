@@ -14,16 +14,17 @@ export class EnseignantService {
     return this.http.get(`${this.baseUrl}/get_dashboard.php`); 
   }
 
-  getCours(params?: any): Observable<any> { 
-    return this.http.get(`${this.baseUrl}/get_mes_cours.php`, { params }); 
+  getCours(userId: number, params?: any): Observable<any> {
+    const queryParams = { ...params, user_id: userId };
+    return this.http.get(`${this.baseUrl}/get_mes_cours.php`, { params: queryParams }); 
   }
 
-  getMatieres(): Observable<any> { 
-    return this.http.get(`${this.baseUrl}/get_matieres.php`);
+  getMatieres(userId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get_matieres.php?user_id=${userId}`);
   }
 
-  getLangues(): Observable<any> { 
-    return this.http.get(`${this.baseUrl}/get_langues.php`); 
+  getLangues(userId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get_langues.php?user_id=${userId}`);
   }
 
   creerCours(data: any): Observable<any> {

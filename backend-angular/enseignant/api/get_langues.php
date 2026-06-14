@@ -9,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-session_start();
 require_once('../../bdd/config.php');
 require_once('../../connect/Verif_connection.php');
 

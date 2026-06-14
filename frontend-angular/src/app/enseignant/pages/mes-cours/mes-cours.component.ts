@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { EnseignantService } from '../../services/enseignant.service';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-mes-cours',
@@ -12,6 +13,7 @@ import { EnseignantService } from '../../services/enseignant.service';
   styleUrls: ['./mes-cours.component.css']
 })
 export class MesCoursComponent implements OnInit {
+  monProfil: any = null;
   coursList: any[] = [];
   matieres: any[] = [];
   languesList: any[] = [];
@@ -21,28 +23,40 @@ export class MesCoursComponent implements OnInit {
   filtreLangue: string = '';
   filtreAvis: string = '';
 
-  constructor(private enseignantService: EnseignantService) {}
+  constructor(
+    private enseignantService: EnseignantService,
+    private authService: AuthService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.monProfil = this.authService.getUtilisateurConnecte();
+    console.log("Profil chargé dans mes-cours :", this.monProfil);
+    
     this.chargerFiltres();
     this.chargerCours();
   }
 
   chargerFiltres() {
-    // Récupérer les matières pour le dropdown
-    this.enseignantService.getMatieres().subscribe({
+    if (!this.monProfil) return;
+  
+    const userId = this.monProfil.id;
+    
+    this.enseignantService.getMatieres(userId).subscribe({
       next: (data) => this.matieres = data,
       error: (err) => console.error('Erreur chargement matières :', err)
     });
 
     // Récupérer les langues pour le dropdown
-    this.enseignantService.getLangues().subscribe({
+    this.enseignantService.getLangues(userId).subscribe({
       next: (data) => this.languesList = data,
       error: (err) => console.error('Erreur chargement langues :', err)
     });
   }
 
   chargerCours() {
+    if (!this.monProfil) return;
+    const userId = this.monProfil.id;
+
     const params: any = {};
     if (this.recherche.trim()) {
       params.recherche = this.recherche.trim();
@@ -57,7 +71,7 @@ export class MesCoursComponent implements OnInit {
       params.avis = this.filtreAvis;
     }
 
-    this.enseignantService.getCours(params).subscribe({
+    this.enseignantService.getCours(userId, params).subscribe({
       next: (data) => {
         this.coursList = data;
       },
