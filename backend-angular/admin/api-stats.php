@@ -21,6 +21,8 @@ try {
 
     try {
         require_once __DIR__ . '/../bdd/config_mongodb.php';
+        // DEBUG : À supprimer une fois que ça fonctionne
+        error_log("Headers reçus : " . print_r(getallheaders(), true));
 
         // Charger toutes les matières de MySQL pour faire le mapping id -> nom
         $matieres_sql = $mysql_db->query("SELECT id_matiere, nom FROM matiere")->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -69,7 +71,7 @@ try {
                 ];
             }
         }
-        
+
         // Tri chronologique des jours pour la courbe
         usort($activite_jours, function($a, $b) {
             return strtotime($a['date']) - strtotime($b['date']);
