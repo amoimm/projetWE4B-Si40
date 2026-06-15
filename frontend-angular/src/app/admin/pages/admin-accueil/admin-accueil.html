@@ -1,16 +1,16 @@
-<div class="dashboard">
-  <div class="dashboard-header">
+<div class="admin-dashboard">
+  <div class="admin-header">
     <h1>Espace Administrateur</h1>
     <p>Vue d'ensemble</p>
   </div>
 
   <!-- Message d'erreur -->
-  <div *ngIf="error" class="alert alert-error">
+  <div *ngIf="error" class="alert-box alert-error">
     {{ error }}
   </div>
 
   <!-- Chargement -->
-  <div *ngIf="loading" class="loading">
+  <div *ngIf="loading" class="admin-loading">
     Chargement en cours...
   </div>
 
@@ -51,35 +51,35 @@
 
         <table class="admin-table">
           <thead>
-            <tr>
-              <th>Utilisateur</th>
-              <th>Email</th>
-              <th>Rôle</th>
-            </tr>
+          <tr>
+            <th>Utilisateur</th>
+            <th>Email</th>
+            <th>Rôle</th>
+          </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let user of utilisateursRecents">
-              <td><strong>{{ user.prenom }} {{ user.nom }}</strong></td>
-              <td>{{ user.email }}</td>
-              <td>
+          <tr *ngFor="let user of utilisateursRecents">
+            <td><strong>{{ user.prenom }} {{ user.nom }}</strong></td>
+            <td>{{ user.email }}</td>
+            <td>
                 <span [ngClass]="'badge ' + getBadgeRang(user.rang).classe">
                   {{ getBadgeRang(user.rang).texte }}
                 </span>
-              </td>
-            </tr>
+            </td>
+          </tr>
           </tbody>
         </table>
 
         <br>
-        <a href="/admin/utilisateurs" class="action-btn">Voir tous les utilisateurs</a>
+        <a href="/admin/utilisateurs" class="admin-btn secondary">Voir tous les utilisateurs</a>
       </div>
 
       <div class="dashboard-panel actions-panel">
         <h2>Accès rapide</h2>
-        <a href="/admin/config?action=add_matiere" class="action-btn primary">
+        <a href="/admin/config?action=add_matiere" class="admin-btn primary">
           Ajouter une matière
         </a>
-        <a href="/admin/config?action=add_langue" class="action-btn">
+        <a href="/admin/config?action=add_langue" class="admin-btn secondary" style="margin-top: 10px;">
           Ajouter une langue
         </a>
       </div>

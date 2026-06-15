@@ -1,31 +1,31 @@
-<div class="main-container">
-  <div class="main">
+<div class="auth-container">
+  <div class="auth-card">
     <h1>Bienvenue !</h1>
 
     <form (ngSubmit)="seConnecter()">
-      <div class="field">
-        <label class="email" for="email">Adresse mail</label>
-        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="mon.email@example.com" required />
+      <div class="auth-field">
+        <label class="auth-label" for="email">Adresse mail</label>
+        <input class="auth-input" type="email" id="email" name="email" [(ngModel)]="email" placeholder="mon.email@example.com" required />
       </div>
 
-      <div class="field">
-        <label class="psw" for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" [(ngModel)]="motDePasse" placeholder="••••••••" required />
+      <div class="auth-field">
+        <label class="auth-label" for="password">Mot de passe</label>
+        <input class="auth-input" type="password" id="password" name="password" [(ngModel)]="motDePasse" placeholder="••••••••" required />
         <a routerLink="/auth/mot-de-passe-oublie" class="forgot">Mot de passe oublié ?</a>
       </div>
 
-      <div *ngIf="messageErreur" class="erreur-msg">
+      <div *ngIf="messageErreur" class="alert-box alert-error">
         {{ messageErreur }}
       </div>
 
-      <div class="barre"></div>
+      <div class="auth-sep"></div>
 
-      <button type="submit">
+      <button type="submit" class="auth-btn">
         Se connecter
       </button>
     </form>
 
-    <p class="text-foot">Pas encore de compte ? <a routerLink="/auth/inscription">S'inscrire</a></p>
+    <p class="auth-footer-text">Pas encore de compte ? <a routerLink="/auth/inscription">S'inscrire</a></p>
   </div>
 
   <footer>

@@ -1,0 +1,180 @@
+/* Fond de la page */
+.chat-page {
+  min-height: 100vh;
+  background-color: #f8f9fa; /* Gris très clair du fond */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* La grande carte blanche */
+.chat-card {
+  width: 100%;
+  max-width: 850px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Ombre douce */
+  display: flex;
+  flex-direction: column;
+  height: 85vh; /* Hauteur fixe pour faire défiler les messages au milieu */
+  overflow: hidden;
+}
+
+/* En-tête bleu nuit */
+.chat-header {
+  background-color: #2c3e50;
+  color: #ffffff;
+  padding: 20px;
+  text-align: center;
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Zone des messages qui défile */
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: #ffffff;
+}
+
+.empty-messages {
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+  margin: auto;
+}
+
+/* Ligne d'un message */
+.message-row {
+  display: flex;
+  width: 100%;
+}
+
+.message-row.sent {
+  justify-content: flex-end; /* Aligné à droite */
+}
+
+.message-row.received {
+  justify-content: flex-start; /* Aligné à gauche */
+}
+
+/* Design de la bulle */
+.bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bulle reçue (Gris clair) */
+.message-row.received .bubble {
+  background-color: #e2e8f0;
+  color: #1e293b;
+  border-bottom-left-radius: 4px; /* Coin pointu en bas à gauche */
+}
+
+/* Bulle envoyée (Bleu vif) */
+.message-row.sent .bubble {
+  background-color: #007bff;
+  color: #ffffff;
+  border-bottom-right-radius: 4px; /* Coin pointu en bas à droite */
+}
+
+.bubble .text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.bubble .time {
+  font-size: 0.7rem;
+  margin-top: 4px;
+  opacity: 0.8;
+}
+
+/* Bloc Rendez-vous (Gris au dessus de l'input) */
+.rdv-block {
+  background-color: #f8f9fa;
+  margin: 0 20px 15px 20px;
+  padding: 15px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.rdv-empty {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.rdv-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #2c3e50;
+}
+
+.btn-rdv {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 8px;
+}
+.btn-rdv.accept { background-color: #dcfce7; color: #166534; }
+.btn-rdv.decline { background-color: #fee2e2; color: #991b1b; }
+
+/* Barre de saisie (Input + Bouton) */
+.chat-input-bar {
+  display: flex;
+  gap: 15px;
+  padding: 20px;
+  border-top: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  margin: 0;
+}
+
+.chat-input-bar input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 25px; /* Forme de pilule */
+  font-size: 0.95rem;
+  color: #1e293b;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chat-input-bar input:focus {
+  border-color: #2c3e50;
+}
+
+.chat-input-bar button {
+  background-color: #2c3e50; /* Bleu nuit */
+  color: #ffffff;
+  border: none;
+  padding: 0 25px;
+  border-radius: 25px; /* Forme de pilule */
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.chat-input-bar button:hover {
+  opacity: 0.9;
+}

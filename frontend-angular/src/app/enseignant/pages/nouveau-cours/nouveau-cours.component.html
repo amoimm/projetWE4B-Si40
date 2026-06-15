@@ -1,72 +1,66 @@
 <main>
-    <div class="form-container">
-        <h1>Envie d'enseigner une nouvelle leçon ?</h1>
+  <div class="form-container">
+    <h1 class="page-title" style="text-align: center;">Envie d'enseigner une nouvelle leçon ?</h1>
 
-        <div class="error-messages" *ngIf="erreurs.length > 0">
-            <ul>
-                <li *ngFor="let err of erreurs">{{ err }}</li>
-            </ul>
-        </div>
-
-        <form (submit)="onSubmit()">
-            <!-- Matière -->
-            <div class="form-group">
-                <label for="matiere">Matière enseignée</label>
-                <select [(ngModel)]="cours.matiere" name="matiere" id="matiere" required>
-                    <option value="" disabled selected>-- Sélectionnez une matière --</option>
-                    <option *ngFor="let m of matieres" [value]="m.id_matiere">{{ m.nom }}</option>
-                </select>
-            </div>
-
-            <!-- Langues -->
-            <div class="form-group">
-                <label>Langue(s) parlée(s) pour ce cours</label>
-                <div class="checkbox-group">
-                    <label *ngFor="let l of languesList" class="checkbox-label">
-                        <input type="checkbox" [value]="l.id_langue" (change)="toggleLangue(l.id_langue)" [checked]="languesSelectionnees.includes(l.id_langue)">
-                        <span>{{ l.nom }}</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Prix par heure -->
-            <div class="form-group">
-                <label for="prix_heure">Tarif horaire (€/h)</label>
-                <input type="number" [(ngModel)]="cours.prix_heure" name="prix_heure" id="prix_heure" required min="1" placeholder="Ex: 25">
-            </div>
-
-            <!-- Mode de cours -->
-            <div class="form-group">
-                <label for="mode_cours">Mode de cours</label>
-                <select [(ngModel)]="cours.mode_cours" name="mode_cours" id="mode_cours" required>
-                    <option value="présentiel">Présentiel</option>
-                    <option value="distanciel">Distanciel</option>
-                </select>
-            </div>
-
-            <!-- Options (Caméra, Suivi) -->
-            <div class="form-group options-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" [(ngModel)]="cours.camera_obligatoire" name="camera_obligatoire">
-                    <span>Caméra obligatoire (distanciel uniquement)</span>
-                </label>
-
-                <label class="checkbox-label">
-                    <input type="checkbox" [(ngModel)]="cours.suivi" name="suivi">
-                    <span>Je propose un suivi personnalisé</span>
-                </label>
-            </div>
-
-            <!-- Description -->
-            <div class="form-group">
-                <label for="description">Description du cours</label>
-                <textarea [(ngModel)]="cours.description" name="description" id="description" required minlength="20" placeholder="Décrivez votre méthode d'enseignement, votre programme... (20 caractères minimum)"></textarea>
-            </div>
-
-            <div class="actions">
-                <button type="submit" class="btn-submit">Créer le cours</button>
-                <a routerLink="/enseignant/mes-cours" class="btn-cancel">Annuler</a>
-            </div>
-        </form>
+    <div class="alert-box alert-error" *ngIf="erreurs.length > 0">
+      <ul style="margin: 0; padding-left: 20px; text-align: left;">
+        <li *ngFor="let err of erreurs">{{ err }}</li>
+      </ul>
     </div>
+
+    <form (submit)="onSubmit()">
+      <div class="form-group">
+        <label for="matiere">Matière enseignée</label>
+        <select class="form-control" [(ngModel)]="cours.matiere" name="matiere" id="matiere" required>
+          <option value="" disabled selected>-- Sélectionnez une matière --</option>
+          <option *ngFor="let m of matieres" [value]="m.id_matiere">{{ m.nom }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Langue(s) parlée(s) pour ce cours</label>
+        <div class="checkbox-group">
+          <label *ngFor="let l of languesList" class="checkbox-label">
+            <input type="checkbox" [value]="l.id_langue" (change)="toggleLangue(l.id_langue)" [checked]="languesSelectionnees.includes(l.id_langue)">
+            <span>{{ l.nom }}</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="prix_heure">Tarif horaire (€/h)</label>
+        <input type="number" class="form-control" [(ngModel)]="cours.prix_heure" name="prix_heure" id="prix_heure" required min="1" placeholder="Ex: 25">
+      </div>
+
+      <div class="form-group">
+        <label for="mode_cours">Mode de cours</label>
+        <select class="form-control" [(ngModel)]="cours.mode_cours" name="mode_cours" id="mode_cours" required>
+          <option value="présentiel">Présentiel</option>
+          <option value="distanciel">Distanciel</option>
+        </select>
+      </div>
+
+      <div class="form-group options-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="cours.camera_obligatoire" name="camera_obligatoire">
+          <span>Caméra obligatoire (distanciel uniquement)</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="cours.suivi" name="suivi">
+          <span>Je propose un suivi personnalisé</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description du cours</label>
+        <textarea class="form-control" [(ngModel)]="cours.description" name="description" id="description" required minlength="20" placeholder="Décrivez votre méthode d'enseignement, votre programme... (20 caractères minimum)"></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Créer le cours</button>
+        <a routerLink="/enseignant/mes-cours" class="btn btn-secondary">Annuler</a>
+      </div>
+    </form>
+  </div>
 </main>

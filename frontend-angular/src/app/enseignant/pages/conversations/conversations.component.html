@@ -1,56 +1,58 @@
 <main>
-    <h1 class="page-title">Conversations</h1>
+  <h1 class="page-title">Conversations</h1>
 
-    <div class="tab-switcher">
-        <button class="tab-btn" [class.active]="activeTab === 'active'" (click)="activeTab = 'active'">Conversations actives</button>
-        <button class="tab-btn" [class.active]="activeTab === 'new'" (click)="activeTab = 'new'">Conversations cours</button>
-    </div>
+  <div class="tab-switcher">
+    <button class="tab-btn" [class.active]="activeTab === 'active'" (click)="activeTab = 'active'">Conversations actives</button>
+    <button class="tab-btn" [class.active]="activeTab === 'new'" (click)="activeTab = 'new'">Conversations cours</button>
+  </div>
 
-    <div class="tab-content" [class.active]="activeTab === 'active'">
-        <div class="conv-container">
-            <div *ngIf="conversationsList.length === 0" class="empty-state">Aucune conversation active.</div>
-            
-            <div class="conv-group" *ngFor="let group of conversationsGrouped | keyvalue">
-                <div class="conv-group-title">{{ group.key }}</div>
-                <a class="conv-row" 
-                *ngFor="let conv of group.value" 
-                [routerLink]="['/enseignant/messagerie']" 
-                [queryParams]="{id_conv: conv.id_conv, id_cours: conv.id_cours, id_eleve: conv.id_eleve}">
-                    <div class="conv-avatar">{{ (conv.prenom[0] + conv.nom[0]) | uppercase }}</div>
-                    <div class="conv-row-name">{{ conv.prenom }} {{ conv.nom }}</div>
-                    <div class="conv-row-preview">{{ conv.dernier_message }}</div>
-                    <div class="conv-row-right">
-                        <span class="badge-new" *ngIf="conv.nb_non_lus > 0">{{ conv.nb_non_lus }}</span>
-                        <span class="conv-date">{{ conv.date_message | date:'dd/MM HH:mm' }}</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+  <div class="tab-content" [class.active]="activeTab === 'active'">
+    <div class="conv-container">
+      <div *ngIf="conversationsList.length === 0" class="empty-state">Aucune conversation active.</div>
 
-    <div class="tab-content" [class.active]="activeTab === 'new'">
-        <p class="section-label">Choisissez un cours</p>
-        <div class="cours-grid">
-            <div class="cours-card" *ngFor="let cours of mesCours" (click)="selectCours(cours)">
-                <h3>{{ cours.description }}</h3>
-            </div>
-        </div>
-        <div class="eleves-section">
-            <h3 id="eleves-titre">{{ selectedCours ? 'Élèves de ' + selectedCours.description : 'Sélectionnez un cours' }}</h3>
-            <div class="eleve-list">
-                <div *ngIf="!selectedCours" class="empty-state">Aucun cours sélectionné.</div>
-                <a class="conv-row" 
-                    *ngFor="let eleve of elevesDuCours" 
-                    [routerLink]="['/enseignant/messagerie']" 
-                    [queryParams]="{id_eleve: eleve.id_eleve, id_cours: eleve.id_cours, id_conv: eleve.id_conv}">
-                    
-                    <div class="conv-avatar">{{ eleve.initiales }}</div>
-                    <div class="conv-row-name">{{ eleve.prenom }} {{ eleve.nom }}</div>
-                    <div class="conv-row-right">
-                        <span *ngIf="eleve.id_conv">Continuer la discussion</span>
-                    </div>
-                </a>
-            </div>
-        </div>
+      <div class="conv-group" *ngFor="let group of conversationsGrouped | keyvalue">
+        <div class="conv-group-title">{{ group.key }}</div>
+        <a class="conv-row"
+           *ngFor="let conv of group.value"
+           [routerLink]="['/enseignant/messagerie']"
+           [queryParams]="{id_conv: conv.id_conv, id_cours: conv.id_cours, id_eleve: conv.id_eleve}">
+          <div class="conv-avatar">{{ (conv.prenom[0] + conv.nom[0]) | uppercase }}</div>
+          <div class="conv-row-name">{{ conv.prenom }} {{ conv.nom }}</div>
+          <div class="conv-row-preview">{{ conv.dernier_message }}</div>
+          <div class="conv-row-right">
+            <span class="badge-new" *ngIf="conv.nb_non_lus > 0">{{ conv.nb_non_lus }}</span>
+            <span class="conv-date">{{ conv.date_message | date:'dd/MM HH:mm' }}</span>
+          </div>
+        </a>
+      </div>
     </div>
+  </div>
+
+  <div class="tab-content" [class.active]="activeTab === 'new'">
+    <p class="section-label">Choisissez un cours</p>
+    <div class="cours-grid">
+      <div class="card-panel interactive" *ngFor="let cours of mesCours" (click)="selectCours(cours)" style="cursor: pointer;">
+        <h3 style="margin: 0; text-align: center;">{{ cours.description }}</h3>
+      </div>
+    </div>
+    <div class="eleves-section">
+      <h3 id="eleves-titre" style="font-size: 1.2rem; margin-bottom: 1.5rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 0.8rem;">
+        {{ selectedCours ? 'Élèves de ' + selectedCours.description : 'Sélectionnez un cours' }}
+      </h3>
+      <div class="eleve-list">
+        <div *ngIf="!selectedCours" class="empty-state">Aucun cours sélectionné.</div>
+        <a class="conv-row"
+           *ngFor="let eleve of elevesDuCours"
+           [routerLink]="['/enseignant/messagerie']"
+           [queryParams]="{id_eleve: eleve.id_eleve, id_cours: eleve.id_cours, id_conv: eleve.id_conv}">
+
+          <div class="conv-avatar">{{ eleve.initiales }}</div>
+          <div class="conv-row-name">{{ eleve.prenom }} {{ eleve.nom }}</div>
+          <div class="conv-row-right">
+            <span *ngIf="eleve.id_conv" style="color: #4a8bd6; font-weight: 500; font-size: 0.85rem;">Continuer la discussion</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </main>

@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class LogService {
-  private apiUrl = 'http://localhost/projetWE4B-SI40/backend-angular/api-logs.php';
+  private apiUrl = 'http://localhost/projetWE4B-Si40/backend-angular/api-logs.php';
 
   constructor(private http: HttpClient) {}
 

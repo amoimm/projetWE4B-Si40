@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { EtudiantLayoutComponent } from './etudiant/pages/etudiant-layout/etudiant-layout';
+import { EtudiantLayoutComponent } from './etudiant/components/etudiant-layout/etudiant-layout';
 import { EtudiantAccueilComponent } from './etudiant/pages/etudiant-accueil/etudiant-accueil';
 import { EtudiantChatComponent } from './etudiant/pages/etudiant-chat/etudiant-chat';
 import { EtudiantConversationComponent } from './etudiant/pages/etudiant-conversation/etudiant-conversation';
@@ -8,7 +8,7 @@ import { EtudiantDevenirProfComponent } from './etudiant/pages/etudiant-devenir-
 
 
 
-import { EnseignantLayout } from './enseignant/pages/enseignant-layout/enseignant-layout';
+import { EnseignantLayout } from './enseignant/components/enseignant-layout/enseignant-layout';
 import { EnseignantAccueilComponent } from './enseignant/pages/enseignant-accueil/enseignant-accueil.component';
 import { MesCoursComponent } from './enseignant/pages/mes-cours/mes-cours.component';
 import { NouveauCoursComponent } from './enseignant/pages/nouveau-cours/nouveau-cours.component';
@@ -16,7 +16,7 @@ import { ModifCoursComponent } from './enseignant/pages/modif-cours/modif-cours.
 import { ConversationsComponent } from './enseignant/pages/conversations/conversations.component';
 import { MessagerieComponent } from './enseignant/pages/messagerie/messagerie.component';
 
-import { AdminLayout } from './admin/pages/admin-layout/admin-layout';
+import { AdminLayout } from './admin/components/admin-layout/admin-layout';
 import { AdminAccueil } from './admin/pages/admin-accueil/admin-accueil';
 import { AdminUtilisateurs } from './admin/pages/admin-utilisateurs/admin-utilisateurs';
 import { AdminCours } from './admin/pages/admin-cours/admin-cours';

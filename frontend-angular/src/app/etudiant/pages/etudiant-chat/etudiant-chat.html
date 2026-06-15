@@ -1,30 +1,30 @@
-<div class="chat-list-container">
-  <div class="header-section">
-    <h1>Mes Conversations</h1>
-    <p>Retrouvez ici tous vos échanges avec vos professeurs.</p>
+<main>
+  <div class="chat-list-container" style="max-width: 900px; margin: 0 auto;">
+    <div class="dashboard-header" style="margin-bottom: 2rem;">
+      <h1 class="page-title">Mes Conversations</h1>
+      <p class="text-muted">Retrouvez ici tous vos échanges avec vos professeurs.</p>
+    </div>
+
+    <div class="conversations-list" style="display: flex; flex-direction: column; gap: 15px;">
+
+      <p *ngIf="conversations.length === 0" class="empty-state">Aucune conversation pour le moment.</p>
+
+      <a *ngFor="let conv of conversations" [routerLink]="['/etudiant/chat/conversation', conv.id_cours]" class="conv-card card-panel interactive" style="display: flex; justify-content: space-between; align-items: center; border-top: 4px solid #3b82f6; text-decoration: none;">
+
+        <div class="conv-info">
+          <h3 style="margin: 0 0 8px 0; color: #0f172a;">Cours de : {{ conv.nom_matiere }}</h3>
+          <p class="text-muted" style="margin: 0;">{{ conv.description }}</p>
+        </div>
+
+        <div class="conv-meta" style="display: flex; align-items: center; gap: 12px;">
+          <span *ngIf="conv.nb_non_lus > 0" class="badge-unread" style="background-color: #ef4444; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+            {{ conv.nb_non_lus }} non lu(s)
+          </span>
+
+          <span class="badge-prof" style="background-color: #f1f5f9; color: #334155; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">{{ conv.prenom_prof }} {{ conv.nom_prof }}</span>
+        </div>
+      </a>
+
+    </div>
   </div>
-
-  <div class="conversations-list">
-
-    <p *ngIf="conversations.length === 0" class="no-conv">Aucune conversation pour le moment.</p>
-
-    <a *ngFor="let conv of conversations" [routerLink]="['/etudiant/chat/conversation', conv.id_cours]" class="conv-card">
-
-      <div class="conv-info">
-        <h3>Cours de : {{ conv.nom_matiere }}</h3>
-        <p class="desc">{{ conv.description }}</p>
-      </div>
-
-      <div class="conv-meta">
-
-        <span *ngIf="conv.nb_non_lus > 0" class="badge-unread">
-          {{ conv.nb_non_lus }} non lu(s)
-        </span>
-
-        <span class="badge-prof">{{ conv.prenom_prof }} {{ conv.nom_prof }}</span>
-
-      </div>
-    </a>
-
-  </div>
-</div>
+</main>

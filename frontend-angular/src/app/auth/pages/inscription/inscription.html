@@ -1,5 +1,5 @@
-<div class="main-container">
-  <div class="main">
+<div class="auth-container">
+  <div class="auth-card large">
     <h1>Créer un compte</h1>
 
     <form (ngSubmit)="sInscrire()">
@@ -20,40 +20,40 @@
       <p class="titre-label">Informations personnelles</p>
 
       <div class="ligne">
-        <div class="field">
-          <label for="nom">Nom</label>
-          <input type="text" id="nom" name="nom" [(ngModel)]="nom" placeholder="Mon nom" required />
+        <div class="auth-field">
+          <label class="auth-label" for="nom">Nom</label>
+          <input class="auth-input" type="text" id="nom" name="nom" [(ngModel)]="nom" placeholder="Mon nom" required />
         </div>
-        <div class="field">
-          <label for="prenom">Prénom</label>
-          <input type="text" id="prenom" name="prenom" [(ngModel)]="prenom" placeholder="Mon prénom" required />
+        <div class="auth-field">
+          <label class="auth-label" for="prenom">Prénom</label>
+          <input class="auth-input" type="text" id="prenom" name="prenom" [(ngModel)]="prenom" placeholder="Mon prénom" required />
         </div>
       </div>
 
-      <div class="field">
-        <label for="email">Adresse mail</label>
-        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="mon.email@example.com" required />
+      <div class="auth-field">
+        <label class="auth-label" for="email">Adresse mail</label>
+        <input class="auth-input" type="email" id="email" name="email" [(ngModel)]="email" placeholder="mon.email@example.com" required />
       </div>
 
-      <div class="field">
-        <label for="password">Mot de passe</label>
-        <input type="password" id="password" name="password" [(ngModel)]="motDePasse" placeholder="••••••••" required />
+      <div class="auth-field">
+        <label class="auth-label" for="password">Mot de passe</label>
+        <input class="auth-input" type="password" id="password" name="password" [(ngModel)]="motDePasse" placeholder="••••••••" required />
       </div>
 
-      <div class="field">
-        <label for="confirm">Confirmer le mot de passe</label>
-        <input type="password" id="confirm" name="confirm" [(ngModel)]="confirmation" placeholder="••••••••" required />
+      <div class="auth-field">
+        <label class="auth-label" for="confirm">Confirmer le mot de passe</label>
+        <input class="auth-input" type="password" id="confirm" name="confirm" [(ngModel)]="confirmation" placeholder="••••••••" required />
       </div>
 
-      <div class="field">
-        <label for="presentation">Présentation (Optionnel)</label>
-        <textarea id="presentation" name="presentation" [(ngModel)]="presentation" rows="3" placeholder="Racontez-nous qui vous êtes..."></textarea>
+      <div class="auth-field">
+        <label class="auth-label" for="presentation">Présentation (Optionnel)</label>
+        <textarea class="auth-input" id="presentation" name="presentation" [(ngModel)]="presentation" rows="3" placeholder="Racontez-nous qui vous êtes..."></textarea>
       </div>
 
       <div *ngIf="role === 'enseignant'" style="margin-top: 20px; padding: 15px; background: #fdfdfd; border: 1px dashed #7a6bbf; border-radius: 8px;">
         <p class="titre-label" style="color: #7a6bbf; margin-top:0;">Compétences d'Enseignement</p>
 
-        <label>Matières enseignées</label>
+        <label class="auth-label">Matières enseignées</label>
         <div class="matieres-grid" style="margin-bottom: 15px;">
           <button type="button" class="matiere-tag" *ngFor="let m of listeMatieres"
                   [class.selected]="matieresSelectionnees.has(m.nom)"
@@ -62,7 +62,7 @@
           </button>
         </div>
 
-        <label>Langues parlées</label>
+        <label class="auth-label">Langues parlées</label>
         <div class="matieres-grid" style="margin-bottom: 15px;">
           <button type="button" class="matiere-tag" *ngFor="let l of listeLangues"
                   [class.selected]="languesSelectionnees.has(l.nom)"
@@ -71,21 +71,21 @@
           </button>
         </div>
 
-        <label>Certificats (Preuves en PDF)</label>
-        <input type="file" (change)="onFichiersSelectionnes($event)" accept="application/pdf" multiple style="border: 1px dashed #7a6bbf; padding: 10px;">
+        <label class="auth-label">Certificats (Preuves en PDF)</label>
+        <input class="auth-input" type="file" (change)="onFichiersSelectionnes($event)" accept="application/pdf" multiple style="border: 1px dashed #7a6bbf; padding: 10px;">
         <p *ngIf="fichiersCertif.length > 0" style="font-size: 0.8rem; color: #3c763d; margin-top: 5px;">
-           {{ fichiersCertif.length }} fichier(s) prêt(s).
+          {{ fichiersCertif.length }} fichier(s) prêt(s).
         </p>
       </div>
 
-      <div *ngIf="messageErreur" class="erreur-msg">{{ messageErreur }}</div>
-      <div *ngIf="messageSucces" class="succes-msg">{{ messageSucces }}</div>
+      <div *ngIf="messageErreur" class="alert-box alert-error">{{ messageErreur }}</div>
+      <div *ngIf="messageSucces" class="alert-box alert-success">{{ messageSucces }}</div>
 
-      <div class="barre"></div>
+      <div class="auth-sep"></div>
 
-      <button type="submit">Créer mon compte</button>
+      <button type="submit" class="auth-btn">Créer mon compte</button>
     </form>
 
-    <p class="text-foot">Déjà inscrit ? <a routerLink="/auth/connexion">Se connecter</a></p>
+    <p class="auth-footer-text">Déjà inscrit ? <a routerLink="/auth/connexion">Se connecter</a></p>
   </div>
 </div>

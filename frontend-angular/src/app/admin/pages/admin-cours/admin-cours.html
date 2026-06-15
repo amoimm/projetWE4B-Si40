@@ -1,28 +1,30 @@
-<div class="dashboard">
-  <div class="dashboard-header">
+<div class="admin-dashboard">
+  <div class="admin-header">
     <h1>Modération des Cours</h1>
     <p>Gérez les cours disponibles sur la plateforme</p>
   </div>
 
   <!-- Messages d'erreur/succès -->
-  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
-  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="error" class="alert-box alert-error">{{ error }}</div>
+  <div *ngIf="successMessage" class="alert-box alert-success">{{ successMessage }}</div>
 
   <!-- Chargement -->
-  <div *ngIf="loading" class="loading">Chargement en cours...</div>
+  <div *ngIf="loading" class="admin-loading">Chargement en cours...</div>
 
   <ng-container *ngIf="!loading">
     <!-- FORMULAIRE DE RECHERCHE -->
     <form class="admin-toolbar">
-      <div class="form-row">
+      <div class="form-row" style="display: flex; gap: 10px; width: 100%;">
         <input
           type="text"
+          class="form-control"
           [(ngModel)]="search"
           name="search"
           placeholder="Rechercher par matière, professeur ou description..."
+          style="flex: 1;"
         >
-        <button type="button" (click)="chercher()" class="action-btn primary">Chercher</button>
-        <button type="button" (click)="reinitialiser()" class="action-btn">Réinitialiser</button>
+        <button type="button" (click)="chercher()" class="admin-btn primary">Chercher</button>
+        <button type="button" (click)="reinitialiser()" class="admin-btn secondary">Réinitialiser</button>
       </div>
     </form>
 
@@ -30,33 +32,33 @@
     <div class="dashboard-panel">
       <table class="admin-table">
         <thead>
-          <tr>
-            <th>Matière</th>
-            <th>Enseignant</th>
-            <th>Tarif</th>
-            <th>Actions</th>
-          </tr>
+        <tr>
+          <th>Matière</th>
+          <th>Enseignant</th>
+          <th>Tarif</th>
+          <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let c of cours">
-            <td><strong>{{ c.nom_matiere }}</strong></td>
-            <td>{{ c.prenom }} {{ c.nom }}</td>
-            <td>{{ c.prix_heure }} €/h</td>
-            <td>
-              <button
-                type="button"
-                (click)="supprimerCours(c.id_cours)"
-                class="btn-sm danger"
-              >
-                🗑 Supprimer
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="cours.length === 0">
-            <td colspan="4" style="text-align: center; color: #7f8c8d;">
-              Aucun cours trouvé
-            </td>
-          </tr>
+        <tr *ngFor="let c of cours">
+          <td><strong>{{ c.nom_matiere }}</strong></td>
+          <td>{{ c.prenom }} {{ c.nom }}</td>
+          <td>{{ c.prix_heure }} €/h</td>
+          <td>
+            <button
+              type="button"
+              (click)="supprimerCours(c.id_cours)"
+              class="admin-btn danger"
+            >
+              🗑 Supprimer
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="cours.length === 0">
+          <td colspan="4" style="text-align: center; color: #7f8c8d; padding: 20px;">
+            Aucun cours trouvé
+          </td>
+        </tr>
         </tbody>
       </table>
     </div>

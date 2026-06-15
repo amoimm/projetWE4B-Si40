@@ -8,7 +8,6 @@ import { AdminService } from '../../services/admin.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './admin-cours.html',
-  styleUrl: './admin-cours.css',
 })
 export class AdminCours implements OnInit {
   cours: any[] = [];

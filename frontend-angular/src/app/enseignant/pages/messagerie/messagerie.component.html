@@ -1,49 +1,54 @@
-<main class="chat-wrapper">
+<main class="chat-page">
+  <div class="chat-card">
+
     <header class="chat-header">
-        <h2>{{ convInfo?.prenom }} {{ convInfo?.nom }}</h2>
-        <p>{{ convInfo?.cours }}</p>
+      <h2>{{ convInfo?.prenom || 'Utilisateur' }} {{ convInfo?.nom || '' }} - {{ convInfo?.cours || 'Conversation' }}</h2>
     </header>
 
-    <div class="chat-container">
-        <div class="chat-box" #chatBox>
-            <div *ngIf="messages.length === 0" class="empty-state">
-                Aucun message pour le moment.
-            </div>
+    <div class="chat-messages" #chatBox>
+      <div *ngIf="messages.length === 0" class="empty-messages">
+        Aucun message pour le moment.
+      </div>
 
-            <div *ngFor="let msg of messages" 
-                 [class.message]="true" 
-                 [class.prof]="msg.id_redacteur !== monId" 
-                 [class.eleve]="msg.id_redacteur === monId">
-                
-                <span>{{ msg.contenu }}</span>
-                <span class="date">{{ msg.heure | date:'dd/MM HH:mm' }}</span>
-            </div>
-        </div>
+      <div *ngFor="let msg of messages"
+           class="message-row"
+           [class.sent]="msg.id_redacteur === monId"
+           [class.received]="msg.id_redacteur !== monId">
 
-        <div class="rendez-vous-section">
-            <div *ngFor="let rdv of rendezVous" class="rendez-vous">
-                <p><strong>RDV :</strong> {{ rdv.date_heure | date:'dd/MM à HH:mm' }}</p>
-                
-                <div class="rdv-actions" *ngIf="rdv.est_valide == 0">
-                    <button (click)="gererRdv(rdv.id_rdv, 'accepter')" class="btn-accepter-rdv">✅ Accepter</button>
-                    <button (click)="gererRdv(rdv.id_rdv, 'refuser')" class="btn-refuser-rdv">❌ Refuser</button>
-                </div>
-                <div *ngIf="rdv.est_valide == 1" class="rdv-status">
-                    <button (click)="gererRdv(rdv.id_rdv, 'annuler')" class="btn-annuler-rdv">🚫 Annuler</button>
-                </div>
-            </div>
+        <div class="bubble">
+          <span class="text">{{ msg.contenu }}</span>
+          <span class="time">{{ msg.heure | date:'dd/MM HH:mm' }}</span>
         </div>
-
-        <div class="chat-form">
-            <form (submit)="envoyerMessage()" style="display: flex; flex: 1;">
-                <input type="text" 
-                       [(ngModel)]="nouveauMessage" 
-                       name="message" 
-                       placeholder="Écrivez votre message..." 
-                       required 
-                       autocomplete="off">
-                <button type="submit">Envoyer</button>
-            </form>
-        </div>
+      </div>
     </div>
+
+    <div class="rdv-block">
+      <div *ngIf="rendezVous && rendezVous.length === 0" class="rdv-empty">
+        Aucun rendez-vous planifié.
+      </div>
+
+      <div *ngFor="let rdv of rendezVous" class="rdv-item">
+        <span><strong>RDV :</strong> {{ rdv.date_heure | date:'dd/MM à HH:mm' }}</span>
+
+        <div class="rdv-actions" *ngIf="rdv.est_valide == 0">
+          <button (click)="gererRdv(rdv.id_rdv, 'accepter')" class="btn-rdv accept">✅ Accepter</button>
+          <button (click)="gererRdv(rdv.id_rdv, 'refuser')" class="btn-rdv decline">❌ Refuser</button>
+        </div>
+        <div *ngIf="rdv.est_valide == 1">
+          <button (click)="gererRdv(rdv.id_rdv, 'annuler')" class="btn-rdv decline">🚫 Annuler</button>
+        </div>
+      </div>
+    </div>
+
+    <form class="chat-input-bar" (submit)="envoyerMessage()">
+      <input type="text"
+             name="message"
+             [(ngModel)]="nouveauMessage"
+             placeholder="Écrivez votre message..."
+             autocomplete="off"
+             required>
+      <button type="submit">Envoyer</button>
+    </form>
+
+  </div>
 </main>

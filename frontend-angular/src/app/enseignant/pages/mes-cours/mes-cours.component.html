@@ -3,22 +3,22 @@
     <form (submit)="chargerCours(); $event.preventDefault()">
       <div class="search-container">
         <div class="search-main">
-          <input [(ngModel)]="recherche" name="recherche" type="text" placeholder="Rechercher un mot clé...">
-          <button type="submit">Rechercher</button>
+          <input class="form-control" [(ngModel)]="recherche" name="recherche" type="text" placeholder="Rechercher un mot clé...">
+          <button type="submit" class="btn btn-primary" style="border-radius: 0 24px 24px 0;">Rechercher</button>
         </div>
 
         <div class="filters">
-          <select [(ngModel)]="filtreMatiere" name="matiere" (change)="chargerCours()">
+          <select class="form-control" [(ngModel)]="filtreMatiere" name="matiere" (change)="chargerCours()" style="width: auto; border-radius: 20px;">
             <option value="">Toutes les matières</option>
             <option *ngFor="let m of matieres" [value]="m.id_matiere">{{ m.nom }}</option>
           </select>
 
-          <select [(ngModel)]="filtreLangue" name="langue" (change)="chargerCours()">
+          <select class="form-control" [(ngModel)]="filtreLangue" name="langue" (change)="chargerCours()" style="width: auto; border-radius: 20px;">
             <option value="">Toutes les langues</option>
             <option *ngFor="let l of languesList" [value]="l.id_langue">{{ l.nom }}</option>
           </select>
 
-          <select [(ngModel)]="filtreAvis" name="avis" (change)="chargerCours()">
+          <select class="form-control" [(ngModel)]="filtreAvis" name="avis" (change)="chargerCours()" style="width: auto; border-radius: 20px;">
             <option value="">Trier les avis par...</option>
             <option value="croissant">Note croissante</option>
             <option value="decroissant">Note décroissante</option>
@@ -28,21 +28,19 @@
     </form>
   </div>
 
-  <div class="no-cours" *ngIf="coursList.length === 0">
+  <div class="empty-state" *ngIf="coursList.length === 0">
     <p>Aucun cours trouvé.</p>
   </div>
 
   <ol class="cours-grid" *ngIf="coursList.length > 0">
-    <li class="card" *ngFor="let msg of coursList">
-      <article>
-        <!-- Lien vers la modification du cours -->
+    <li *ngFor="let msg of coursList">
+      <article class="card-panel interactive" style="position: relative; border-top: 5px solid #3b82f6; padding: 1.5rem;">
         <a [routerLink]="['/enseignant/modif-cours', msg.id_cours]" class="card-link"></a>
-        
+
         <h2>{{ msg.nom_matiere }}</h2>
 
         <div class="supp">
-          <!-- Empêche le clic sur le bouton de déclencher le routerLink de la carte entière -->
-          <button (click)="supprimerCours(msg.id_cours); $event.stopPropagation()" class="btn_supp_cours">
+          <button (click)="supprimerCours(msg.id_cours); $event.stopPropagation()" class="btn btn-danger">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
             </svg>
@@ -58,7 +56,7 @@
         </span>
 
         <p class="meta-item">{{ msg.prix_heure }} €/h • {{ msg.mode_cours | titlecase }}</p>
-        
+
         <p class="meta-item badge-info" *ngIf="msg.camera_obligatoire">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M23 7l-7 5 7 5V7z"/>
@@ -66,7 +64,7 @@
           </svg>
           Caméra obligatoire
         </p>
-        
+
         <p class="meta-item badge-info" *ngIf="msg.suivi">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -89,7 +87,7 @@
         </p>
 
         <div class="txt-desc" [innerHTML]="msg.description"></div>
-            
+
         <div class="note-aside">
           <div class="rating-box" [ngClass]="{'excellent': msg.noteMoyenne >= 4, 'moyen': msg.noteMoyenne >= 2.5, 'malheure': msg.noteMoyenne < 2.5, 'null': !msg.noteMoyenne}">
             <span class="score">{{ msg.noteMoyenne ? (msg.noteMoyenne | number:'1.1-1') + ' ★' : '--' }}</span>

@@ -25,7 +25,6 @@ if ($id_session <= 0) {
     exit;
 }
 
-verifierEnseignantOuAdmin();
 
 $id_cours = (int) ($_GET['id'] ?? 0);
 $is_admin = false; // À adapter si tu passes aussi un rôle dans les headers (ex: X-User-Role)

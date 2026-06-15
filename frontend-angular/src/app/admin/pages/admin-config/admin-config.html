@@ -1,15 +1,15 @@
-<div class="dashboard">
-  <div class="dashboard-header">
+<div class="admin-dashboard">
+  <div class="admin-header">
     <h1>Configuration</h1>
     <p>Gérez les matières et les langues de la plateforme</p>
   </div>
 
   <!-- Messages d'erreur/succès -->
-  <div *ngIf="error" class="alert alert-error">{{ error }}</div>
-  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="error" class="alert-box alert-error">{{ error }}</div>
+  <div *ngIf="successMessage" class="alert-box alert-success">{{ successMessage }}</div>
 
   <!-- Chargement -->
-  <div *ngIf="loading" class="loading">Chargement en cours...</div>
+  <div *ngIf="loading" class="admin-loading">Chargement en cours...</div>
 
   <ng-container *ngIf="!loading">
     <div class="dashboard-grid">
@@ -19,15 +19,16 @@
 
         <!-- Formulaire d'ajout -->
         <div class="add-form">
-          <div class="form-group">
+          <div class="form-group" style="display: flex; gap: 10px; width: 100%;">
             <input
               type="text"
+              class="form-control"
               [(ngModel)]="newMatiere"
               name="newMatiere"
               placeholder="Nom de la matière..."
               (keyup.enter)="ajouterMatiere()"
             >
-            <button type="button" (click)="ajouterMatiere()" class="action-btn primary">
+            <button type="button" (click)="ajouterMatiere()" class="admin-btn primary">
               Ajouter
             </button>
           </div>
@@ -50,15 +51,16 @@
 
         <!-- Formulaire d'ajout -->
         <div class="add-form">
-          <div class="form-group">
+          <div class="form-group" style="display: flex; gap: 10px; width: 100%;">
             <input
               type="text"
+              class="form-control"
               [(ngModel)]="newLangue"
               name="newLangue"
               placeholder="Nom de la langue..."
               (keyup.enter)="ajouterLangue()"
             >
-            <button type="button" (click)="ajouterLangue()" class="action-btn primary">
+            <button type="button" (click)="ajouterLangue()" class="admin-btn primary">
               Ajouter
             </button>
           </div>

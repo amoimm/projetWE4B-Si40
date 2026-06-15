@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class AdminService {
   // URLs des endpoints API du backend PHP
-  private apiBaseUrl = 'http://localhost/projetWE4B-SI40/backend-angular/admin';
+  private apiBaseUrl = 'http://localhost/projetWE4B-Si40/backend-angular/admin';
 
   private statsUrl = `${this.apiBaseUrl}/api-stats.php`;
   private utilisateursUrl = `${this.apiBaseUrl}/api-utilisateurs.php`;
