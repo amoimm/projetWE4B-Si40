@@ -14,7 +14,7 @@
         <div class="conv-group-title">{{ group.key }}</div>
         <a class="conv-row"
            *ngFor="let conv of group.value"
-           [routerLink]="['/enseignant/messagerie']"
+           [routerLink]="['/enseignant/conversations/messagerie']"
            [queryParams]="{id_conv: conv.id_conv, id_cours: conv.id_cours, id_eleve: conv.id_eleve}">
           <div class="conv-avatar">{{ (conv.prenom[0] + conv.nom[0]) | uppercase }}</div>
           <div class="conv-row-name">{{ conv.prenom }} {{ conv.nom }}</div>
@@ -43,7 +43,7 @@
         <div *ngIf="!selectedCours" class="empty-state">Aucun cours sélectionné.</div>
         <a class="conv-row"
            *ngFor="let eleve of elevesDuCours"
-           [routerLink]="['/enseignant/messagerie']"
+           [routerLink]="['/enseignant/conversations/messagerie']"
            [queryParams]="{id_eleve: eleve.id_eleve, id_cours: eleve.id_cours, id_conv: eleve.id_conv}">
 
           <div class="conv-avatar">{{ eleve.initiales }}</div>

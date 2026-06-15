@@ -35,7 +35,7 @@
   <ol class="cours-grid" *ngIf="coursList.length > 0">
     <li *ngFor="let msg of coursList">
       <article class="card-panel interactive" style="position: relative; border-top: 5px solid #3b82f6; padding: 1.5rem;">
-        <a [routerLink]="['/enseignant/modif-cours', msg.id_cours]" class="card-link"></a>
+        <a [routerLink]="['/enseignant/mes-cours/modif-cours', msg.id_cours]" class="card-link"></a>
 
         <h2>{{ msg.nom_matiere }}</h2>
 

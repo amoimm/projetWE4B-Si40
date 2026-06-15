@@ -94,8 +94,8 @@ export class EnseignantService {
     });
   }
 
-  gererRdv(idRdv: number, action: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/gestion_rdv.php`, { id_rdv: idRdv, action: action });
+  gererRdv(idRdv: number, action: string, userId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/gestion_rdv.php`, { id_rdv: idRdv, action: action }, { headers: this.getHeaders(userId) });
   }
 
 }

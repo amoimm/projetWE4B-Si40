@@ -66,7 +66,6 @@ export class EtudiantDevenirProfComponent implements OnInit {
     }
   }
 
-  // LA SEULE ET UNIQUE méthode soumettreFormulaire !
   soumettreFormulaire(): void {
     if (this.matieresSelectionnees.size === 0 || this.languesSelectionnees.size === 0) {
       alert("Erreur : Veuillez sélectionner au moins une matière ET une langue.");

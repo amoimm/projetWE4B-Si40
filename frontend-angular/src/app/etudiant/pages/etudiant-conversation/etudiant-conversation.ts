@@ -120,6 +120,27 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
   fermerModale() { this.modaleOuverte = false; }
 
   soumettreRdv() {
+    //verif
+    if (
+      !this.formRdv.date_cours || 
+      !this.formRdv.heure_cours || 
+      !this.formRdv.duree_cours || 
+      !this.formRdv.lieu || 
+      !this.formRdv.langue_cours
+    ) {
+      alert('Veuillez remplir tous les champs du formulaire.');
+      return;
+    }
+
+    const dateChoisie = new Date(this.formRdv.date_cours);
+    const aujourdhui = new Date();
+    aujourdhui.setHours(0, 0, 0, 0);
+
+    if (dateChoisie.getTime() < aujourdhui.getTime()) {
+        alert('Vous ne pouvez pas choisir une date passée.');
+      return;
+    }
+
     const payload = {
       id_cours: this.idCours,
       id_eleve: this.monProfil.id,

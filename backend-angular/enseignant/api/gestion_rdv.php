@@ -28,7 +28,7 @@ if ($id_utilisateur <= 0) {
 
 $data = json_decode(file_get_contents("php://input"), true);
 $id_rdv = (int)$data['id_rdv'];
-$action = $data['action']; // 'accepter' ou 'refuser' ou 'annuler'
+$action = $data['action'];
 
 if ($action === 'accepter') {
     $stmt = $db->prepare("UPDATE rdv SET est_valide = 1 WHERE id_rdv = ?");

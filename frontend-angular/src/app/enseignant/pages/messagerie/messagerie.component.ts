@@ -90,7 +90,7 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
   }
 
   gererRdv(idRdv: number, action: string) {
-    this.service.gererRdv(idRdv, action).subscribe(() => {
+    this.service.gererRdv(idRdv, action, this.monId).subscribe(() => {
       this.chargerDonnees();
     });
   }

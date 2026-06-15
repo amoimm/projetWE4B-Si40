@@ -53,10 +53,10 @@ export const routes: Routes = [
     children: [
     { path: 'accueil', component: EnseignantAccueilComponent },
     { path: 'mes-cours', component: MesCoursComponent },
-    { path: 'modif-cours/:id', component: ModifCoursComponent },
+    { path: 'mes-cours/modif-cours/:id', component: ModifCoursComponent },
     { path: 'nouveau-cours', component: NouveauCoursComponent },
     { path: 'conversations', component: ConversationsComponent },
-    { path: 'messagerie', component: MessagerieComponent },
+    { path: 'conversations/messagerie', component: MessagerieComponent },
     { path: 'profil', component: ProfilComponent },
     { path: '', redirectTo: 'accueil', pathMatch: 'full' }
   ]
