@@ -22,7 +22,7 @@ import { AdminUtilisateurs } from './admin/pages/admin-utilisateurs/admin-utilis
 import { AdminCours } from './admin/pages/admin-cours/admin-cours';
 import { AdminConfig } from './admin/pages/admin-config/admin-config';
 
-import { ProfilComponent } from './general/component/profil/profil';
+import { ProfilComponent } from './general/pages/profil/profil';
 import { AccueilComponent } from './general/pages/accueil/accueil';
 
 import {ConnexionComponent} from './auth/pages/connexion/connexion'
