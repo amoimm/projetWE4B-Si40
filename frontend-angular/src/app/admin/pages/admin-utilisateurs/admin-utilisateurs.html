@@ -43,6 +43,7 @@
           <th>Nom & Prénom</th>
           <th>Email</th>
           <th>Rôle</th>
+          <th>Certificats</th>
           <th>Actions</th>
         </tr>
         </thead>
@@ -68,6 +69,18 @@
               OK
             </button>
           </td>
+
+          <td>
+            <div *ngIf="user.certifs && user.certifs.fichiers.length > 0">
+              <div *ngFor="let file of user.certifs.fichiers">
+                <a href="javascript:void(0)" (click)="ouvrirCertificat(user.id_utilisateurs, file.nom_fichier)" class="cert-link" title="Ouvrir le PDF">
+                  📄 {{ file.nom_fichier }}
+                </a>
+              </div>
+            </div>
+            <span *ngIf="!user.certifs || user.certifs.fichiers.length === 0" class="text-muted">Aucun</span>
+          </td>
+
           <td>
             <button
               type="button"

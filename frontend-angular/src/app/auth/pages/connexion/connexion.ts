@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import {LogService} from '../../../general/log/log.service';
 
 @Component({
   selector: 'app-connexion',
@@ -16,7 +17,11 @@ export class ConnexionComponent {
   motDePasse: string = '';
   messageErreur: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private logService: LogService
+  ) {}
 
   seConnecter(): void {
     if (!this.email || !this.motDePasse) {
@@ -30,6 +35,12 @@ export class ConnexionComponent {
       next: (reponse) => {
         if (reponse.succes) {
           this.authService.sauvegarderSession(reponse.utilisateur);
+
+          this.logService.LogConnexion(
+            `L'utilisateur numéro ${reponse.utilisateur.id} s'est connecté !`,
+            "INFO",
+            reponse.utilisateur.id
+          );
 
           if (reponse.utilisateur.role === 'admin') {
             this.router.navigate(['/admin/accueil']);

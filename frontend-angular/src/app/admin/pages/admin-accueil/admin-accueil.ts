@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy,ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
+import { interval, Subscription } from 'rxjs';
 // Import de Chart.js
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
@@ -12,10 +13,11 @@ Chart.register(...registerables);
   templateUrl: './admin-accueil.html',
   styleUrl: './admin-accueil.css'
 })
-export class AdminAccueil implements OnInit {
+export class AdminAccueil implements OnInit, OnDestroy {
   // Variables pour stocker les données
   stats = {
     users: 0,
+    users_connected: 0,
     cours: 0,
     messages: 0
   };
@@ -24,6 +26,11 @@ export class AdminAccueil implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // Variables pour suivre les instances de graphiques et l'abonnement temporel
+  private matiereChartInstance: Chart | null = null;
+  private activiteChartInstance: Chart | null = null;
+  private actualisationAuto!: Subscription;
+
   constructor(
     private adminService: AdminService,
     private cdr: ChangeDetectorRef,
@@ -31,12 +38,24 @@ export class AdminAccueil implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.chargerDonnees();
+    this.chargerDonnees(true);
+
+    this.actualisationAuto = interval(5000).subscribe(() => {
+      this.chargerDonnees(false);
+    })
+  }
+
+  ngOnDestroy() {
+    if(this.actualisationAuto){
+      this.actualisationAuto.unsubscribe();
+    }
   }
 
   // Charge les stats et les utilisateurs récents
-  chargerDonnees() {
-    this.loading = true;
+  chargerDonnees(isFirstLoad: boolean = false) {
+    if(isFirstLoad){
+      this.loading = true;
+    }
     this.error = null;
 
     // Récupérer les stats (contient aussi les stats MongoDB pour les diagrammes)
@@ -85,6 +104,10 @@ export class AdminAccueil implements OnInit {
       return;
     }
 
+    if (this.matiereChartInstance) {
+      this.matiereChartInstance.destroy();
+    }
+
     const labels = matieresData.map(item => item.matiere);
     const counts = matieresData.map(item => item.count);
 
@@ -116,7 +139,7 @@ export class AdminAccueil implements OnInit {
       return colorMap[key] || '#34495e'; // Couleur sombre par défaut
     });
 
-    new Chart(ctx, {
+    this.matiereChartInstance = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: labels,
@@ -151,6 +174,10 @@ export class AdminAccueil implements OnInit {
       return;
     }
 
+    if (this.activiteChartInstance) {
+      this.activiteChartInstance.destroy();
+    }
+
     const labels = activiteData.map(item => item.date);
     const counts = activiteData.map(item => item.count);
 
@@ -161,7 +188,7 @@ export class AdminAccueil implements OnInit {
       counts.push(0);
     }
 
-    new Chart(ctx, {
+    this.activiteChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,

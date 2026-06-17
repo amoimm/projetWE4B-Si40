@@ -2,6 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive,Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
+  import {LogService} from '../../log/log.service';
 
 
 @Component({
@@ -17,9 +18,21 @@ export class MainNavComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private logService: LogService
   ) {}
   deconnexion(): void {
+    const user = this.authService.getUtilisateurConnecte();
+    if (user && user.id) {
+      // Enregistrement du log de déconnexion dans MongoDB
+      this.logService.LogEvenement(
+        'AUTHENTICATION',
+        'LOGOUT',
+        `L'utilisateur numéro ${user.id} s'est déconnecté`,
+        'INFO',
+        user.id.toString()
+      );
+    }
     this.authService.deconnexion();
     this.router.navigate(['/auth/connexion']);
   }

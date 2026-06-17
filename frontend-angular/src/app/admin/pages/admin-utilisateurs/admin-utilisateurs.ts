@@ -14,7 +14,6 @@ export class AdminUtilisateurs implements OnInit {
   utilisateurs: any[] = [];
   totalCount = 0;
   currentPage = 1;
-  perPage = 15;
   totalPages = 0;
 
   // Filtres
@@ -140,5 +139,33 @@ export class AdminUtilisateurs implements OnInit {
       case 2: return 'Admin';
       default: return 'Inconnu';
     }
+  }
+
+  // Ouvrir le certificat dans un nouvel onglet
+  ouvrirCertificat(idUtilisateur: number, nomFichier: string) {
+    this.adminService.getCertificat(idUtilisateur, nomFichier).subscribe({
+      next: (res) => {
+        if (res.success && res.donnees_base64) {
+          // Décodage de la chaîne Base64 en Blob PDF
+          const byteCharacters = atob(res.donnees_base64);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const file = new Blob([byteArray], { type: 'application/pdf' });
+
+          // Création de l'URL du fichier et ouverture
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL);
+        } else {
+          alert('Impossible de charger le certificat.');
+        }
+      },
+      error: (err) => {
+        console.error('Erreur récupération certificat:', err);
+        alert('Erreur lors du chargement du fichier.');
+      }
+    });
   }
 }

@@ -5,7 +5,8 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') { http_response_code(200); exit; }
 
 require_once __DIR__ . '/../bdd/config.php';
-// Inclure l'autoloader de Composer pour MongoDB (ajuste le chemin selon ton projet)
+require_once __DIR__ . '/../bdd/config_mongodb.php';
+// Inclure l'autoloader de Composer pour MongoDB
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // 1. Récupération des données POST (Texte)
@@ -55,9 +56,8 @@ try {
     // INSERTION MONGODB (Les PDF)
     // ==========================================
     if (!empty($certificatsMongo)) {
-        $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
 
-        $collection = $mongoClient->selectCollection('projet_we4b_nosql', 'certifications_profs');
+        $collection = $mongoClient->selectCollection('coursconnect_nosql', 'certif_prof');
 
         $collection->insertOne([
             'id_utilisateur' => (int)$id_utilisateur,

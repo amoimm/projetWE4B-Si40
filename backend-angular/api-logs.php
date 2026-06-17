@@ -56,12 +56,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $json = file_get_contents('php://input');
         $data = json_decode($json, true);
         if ($data && !empty($data['message'])) {
+            $id_user = null;
+            if (isset($data['id_user']) && $data['id_user'] !== '' && $data['id_user'] !== 0 && $data['id_user'] !== '0') {
+                $id_user = (int)$data['id_user'];
+            }
             $document = [
                 'level'     => $data['level'] ?? 'INFO',
                 'category'  => $data['category'] ?? 'GENERAL',
                 'action'    => $data['action'] ?? 'ACTION',
                 'message'   => $data['message'],
-                'id_user'   => $data['id_user'] ?? null,
+                'id_user'   => $id_user,
                 'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
 
                 // details contient des objets spécifiques (ex: filtres, tarifs...)

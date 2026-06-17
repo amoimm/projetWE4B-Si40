@@ -17,12 +17,34 @@ try {
 
     $top_matieres = [];
     $activite_jours = [];
+    $user_connected = 0;
     $mongo_available = false;
 
     try {
         require_once __DIR__ . '/../bdd/config_mongodb.php';
-        // DEBUG : À supprimer une fois que ça fonctionne
-        error_log("Headers reçus : " . print_r(getallheaders(), true));
+
+        $thirtyMinutesAgo = new DateTime('now', new DateTimeZone('Europe/Paris'));
+        $thirtyMinutesAgo->modify('-30 minutes');
+        $hexTime = dechex($thirtyMinutesAgo->getTimestamp()) . str_repeat('0', 16);
+        $objectIdMin = new MongoDB\BSON\ObjectId($hexTime);
+        $pipeline_connected = [
+            ['$match' => [
+                '_id' => ['$gte' => $objectIdMin], // Actif dans les 30 dernières minutes
+                'id_user' => ['$exists' => true, '$ne' => null, '$nin' => [0, '0', '']]
+            ]],
+            ['$sort' => ['_id' => -1]],
+            ['$group' => [
+                '_id' => '$id_user',
+                'latest_action' => ['$first' => '$action']
+            ]],
+            ['$match' => [
+                'latest_action' => ['$ne' => 'LOGOUT']
+            ]],
+            ['$count' => 'count']
+        ];
+
+        $cursor_connected = $activitylogsCollection->aggregate($pipeline_connected)->toArray();
+        $user_connected = isset($cursor_connected[0]['count']) ? (int)$cursor_connected[0]['count'] : 0;
 
         // Charger toutes les matières de MySQL pour faire le mapping id -> nom
         $matieres_sql = $mysql_db->query("SELECT id_matiere, nom FROM matiere")->fetchAll(PDO::FETCH_KEY_PAIR);
@@ -84,6 +106,7 @@ try {
 
     echo json_encode([
         'users' => (int)$stats_users,
+        'users_connected' => $user_connected,
         'cours' => (int)$stats_cours,
         'messages' => (int)$stats_messages,
         'mongo_available' => $mongo_available,

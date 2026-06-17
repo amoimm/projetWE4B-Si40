@@ -110,4 +110,11 @@ export class AdminService {
       id_user: idUser
     });
   }
+
+  // Récupère le certificat PDF d'un utilisateur sous forme de base64
+  getCertificat(idUtilisateur: number, nomFichier: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.utilisateursUrl}?action=voir_certificat&id_utilisateur=${idUtilisateur}&nom_fichier=${encodeURIComponent(nomFichier)}`
+    );
+  }
 }

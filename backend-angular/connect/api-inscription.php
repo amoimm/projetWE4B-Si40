@@ -5,6 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') { http_response_code(200); exit; }
 
 require_once __DIR__ . '/../bdd/config.php';
 require_once __DIR__ . '/../vendor/autoload.php'; // Pour MongoDB
+require_once __DIR__ . '/../bdd/config_mongodb.php';
 
 // ==========================================
 // 1. Récupération des données POST (Texte)
@@ -110,8 +111,7 @@ try {
         }
 
         if (!empty($certificatsMongo)) {
-            $mongoClient = new MongoDB\Client("mongodb://localhost:27017");
-            $collection = $mongoClient->selectCollection('projet_we4b_nosql', 'certifications_profs');
+            $collection = $mongoClient->selectCollection('coursconnect_nosql', 'certif_prof');
 
             $collection->insertOne([
                 'id_utilisateur' => (int)$id_utilisateur,
