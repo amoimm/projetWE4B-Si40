@@ -37,7 +37,16 @@ try {
     $req = $db->prepare("
         SELECT 
             COUNT(DISTINCT c.id_cours) AS nb_cours, 
-            COUNT(DISTINCT r.id_eleve) AS nb_eleves 
+            COUNT(DISTINCT CASE 
+                WHEN r.est_valide = 1 AND r.date_heure < NOW() 
+                THEN r.id_rdv 
+                ELSE NULL 
+            END) AS nb_cours_effectues,
+            COUNT(DISTINCT CASE 
+                WHEN r.est_valide = 1 AND r.date_heure >= NOW() 
+                THEN r.id_rdv 
+                ELSE NULL 
+            END) AS nb_cours_a_venir
         FROM cours c 
         JOIN enseignant_matiere em ON c.id_em = em.id_em 
         LEFT JOIN rdv r ON r.id_cours = c.id_cours 
