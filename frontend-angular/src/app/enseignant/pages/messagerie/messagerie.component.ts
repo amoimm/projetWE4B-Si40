@@ -25,6 +25,8 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
   messages: any[] = [];
   rendezVous: any[] = [];
 
+  private refreshInterval: any;
+
   constructor(
     private route: ActivatedRoute,
     private service: EnseignantService,
@@ -41,6 +43,16 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
       
       this.chargerDonnees();
     });
+
+    this.refreshInterval = setInterval(() => {
+      this.chargerDonnees();
+    }, 3000);
+  }
+
+  ngOnDestroy() {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
   }
 
   // Scroll automatique vers le bas lors de l'ajout d'un message

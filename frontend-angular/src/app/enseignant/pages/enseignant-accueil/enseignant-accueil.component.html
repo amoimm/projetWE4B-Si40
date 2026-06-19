@@ -16,8 +16,12 @@
       <div class="stat-card">
         <div class="stat-icon">🎓</div>
         <div>
-          <span class="stat-label">Élèves</span>
-          <span class="stat-value">{{ stats?.nb_eleves || 0 }}</span>
+          <span class="stat-label">Cours effectué</span>
+          <span class="stat-value">{{ stats?.nb_cours_effectues || 0 }}</span>
+        </div>
+        <div>
+          <span class="stat-label">Cours à venir</span>
+          <span class="stat-value">{{ stats?.nb_cours_a_venir || 0 }}</span>
         </div>
       </div>
       <div class="stat-card highlight">
