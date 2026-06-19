@@ -44,22 +44,6 @@ export class ProfilComponent implements OnInit {
       error: (err) => console.error('Erreur de chargement du profil :', err)
     });
   }
-
-  changerTheme(nouveauTheme: string): void {
-    this.profilService.updateProfil(this.idUtilisateurConnecte, this.roleUtilisateurConnecte, { theme: nouveauTheme }).subscribe({
-      next: (reponse) => {
-        console.log('Serveur PHP :', reponse);
-        if (this.donneesUtilisateur) {
-          this.donneesUtilisateur.theme = nouveauTheme;
-        }
-        alert('Préférence enregistrée en BDD : Thème ' + nouveauTheme);
-      },
-      error: (err) => {
-        console.error('Erreur lors de la modification du thème :', err);
-      }
-    });
-  }
-
   validerModifications(): void {
     if (this.enModeEdition) {
       // Vérifications de sécurité pour le mot de passe

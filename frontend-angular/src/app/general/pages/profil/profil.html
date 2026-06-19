@@ -6,14 +6,6 @@
     </div>
 
     <div class="profile-card">
-      <div class="preferences-box">
-        <h3>Préférences d'affichage</h3>
-        <div class="theme-buttons">
-          <button class="btn-theme" (click)="changerTheme('light')" [class.active]="donneesUtilisateur.theme === 'Clair'">Clair</button>
-          <button class="btn-theme" (click)="changerTheme('dark')" [class.active]="donneesUtilisateur.theme === 'Sombre'">Sombre</button>
-        </div>
-      </div>
-
       <div class="profile-grid">
         <div class="profile-box"
              [class.clicable]="!enModeEdition"

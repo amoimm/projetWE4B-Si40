@@ -27,7 +27,6 @@ try {
     $presentation = isset($data['presentation']) ? $data['presentation'] : ''; // <-- Récupération
     $ancienMdp    = isset($data['ancienMdp']) ? $data['ancienMdp'] : null;
     $nouveauMdp   = isset($data['nouveauMdp']) ? $data['nouveauMdp'] : null;
-    $theme        = isset($data['theme']) ? $data['theme'] : null;
 
     // SCÉNARIO A : Modification des informations textuelles
     if ($prenom && $nom && $email) {
@@ -39,7 +38,7 @@ try {
                 'prenom'       => $prenom,
                 'nom'          => $nom,
                 'email'        => $email,
-                'presentation' => $presentation, // <-- Liaison SQL
+                'presentation' => $presentation,
                 'mdp'          => $nouveauMdpHash,
                 'id'           => $user_id
             ]);
@@ -50,7 +49,7 @@ try {
                 'prenom'       => $prenom,
                 'nom'          => $nom,
                 'email'        => $email,
-                'presentation' => $presentation, // <-- Liaison SQL
+                'presentation' => $presentation,
                 'id'           => $user_id
             ]);
         }

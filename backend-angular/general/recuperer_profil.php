@@ -21,7 +21,6 @@ try {
             "prenom" => "Utilisateur",
             "nom" => "Inconnu",
             "email" => "non-trouve@utbm.fr",
-            "theme" => "Clair"
         ]);
     }
 
