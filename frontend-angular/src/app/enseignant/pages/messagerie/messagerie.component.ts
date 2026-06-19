@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute } from '@angular/router';
@@ -12,7 +12,7 @@ import { AuthService } from '../../../auth/services/auth.service';
   templateUrl: './messagerie.component.html',
   styleUrl: './messagerie.component.css',
 })
-export class MessagerieComponent implements OnInit, AfterViewChecked {
+export class MessagerieComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('chatBox') private chatBox!: ElementRef;
 
   monId: number = 0;
@@ -20,10 +20,12 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
   idCours: number = 0;
   idEleve: number = 0;
   nouveauMessage: string = '';
-  
+
   convInfo: any = null;
   messages: any[] = [];
   rendezVous: any[] = [];
+
+  private refreshInterval: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,19 +35,28 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     this.monId = Number(this.auth.getUtilisateurConnecte().id);
-    
+
     this.route.queryParams.subscribe(params => {
       this.idConv = params['id_conv'] ? Number(params['id_conv']) : null;
       this.idCours = Number(params['id_cours']);
       this.idEleve = Number(params['id_eleve']);
-      
+
       this.chargerDonnees();
     });
+
+    this.refreshInterval = setInterval(() => {
+      this.chargerDonnees();
+    }, 2000);
   }
 
-  // Scroll automatique vers le bas lors de l'ajout d'un message
   ngAfterViewChecked() {
     this.scrollToBottom();
+  }
+
+  ngOnDestroy() {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
   }
 
   private scrollToBottom(): void {
@@ -56,17 +67,17 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
 
   chargerDonnees() {
     if (this.idCours > 0 && this.idEleve > 0) {
-        this.service.getRdv(this.idCours, this.idEleve, this.monId).subscribe(data => {
-            this.rendezVous = data;
-        });
+      this.service.getRdv(this.idCours, this.idEleve, this.monId).subscribe(data => {
+        this.rendezVous = data;
+      });
     }
 
     if (this.idConv) {
-        this.service.getMessages(this.monId, this.idConv).subscribe(data => {
-            this.messages = data;
-        });
+      this.service.getMessages(this.monId, this.idConv).subscribe(data => {
+        this.messages = data;
+      });
     } else {
-        this.messages = [];
+      this.messages = [];
     }
   }
 

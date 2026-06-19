@@ -26,14 +26,17 @@ if ($id_utilisateur <= 0) {
 
 $id_cours = (int)($_GET['id_cours'] ?? 0);
 $id_eleve = (int)($_GET['id_eleve'] ?? 0);
+$date_actuelle = date("Y-m-d H:i:s");
 
 $sql_rdv = "SELECT date_heure, est_valide, id_rdv, lieu 
             FROM rdv 
             WHERE id_cours = :id_cours 
-            AND id_eleve = :id_eleve";
+            AND id_eleve = :id_eleve 
+            AND date_heure > :date_now 
+            ORDER BY date_heure ASC";
 
 $stmt_rdv = $db->prepare($sql_rdv);
-$stmt_rdv->execute(['id_cours' => $id_cours, 'id_eleve' => $id_eleve]);
+$stmt_rdv->execute(['id_cours' => $id_cours, 'id_eleve' => $id_eleve,'date_now' => $date_actuelle]);
 $rdvs = $stmt_rdv->fetchAll(PDO::FETCH_ASSOC);
 
 echo json_encode($rdvs);

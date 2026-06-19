@@ -7,16 +7,16 @@ import { Observable } from 'rxjs';
 })
 export class EtudiantService {
   // --- URLs d'API REST pointant vers le backend PHP ---
-  private apiUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/recuperer_etudiant.php';
-  private updateUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/modifier_etudiant.php';
-  private apiCoursUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-cours.php';
-  private apiFiltresUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-filtres.php';
-  private apiDetailsConversationUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-details-conversation.php';
-  private apiConversationsUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-conversations.php';
-  private apiEnvoiMessageUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-envoi-message.php';
-  private apiDemandeRdvUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-demande-rdv.php';
-  private apiSupprimerRdvUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-supprimer-rdv.php';
-  private apiDevenirProfUrl = 'http://localhost/projetWE4B-SI40/backend-angular/etudiant/api-devenir-prof.php';
+  private apiUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/recuperer_etudiant.php';
+  private updateUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/modifier_etudiant.php';
+  private apiCoursUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-cours.php';
+  private apiFiltresUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-filtres.php';
+  private apiDetailsConversationUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-details-conversation.php';
+  private apiConversationsUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-conversations.php';
+  private apiEnvoiMessageUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-envoi-message.php';
+  private apiDemandeRdvUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-demande-rdv.php';
+  private apiSupprimerRdvUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-supprimer-rdv.php';
+  private apiDevenirProfUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-devenir-prof.php';
 
   constructor(private http: HttpClient) { }
 

@@ -26,20 +26,22 @@
     </div>
 
     <div class="rdv-block">
-      <div *ngIf="rendezVous && rendezVous.length === 0" class="rdv-empty">
-        Aucun rendez-vous planifié.
-      </div>
-
       <div *ngFor="let rdv of rendezVous" class="rdv-item">
-        <span><strong>RDV :</strong> {{ rdv.date_heure | date:'dd/MM à HH:mm' }}</span>
+
+        <div class="rdv-text">
+          <p style="margin: 0;"><strong>📅 RDV :</strong> {{ rdv.date_heure | date:'dd/MM à HH:mm' }}</p>
+          <p style="margin: 5px 0;"><strong>Statut :</strong> {{ rdv.est_valide == 0 ? 'En attente' : 'Confirmé' }}</p>
+        </div>
 
         <div class="rdv-actions" *ngIf="rdv.est_valide == 0">
           <button (click)="gererRdv(rdv.id_rdv, 'accepter')" class="btn-rdv accept">✅ Accepter</button>
           <button (click)="gererRdv(rdv.id_rdv, 'refuser')" class="btn-rdv decline">❌ Refuser</button>
         </div>
+
         <div *ngIf="rdv.est_valide == 1">
           <button (click)="gererRdv(rdv.id_rdv, 'annuler')" class="btn-rdv decline">🚫 Annuler</button>
         </div>
+
       </div>
     </div>
 

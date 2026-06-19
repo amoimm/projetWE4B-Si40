@@ -1,20 +1,15 @@
 <main class="chat-page">
   <div class="chat-card">
-
     <header class="chat-header">
       <h2>{{ infoCours?.description || 'Chargement du cours...' }}</h2>
     </header>
 
     <div class="chat-messages" #scrollMe>
-      <div *ngIf="messages.length === 0" class="empty-messages">
-        Aucun message pour le moment.
-      </div>
+      <div *ngIf="messages.length === 0" class="empty-messages">Aucun message pour le moment.</div>
 
-      <div *ngFor="let msg of messages"
-           class="message-row"
+      <div *ngFor="let msg of messages" class="message-row"
            [class.sent]="msg.id_redacteur === monProfil?.id"
            [class.received]="msg.id_redacteur !== monProfil?.id">
-
         <div class="bubble">
           <span class="text">{{ msg.contenu }}</span>
           <span class="time">{{ msg.heure | date:'HH:mm' }}</span>
@@ -23,68 +18,60 @@
     </div>
 
     <div class="rdv-block" *ngIf="rdvs.length > 0">
-      <div class="rdv-item" *ngFor="let rdv of rdvs" style="margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-        <div style="text-align: left;">
-          <p style="margin: 0 0 5px 0;"><strong>📅 Date :</strong> {{ rdv.date_heure }} - <strong>📍 Lieu :</strong> {{ rdv.lieu }}</p>
-          <p style="margin: 0;"><strong>Statut :</strong>
-            <span [style.color]="rdv.est_valide == 0 ? '#4b5563' : '#16a34a'" [style.fontWeight]="rdv.est_valide == 1 ? 'bold' : 'normal'">
-              {{ rdv.est_valide == 0 ? 'En attente' : 'Confirmé' }}
-            </span>
+      <div class="rdv-item-vertical" *ngFor="let rdv of rdvs">
+
+        <div class="rdv-details">
+          <p>Date : {{ rdv.date_heure }} - Lieu : {{ rdv.lieu }}</p>
+          <p>Statut :
+            <span [class.valide]="rdv.est_valide == 1" [class.attente]="rdv.est_valide == 0">
+          {{ rdv.est_valide == 0 ? 'En attente' : 'Confirmé' }}
+        </span>
           </p>
         </div>
-        <button class="btn-rdv decline" (click)="annulerRdv(rdv.id_rdv)">❌ Annuler</button>
+
+        <button class="btn-annuler-red" (click)="annulerRdv(rdv.id_rdv)">
+          ❌ Annuler
+        </button>
+
       </div>
     </div>
 
     <form class="chat-input-bar" (submit)="envoyerMessage()">
-
-      <button type="button"
-              class="btn-rdv"
-              style="border-radius: 50%; width: 42px; height: 42px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background-color: #94a3b8; color: white; margin: 0;"
-              title="Demander un rendez-vous"
-              (click)="ouvrirModale()">+</button>
-
-      <input type="text"
-             name="message"
-             [(ngModel)]="nouveauMessage"
-             placeholder="Écrivez votre message..."
-             autocomplete="off"
-             required>
-
+      <button type="button" class="btn-rdv-open" (click)="ouvrirModale()">+</button>
+      <input type="text" [(ngModel)]="nouveauMessage" name="msg" placeholder="Écrivez votre message..." required>
       <button type="submit">Envoyer</button>
     </form>
   </div>
 </main>
 
-<div class="modal-overlay" *ngIf="modaleOuverte" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-  <div class="card-panel" style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+<div class="modal-overlay" *ngIf="modaleOuverte">
+  <div class="modal-content">
+    <span class="close-btn" (click)="fermerModale()">&times;</span>
 
-    <span class="close-btn" (click)="fermerModale()" style="position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</span>
+    <h2 style="margin-top: 0; font-size: 1.5rem;">Demander un cours</h2>
 
-    <h2 class="page-title" style="font-size: 1.5rem; margin-top: 0;">Demander un cours</h2>
+    <form (ngSubmit)="soumettreRdv()" class="modal-form">
+      <label>Date :</label>
+      <input type="date" [(ngModel)]="formRdv.date_cours" name="date" [min]="dateMin" required>
 
-    <form (ngSubmit)="soumettreRdv()" class="form-group" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-      <label style="font-weight: 600; font-size: 0.9rem; color: #334155;">Date :</label>
-      <input type="date" [(ngModel)]="formRdv.date_cours" name="date" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      <label>Heure :</label>
+      <input type="time" [(ngModel)]="formRdv.heure_cours" name="heure" required>
 
-      <label style="font-weight: 600; font-size: 0.9rem; color: #334155;">Heure :</label>
-      <input type="time" [(ngModel)]="formRdv.heure_cours" name="heure" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
-
-      <label style="font-weight: 600; font-size: 0.9rem; color: #334155;">Durée :</label>
-      <select [(ngModel)]="formRdv.duree_cours" name="duree" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      <label>Durée :</label>
+      <select [(ngModel)]="formRdv.duree_cours" name="duree" required>
         <option value="30 min">30 min</option>
         <option value="1h">1h</option>
       </select>
 
-      <label style="font-weight: 600; font-size: 0.9rem; color: #334155;">Lieu :</label>
-      <input type="text" [(ngModel)]="formRdv.lieu" name="lieu" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      <label>Lieu :</label>
+      <input type="text" [(ngModel)]="formRdv.lieu" name="lieu" required>
 
-      <label style="font-weight: 600; font-size: 0.9rem; color: #334155;">Langue :</label>
-      <select [(ngModel)]="formRdv.langue_cours" name="langue" required style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+      <label>Langue :</label>
+      <select [(ngModel)]="formRdv.langue_cours" name="langue" required>
         <option *ngFor="let lang of languesProf" [value]="lang.nom">{{ lang.nom }}</option>
       </select>
 
-      <button type="submit" style="margin-top: 15px; width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer;">Envoyer la demande</button>
+      <button type="submit" class="btn-submit-rdv">Envoyer la demande</button>
     </form>
   </div>
 </div>

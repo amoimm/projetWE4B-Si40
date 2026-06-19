@@ -50,14 +50,12 @@ try {
         $langues_prof = $stmt_langues->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // --- NOUVEAU : Récupération des rendez-vous futurs ---
     $date_actuelle = date("Y-m-d H:i:s");
     $sql_rdv = "SELECT date_heure, est_valide, id_rdv, lieu FROM rdv WHERE id_cours = :id_cours AND date_heure > :date_now ORDER BY date_heure ASC";
     $stmt_rdv = $db->prepare($sql_rdv);
     $stmt_rdv->execute(['id_cours' => $id_cours, 'date_now' => $date_actuelle]);
     $rdvs = $stmt_rdv->fetchAll(PDO::FETCH_ASSOC);
 
-    // On met à jour les messages envoyés par le prof pour dire que l'élève les a lus
     $sqlUpdate = "UPDATE message 
               SET lu = 1 
               WHERE id_conv = :id_conv 

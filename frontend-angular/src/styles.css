@@ -412,6 +412,8 @@ main {
   padding: 20px;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
 }
 
 /* La grande carte blanche */

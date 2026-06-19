@@ -25,6 +25,7 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
 
   rdvs: any[] = [];
   languesProf: any[] = [];
+  dateMin: string = '';
 
   private actualisationAuto!: Subscription;
 
@@ -54,6 +55,8 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
       this.actualisationAuto = interval(2000).subscribe(() => {
         this.chargerDiscussion();
       });
+      const aujourdhui = new Date();
+      this.dateMin = aujourdhui.toISOString().split('T')[0];
     });
   }
 
@@ -116,16 +119,16 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
   }
 
   // --- Fonctions de la Modale ---
-  ouvrirModale() { this.modaleOuverte = true; }
+  ouvrirModale() { console.log("Clic reçu !");this.modaleOuverte = true; }
   fermerModale() { this.modaleOuverte = false; }
 
   soumettreRdv() {
     //verif
     if (
-      !this.formRdv.date_cours || 
-      !this.formRdv.heure_cours || 
-      !this.formRdv.duree_cours || 
-      !this.formRdv.lieu || 
+      !this.formRdv.date_cours ||
+      !this.formRdv.heure_cours ||
+      !this.formRdv.duree_cours ||
+      !this.formRdv.lieu ||
       !this.formRdv.langue_cours
     ) {
       alert('Veuillez remplir tous les champs du formulaire.');
