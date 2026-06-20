@@ -56,7 +56,9 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
         this.chargerDiscussion();
       });
       const aujourdhui = new Date();
-      this.dateMin = aujourdhui.toISOString().split('T')[0];
+      const demain = new Date(aujourdhui);
+      demain.setDate(aujourdhui.getDate() + 1);
+      this.dateMin = demain.toISOString().split('T')[0];
     });
   }
 

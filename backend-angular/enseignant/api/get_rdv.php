@@ -32,7 +32,7 @@ $sql_rdv = "SELECT date_heure, est_valide, id_rdv, lieu
             FROM rdv 
             WHERE id_cours = :id_cours 
             AND id_eleve = :id_eleve 
-            AND date_heure > :date_now 
+            AND date_heure >= :date_now 
             ORDER BY date_heure ASC";
 
 $stmt_rdv = $db->prepare($sql_rdv);

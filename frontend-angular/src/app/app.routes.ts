@@ -28,6 +28,8 @@ import { AccueilComponent } from './general/pages/accueil/accueil';
 import {ConnexionComponent} from './auth/pages/connexion/connexion'
 import {InscriptionComponent} from './auth/pages/inscription/inscription';
 import { MotDePasseOublieComponent } from './auth/pages/mot-de-passe-oublie/mot-de-passe-oublie';
+
+import { roleGuard } from './general/guards/auth.guard';
 export const routes: Routes = [
   { path: 'accueil', component: AccueilComponent },
 
@@ -35,6 +37,7 @@ export const routes: Routes = [
   {
     path: 'etudiant',
     component: EtudiantLayoutComponent,
+    canActivate: [roleGuard('etudiant')],
     children: [
       { path: 'accueil', component: EtudiantAccueilComponent },
       {  path: 'profil', component: ProfilComponent },
@@ -50,6 +53,7 @@ export const routes: Routes = [
   {
     path: 'enseignant',
     component: EnseignantLayout,
+    canActivate: [roleGuard('professeur')],
     children: [
     { path: 'accueil', component: EnseignantAccueilComponent },
     { path: 'mes-cours', component: MesCoursComponent },
@@ -66,6 +70,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayout,
+    canActivate: [roleGuard('admin')],
     children: [
       { path: 'accueil', component: AdminAccueil },
       { path: 'utilisateurs', component: AdminUtilisateurs },

@@ -18,7 +18,6 @@ if (empty($email) || empty($nouveauMdp)) {
     exit;
 }
 
-// Vérifier si l'utilisateur existe
 $requete = $db->prepare("SELECT id_utilisateurs FROM utilisateurs WHERE email = :email");
 $requete->execute(['email' => $email]);
 $user = $requete->fetch(PDO::FETCH_ASSOC);
@@ -28,7 +27,6 @@ if (!$user) {
     exit;
 }
 
-// Hacher le nouveau mot de passe et mettre à jour
 $nouveauHash = password_hash($nouveauMdp, PASSWORD_DEFAULT);
 $update = $db->prepare("UPDATE utilisateurs SET mdp = :mdp WHERE email = :email");
 $result = $update->execute([
@@ -37,30 +35,26 @@ $result = $update->execute([
 ]);
 
 if ($result) {
-    echo json_encode(["succes" => true, "message" => "Mot de passe réinitialisé avec succès !"]);
     try {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        if (session_status() === PHP_SESSION_NONE) session_start();
         $admin_id = $_SESSION['user_id'] ?? 'admin';
-
         require_once __DIR__ . '/../bdd/config_mongodb.php';
+
         $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
         $activitylogsCollection->insertOne([
             'level' => 'INFO',
-            'category' => 'ADMIN',
-            'action' => 'ADD_LANGUE',
-            'message' => "L'administrateur a ajouté une langue",
+            'category' => 'USER',
+            'action' => 'RESET_PASSWORD',
+            'message' => "Réinitialisation mot de passe",
             'id_user' => $admin_id,
             'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
-            'details' => [
-                'nom_langue' => $nom_langue
-            ]
+            'details' => ['email_cible' => $email]
         ]);
-    } catch (Exception $e_mongo) {
-        // Ignorer en cas d'erreur de log
-    }
+    } catch (Exception $e_mongo) {  }
+
+    echo json_encode(["succes" => true, "message" => "Mot de passe réinitialisé avec succès !"]);
 } else {
-    echo json_encode(["succes" => false, "message" => "Une erreur est survenue lors de la mise à jour."]);
+    echo json_encode(["succes" => false, "message" => "Une erreur est survenue."]);
 }
+exit;
 ?>
