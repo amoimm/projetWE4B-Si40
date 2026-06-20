@@ -4,6 +4,6 @@ Pour tester l'application avec les différents rôles disponibles, vous pouvez u
 
 | Rôle               | Identifiant (Email) | Mot de passe |
 |:-------------------| :--- | :--- |
-| ** Étudiant**      | `etudiant@utbm.fr` | `1234` |
-| ** Enseignant**    | `prof@utbm.fr` | `1234` |
+| **Étudiant**      | `etudiant@utbm.fr` | `1234` |
+| **Enseignant**    | `prof@utbm.fr` | `1234` |
 | **Administrateur** | `admin@utbm.fr` | `1234` |
