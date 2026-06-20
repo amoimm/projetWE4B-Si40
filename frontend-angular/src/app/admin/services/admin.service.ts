@@ -17,9 +17,6 @@ export class AdminService {
 
   constructor(private http: HttpClient) { }
 
-  // ==========================================
-  // SECTION DASHBOARD / STATS
-  // ==========================================
 
   // Récupère les statistiques du tableau de bord (nombre users, cours, messages)
   getStats(): Observable<any> {
@@ -31,9 +28,9 @@ export class AdminService {
     return this.http.get<any[]>(`${this.utilisateursUrl}?action=recents`);
   }
 
-  // ==========================================
-  // SECTION UTILISATEURS
-  // ==========================================
+
+
+
 
   // Récupère la liste des utilisateurs avec filtres et pagination
   getUtilisateurs(search: string = '', rang: string = '', page: number = 1): Observable<any> {
@@ -45,7 +42,7 @@ export class AdminService {
     return this.http.get<any>(this.utilisateursUrl, { params });
   }
 
-  // Modifie le rôle (rang) d'un utilisateur
+  // Modifie le rôle d'un utilisateur
   modifierRangUtilisateur(idUtilisateur: number, nouveauRang: number): Observable<any> {
     return this.http.post<any>(`${this.utilisateursUrl}?action=modifier_rang`, {
       id_utilisateur: idUtilisateur,
@@ -60,9 +57,10 @@ export class AdminService {
     });
   }
 
-  // ==========================================
-  // SECTION COURS
-  // ==========================================
+
+
+
+
 
   // Récupère la liste des cours avec possibilité de recherche
   getCours(search: string = ''): Observable<any[]> {
@@ -79,9 +77,9 @@ export class AdminService {
     });
   }
 
-  // ==========================================
-  // SECTION CONFIGURATION (Matières & Langues)
-  // ==========================================
+
+
+
 
   // Récupère toutes les matières
   getMatieres(): Observable<any[]> {

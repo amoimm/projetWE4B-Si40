@@ -14,7 +14,6 @@ Chart.register(...registerables);
   styleUrl: './admin-accueil.css'
 })
 export class AdminAccueil implements OnInit, OnDestroy {
-  // Variables pour stocker les données
   stats = {
     users: 0,
     users_connected: 0,
@@ -58,7 +57,7 @@ export class AdminAccueil implements OnInit, OnDestroy {
     }
     this.error = null;
 
-    // Récupérer les stats (contient aussi les stats MongoDB pour les diagrammes)
+    // Récupérer les stats
     this.adminService.getStats().subscribe({
       next: (data) => {
         this.stats = data;
@@ -70,7 +69,7 @@ export class AdminAccueil implements OnInit, OnDestroy {
             this.utilisateursRecents = users;
             this.loading = false;
 
-            // Forcer Angular à rafraîchir le DOM pour que les <canvas> soient créés
+            // Forcer Angular à rafraîchir le DOM pour que les canvas soient créés
             this.cdr.detectChanges();
 
             // Exécuter uniquement dans le navigateur

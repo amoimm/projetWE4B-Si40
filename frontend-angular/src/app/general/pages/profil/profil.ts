@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// 🌟 On importe le services général
 import { ProfilServices } from '../../services/profil.services';
 import { AuthService } from '../../../auth/services/auth.service';
 
@@ -62,7 +61,7 @@ export class ProfilComponent implements OnInit {
         }
       }
 
-      // 🌟 On envoie les données de mise à jour au services global
+      // On envoie les données de mise à jour au services global
       this.profilService.updateProfil(this.idUtilisateurConnecte, this.roleUtilisateurConnecte, {
         prenom: this.donneesUtilisateur.prenom,
         nom: this.donneesUtilisateur.nom,
