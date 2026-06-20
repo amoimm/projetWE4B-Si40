@@ -15,12 +15,8 @@ import { AuthService } from '../../../auth/services/auth.service';
 export class ConversationsComponent implements OnInit {
   monProfil: any = null;
   activeTab: 'active' | 'new' = 'active';
-  
-  // Données pour l'onglet "Actives"
   conversationsList: any[] = [];
   conversationsGrouped: any = {};
-  
-  // Données pour l'onglet "Cours"
   mesCours: any[] = [];
   selectedCours: any = null;
   elevesDuCours: any[] = [];
@@ -43,7 +39,6 @@ export class ConversationsComponent implements OnInit {
     if (!this.monProfil) return;
     const userId = this.monProfil.id;
 
-    // Chargement des conversations actives
     this.service.getConversations(userId).subscribe({
       next: (data) => {
         this.conversationsList = data;
@@ -52,12 +47,11 @@ export class ConversationsComponent implements OnInit {
       error: (err) => console.error('Erreur chargement convs :', err)
     });
 
-    // Chargement des cours pour le 2ème onglet
     this.service.getCours(userId).subscribe({
       next: (data) => this.mesCours = data,
       error: (err) => console.error('Erreur chargement cours :', err)
     });
-    
+
   }
 
   grouperConversations() {
@@ -76,7 +70,7 @@ export class ConversationsComponent implements OnInit {
 
     this.selectedCours = cours;
     this.elevesDuCours = [];
-    
+
     this.service.getElevesParCours(userId, cours.id_cours).subscribe({
         next: (data) => this.elevesDuCours = data,
         error: (err) => console.error(err)

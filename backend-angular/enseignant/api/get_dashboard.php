@@ -71,16 +71,16 @@ try {
             r.date_heure, 
             u.nom, 
             u.prenom, 
-            m.nom AS matiere 
+            m.nom AS matiere,
+            r.est_valide
         FROM rdv r 
         JOIN cours c ON r.id_cours = c.id_cours 
         JOIN enseignant_matiere em ON c.id_em = em.id_em 
         JOIN utilisateurs u ON r.id_eleve = u.id_utilisateurs 
         JOIN matiere m ON em.id_matiere = m.id_matiere 
         WHERE em.id_utilisateur = ? 
-          AND r.date_heure >= NOW() 
           AND r.est_valide = 1 
-        ORDER BY r.date_heure ASC 
+        ORDER BY r.date_heure DESC 
         LIMIT 5
     ");
     $req3->execute([$idUser]);

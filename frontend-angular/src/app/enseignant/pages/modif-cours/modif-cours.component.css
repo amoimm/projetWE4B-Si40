@@ -1,6 +1,3 @@
-/* --- Seulement les spécificités du formulaire de cours --- */
-
-/* Grille pour les cases à cocher (Langues) */
 .checkbox-group {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -27,7 +24,6 @@
   cursor: pointer;
 }
 
-/* Espacement des options (Caméra, Suivi) */
 .options-group {
   display: flex;
   flex-direction: column;
@@ -35,7 +31,6 @@
   padding: 15px 0;
 }
 
-/* Ligne des boutons (Créer / Annuler) en bas */
 .actions {
   display: flex;
   align-items: center;
@@ -46,7 +41,6 @@
   padding-top: 20px;
 }
 
-/* Bloc d'erreurs s'il manque des infos */
 .error-messages {
   background-color: #fef2f2;
   border: 1px solid #fca5a5;
@@ -62,7 +56,6 @@
   font-size: 0.875rem;
 }
 
-/* BTN BACK */
 
 .btn-back {
     background-color: #2c3e50;

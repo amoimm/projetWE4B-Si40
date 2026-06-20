@@ -55,7 +55,6 @@ export class MessagerieComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  // Scroll automatique vers le bas lors de l'ajout d'un message
   ngAfterViewChecked() {
   }
 

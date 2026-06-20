@@ -42,7 +42,6 @@ try {
     
     $eleves = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Typage des données
     foreach ($eleves as &$e) {
         $e['id_eleve'] = (int)$e['id_eleve'];
         $e['id_cours'] = (int)$e['id_cours'];

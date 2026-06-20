@@ -12,13 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 require_once('../../bdd/config.php');
 
-// Récupération de tous les headers HTTP envoyés par Angular
 $headers = getallheaders();
 
-// Extraction de notre header personnalisé 'X-User-Id'
 $id_session = isset($headers['X-User-Id']) ? (int)$headers['X-User-Id'] : 0;
 
-// Si le header n'existe pas ou est vide, on bloque l'accès immédiatement
 if ($id_session <= 0) {
     http_response_code(401);
     echo json_encode(["error" => "Non autorisé. Identifiant utilisateur manquant dans les entêtes."]);
@@ -27,7 +24,6 @@ if ($id_session <= 0) {
 
 
 $id_cours = (int) ($_GET['id'] ?? 0);
-$is_admin = false; // À adapter si tu passes aussi un rôle dans les headers (ex: X-User-Role)
 
 if ($id_cours <= 0) {
     http_response_code(400);
@@ -57,7 +53,7 @@ try {
     $stmt->execute([$id_cours]);
     $cours = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$cours || (!$is_admin && (int)$cours['id_utilisateur'] !== $id_session)) {
+    if (!$cours || ((int)$cours['id_utilisateur'] !== $id_session)) {
         http_response_code(404);
         echo json_encode(["error" => "Cours non trouvé ou accès refusé."]);
         exit;
