@@ -105,8 +105,12 @@ export class EtudiantDevenirProfComponent implements OnInit {
     this.etudiantService.devenirProf(formData).subscribe({
       next: (reponse) => {
         if (reponse.succes) {
+          this.monProfil.role = 'professeur';
+          this.authService.updateUtilisateur(this.monProfil);
+
           alert(reponse.message);
-          this.router.navigate(['/']);
+
+          this.router.navigate(['/enseignant/accueil']);
         } else {
           alert(reponse.message);
         }
