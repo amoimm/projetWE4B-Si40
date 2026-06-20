@@ -35,7 +35,6 @@ export class LogService {
   ) {
     const formData = new FormData();
 
-    // Métadonnées pour le routage/log côté PHP
     formData.append('type_log', 'CANDIDATURE_PROF');
     formData.append('id_user', id_user);
 

@@ -1,5 +1,15 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+:root {
+  --blue: #4A90E2;
+  --blue-dark: #357abd;
+  --blue-light: #e1efff;
+  --text: #222d40;
+  --muted: #5f718a;
+  --border: #edf2f7;
+  --bg: #f8f9fa;
+  --white: #ffffff;
+}
 /* ── HEADER ── */
 header {
   position: fixed;
@@ -9,10 +19,10 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 18px 48px;
-  background: rgba(255, 255, 255, 0.95); /* Légèrement plus opaque */
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
-  height: 70px; /* Force une hauteur fixe pour éviter les décalages */
+  height: 70px;
 }
 
 .logo {
@@ -20,7 +30,7 @@ header {
   font-size: 1.5rem;
   color: var(--blue);
   letter-spacing: -0.5px;
-  flex-shrink: 0; /* Empêche le logo de rétrécir */
+  flex-shrink: 0;
 }
 
 .logo span { color: var(--text); }
@@ -29,13 +39,12 @@ header {
   position: relative;
   z-index: 999;
   display: flex;
-  align-items: center; /* Aligne bien verticalement */
+  align-items: center;
   gap: 12px;
-  flex-shrink: 0; /* Empêche les boutons de se réduire */
-  white-space: nowrap; /* Empêche les boutons de passer à la ligne */
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-/* Assure-toi que tes boutons n'ont pas de largeur maximale restrictive */
 .btn {
   padding: 10px 22px;
   border-radius: 8px;
@@ -45,7 +54,7 @@ header {
   text-decoration: none;
   transition: all 0.2s;
   display: inline-block;
-  min-width: 100px; /* Donne une largeur minimale pour qu'ils soient visibles */
+  min-width: 100px;
   text-align: center;
 }
 
@@ -84,7 +93,7 @@ header {
   overflow: hidden;
 }
 
-/* Cercles décoratifs en arrière-plan */
+
 .hero::before {
   content: '';
   position: absolute;

@@ -181,54 +181,54 @@ try {
         $data = json_decode(file_get_contents("php://input"), true);
         $id_utilisateur = isset($data['id_utilisateur']) ? (int)$data['id_utilisateur'] : 0;
         if ($id_utilisateur > 0) {
-            // 1. Récupérer les infos de l'utilisateur avant suppression (pour les logs)
+            // Récupérer les infos de l'utilisateur avant suppression (pour les logs)
             $user_info = $db->prepare("SELECT nom, prenom, email, rang FROM utilisateurs WHERE id_utilisateurs = ?");
             $user_info->execute([$id_utilisateur]);
             $user_data = $user_info->fetch(PDO::FETCH_ASSOC);
 
-            // A. Suppression des messages (rédigés par l'utilisateur ou faisant partie de ses cours)
+            // Suppression des messages (rédigés par l'utilisateur ou faisant partie de ses cours)
             $stmt_msg = $db->prepare("DELETE FROM message WHERE id_redacteur = :id OR id_conv IN (SELECT id_conv FROM conversation WHERE id_eleve = :id OR id_cours IN (SELECT id_cours FROM cours WHERE id_em IN (SELECT id_em FROM enseignant_matiere WHERE id_utilisateur = :id)))");
             $stmt_msg->execute(['id' => $id_utilisateur]);
 
-            // B. Suppression des conversations (où il est élève ou liées à ses cours)
+            // Suppression des conversations (où il est élève ou liées à ses cours)
             $stmt_conv = $db->prepare("DELETE FROM conversation WHERE id_eleve = :id OR id_cours IN (SELECT id_cours FROM cours WHERE id_em IN (SELECT id_em FROM enseignant_matiere WHERE id_utilisateur = :id))");
             $stmt_conv->execute(['id' => $id_utilisateur]);
 
-            // C. Suppression des rendez-vous (RDV)
+            // Suppression des rendez-vous (RDV)
             $stmt_rdv = $db->prepare("DELETE FROM rdv WHERE id_eleve = :id OR id_cours IN (SELECT id_cours FROM cours WHERE id_em IN (SELECT id_em FROM enseignant_matiere WHERE id_utilisateur = :id))");
             $stmt_rdv->execute(['id' => $id_utilisateur]);
 
-            // D. Suppression des avis sur les cours
+            // Suppression des avis sur les cours
             $stmt_avis_cours = $db->prepare("DELETE FROM avis_cours WHERE id_cours IN (SELECT id_cours FROM cours WHERE id_em IN (SELECT id_em FROM enseignant_matiere WHERE id_utilisateur = :id))");
             $stmt_avis_cours->execute(['id' => $id_utilisateur]);
 
-            // E. Suppression des avis généraux rédigés
+            // Suppression des avis généraux rédigés
             $stmt_avis = $db->prepare("DELETE FROM avis WHERE id_utilisateur = :id");
             $stmt_avis->execute(['id' => $id_utilisateur]);
 
-            // F. Suppression des cours liés à ses matières enseignées
+            // Suppression des cours liés à ses matières enseignées
             $stmt_cours = $db->prepare("DELETE FROM cours WHERE id_em IN (SELECT id_em FROM enseignant_matiere WHERE id_utilisateur = :id)");
             $stmt_cours->execute(['id' => $id_utilisateur]);
 
-            // G. Suppression des langues enseignées
+            // Suppression des langues enseignées
             $stmt_langues = $db->prepare("DELETE FROM enseignant_langue WHERE id_em IN (SELECT id_em FROM enseignant_matiere WHERE id_utilisateur = :id)");
             $stmt_langues->execute(['id' => $id_utilisateur]);
 
-            // H. Suppression des matières enseignées
+            // Suppression des matières enseignées
             $stmt_matieres = $db->prepare("DELETE FROM enseignant_matiere WHERE id_utilisateur = :id");
             $stmt_matieres->execute(['id' => $id_utilisateur]);
 
-            // I. Suppression de l'utilisateur
+            // Suppression de l'utilisateur
             $stmt_user = $db->prepare("DELETE FROM utilisateurs WHERE id_utilisateurs = :id");
             $stmt_user->execute(['id' => $id_utilisateur]);
 
-            // 3. Suppression des certificats PDF associés dans MongoDB
+            // Suppression des certificats PDF associés dans MongoDB
             try {
                 $certifsCollection->deleteOne(['id_utilisateur' => $id_utilisateur]);
             } catch (Throwable $e_mongo) {
                 // Ignorer si MongoDB n'est pas disponible ou s'il n'y a pas de certificats
             }
-            // 4. Logger la suppression dans MongoDB
+            // Logger la suppression dans MongoDB
             if ($user_data) {
                 try {
                     $admin_id = isset($data['id_user']) ? $data['id_user'] : 'admin';

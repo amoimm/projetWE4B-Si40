@@ -1,5 +1,4 @@
 <?php
-// Exemple de requête d'agrégation pour obtenir les matières les plus recherchées
 require_once '../bdd/config_mongodb.php';
 
 // Agrégation MongoDB : Filtrer par STUDENT_SEARCH, grouper par matière, compter et trier

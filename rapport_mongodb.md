@@ -229,7 +229,23 @@ $cursor_activite = $activitylogsCollection->aggregate($pipeline_activite);
 
 ---
 
-## 6. Synthèse des Choix de Conception
+## 6. Restitution Visuelle : Intégration de Chart.js dans le Dashboard Admin
+
+Pour valoriser les résultats de nos requêtes d'agrégation MongoDB auprès de l'administrateur, nous avons intégré la bibliothèque **Chart.js** (version 4.5.1) dans le frontend Angular ([admin-accueil.ts](file:///c:/xampp/htdocs/projetWE4B-SI40/frontend-angular/src/app/admin/pages/admin-accueil/admin-accueil.ts)).
+
+### A. Graphique des Matières les plus recherchées (`matiereChart`)
+*   **Type de graphique** : Histogramme (`type: 'bar'`).
+*   **Source de données** : Résultat de l'agrégation sur la collection `activity_logs` (recherches filtrées par `category: 'STUDENT_SEARCH'`).
+*   **Visualisation** : Associe dynamiquement une couleur unique à chaque matière (bleu pour les Mathématiques, rouge pour la Physique, etc.) afin d'avoir une lecture rapide et intuitive des intérêts des étudiants.
+
+### B. Graphique d'Activité globale du site (`activiteChart`)
+*   **Type de graphique** : Courbe temporelle (`type: 'line'`).
+*   **Source de données** : Nombre de logs d'activité cumulés sur les 7 derniers jours (agrégation par jour).
+*   **Visualisation** : Tracé vert fluide (`tension: 0.3`) avec une zone ombragée transparente (`rgba(46, 204, 113, 0.1)`), permettant à l'administrateur de suivre l'évolution quotidienne du trafic et de l'activité sur la plateforme.
+
+---
+
+## 7. Synthèse des Choix de Conception
 
 | Collection | Concept Utilisé | Raison du Choix |
 | :--- | :--- | :--- |
