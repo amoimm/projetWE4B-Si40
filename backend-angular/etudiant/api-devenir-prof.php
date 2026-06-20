@@ -10,7 +10,7 @@ require_once __DIR__ . '/../bdd/config_mongodb.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // 1. Récupération des données POST (Texte)
-$id_utilisateur = $_POST['id_utilisateur'] ?? null;
+$id_utilisateur =  $_POST['id_utilisateur'] ?? null;
 $matieres_choisies = isset($_POST['matieres']) ? json_decode($_POST['matieres'], true) : [];
 $langues_choisies = isset($_POST['langues']) ? json_decode($_POST['langues'], true) : [];
 

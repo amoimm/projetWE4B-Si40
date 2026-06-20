@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $document = [
             'level'     => 'INFO',
             'message'   => $_POST['message'] ?? 'Devenir Prof: Soumission du profil enseignant.',
-            'id_user'   => $_POST['id_user'] ?? null,
+            'id_user'   => (int)$_POST['id_user'] ?? null,
             'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
 
             // Données spécifiques à la page (Context)

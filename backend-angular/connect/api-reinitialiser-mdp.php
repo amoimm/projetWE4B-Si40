@@ -37,7 +37,7 @@ $result = $update->execute([
 if ($result) {
     try {
         if (session_status() === PHP_SESSION_NONE) session_start();
-        $admin_id = $_SESSION['user_id'] ?? 'admin';
+        $user_id = isset($user['id_utilisateurs']) ? (int)$user['id_utilisateurs'] : null;
         require_once __DIR__ . '/../bdd/config_mongodb.php';
 
         $dateFrance = new DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -46,7 +46,7 @@ if ($result) {
             'category' => 'USER',
             'action' => 'RESET_PASSWORD',
             'message' => "Réinitialisation mot de passe",
-            'id_user' => $admin_id,
+            'id_user' => $user_id,
             'timestamp' => $dateFrance->format('d-m-Y H:i:s'),
             'details' => ['email_cible' => $email]
         ]);

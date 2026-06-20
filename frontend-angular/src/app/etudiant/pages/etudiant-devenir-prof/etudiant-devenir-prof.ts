@@ -88,7 +88,7 @@ export class EtudiantDevenirProfComponent implements OnInit {
 
     // On utilise FormData pour pouvoir envoyer des fichiers + du texte
     const formData = new FormData();
-    formData.append('id_utilisateur', this.monProfil.id.toString());
+    formData.append('id_utilisateur', this.monProfil.id);
 
     // On transforme nos tableaux en chaînes JSON pour les faire passer dans le FormData
     formData.append('matieres', JSON.stringify(Array.from(this.matieresSelectionnees)));
