@@ -4,7 +4,7 @@
 body, html {
   margin: 0;
   padding: 0;
-  background-color: #f8f9fa; /* Fond global gris clair */
+  background-color: #f8f9fa;
   font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   color: #1e293b;
 }
@@ -37,7 +37,6 @@ main {
 /* =========================================
    2. LES CARTES & PANNEAUX
    ========================================= */
-/* Remplace <article>, .cours-card, .dashboard-panel */
 .card-panel {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -61,7 +60,7 @@ main {
   justify-content: center;
   gap: 8px;
   padding: 10px 20px;
-  border-radius: 8px; /* ou 6px selon tes goûts */
+  border-radius: 8px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -70,7 +69,6 @@ main {
   text-decoration: none;
 }
 
-/* Bouton principal (Bleu) - Remplace .btn-submit, .action-btn.primary */
 .btn-primary {
   background-color: #3b82f6;
   color: #ffffff;
@@ -81,7 +79,6 @@ main {
   transform: translateY(-1px);
 }
 
-/* Bouton secondaire (Gris/Blanc) - Remplace .btn-cancel */
 .btn-secondary {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -92,7 +89,6 @@ main {
   color: #334155;
 }
 
-/* Bouton danger (Rouge) - Remplace .btn_supp_cours, .btn-annuler */
 .btn-danger {
   background-color: #ef4444;
   color: white;
@@ -126,7 +122,6 @@ main {
   margin-bottom: 8px;
 }
 
-/* Champs de texte communs */
 .form-control {
   width: 100%;
   padding: 10px 14px;
@@ -149,14 +144,13 @@ main {
 /* =========================================
    5. COMPOSANTS PARTAGÉS (Badges & Notes)
    ========================================= */
-/* Les bulles de notes vues dans l'espace prof et étudiant */
 .rating-box {
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 45px;
   height: 45px;
-  border-radius: 50%; /* ou 8px si tu préfères le format carré */
+  border-radius: 50%;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -165,7 +159,6 @@ main {
 .rating-box.malheure { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca;}
 .rating-box.null { background-color: #f1f5f9; color: #94a3b8; }
 
-/* Responsive global */
 @media (max-width: 768px) {
   main { padding: 1rem; }
 }
@@ -276,7 +269,6 @@ main {
 .auth-footer-text { text-align: center; margin-top: 24px; font-size: 14px; color: #7a6f63; }
 .auth-footer-text a { color: var(--label); font-weight: 700; text-decoration: none; }
 
-/* Alertes globales (utilisables partout) */
 .alert-box {
   font-size: 13px;
   padding: 12px;
@@ -402,10 +394,9 @@ main {
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 
-/* Fond de la page */
 .chat-page {
   min-height: 100vh;
-  background-color: #f8f9fa; /* Gris très clair du fond */
+  background-color: #f8f9fa;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -416,7 +407,6 @@ main {
   z-index: 1;
 }
 
-/* La grande carte blanche */
 .chat-card {
   width: 100%;
   max-width: 850px;
@@ -425,11 +415,10 @@ main {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Ombre douce */
   display: flex;
   flex-direction: column;
-  height: 85vh; /* Hauteur fixe pour faire défiler les messages au milieu */
+  height: 85vh;
   overflow: hidden;
 }
 
-/* En-tête bleu nuit */
 .chat-header {
   background-color: #2c3e50;
   color: #ffffff;
@@ -444,7 +433,6 @@ main {
   letter-spacing: 0.5px;
 }
 
-/* Zone des messages qui défile */
 .chat-messages {
   flex: 1;
   padding: 20px;
@@ -462,21 +450,19 @@ main {
   margin: auto;
 }
 
-/* Ligne d'un message */
 .message-row {
   display: flex;
   width: 100%;
 }
 
 .message-row.sent {
-  justify-content: flex-end; /* Aligné à droite */
+  justify-content: flex-end;
 }
 
 .message-row.received {
-  justify-content: flex-start; /* Aligné à gauche */
+  justify-content: flex-start;
 }
 
-/* Design de la bulle */
 .bubble {
   max-width: 70%;
   padding: 10px 15px;
@@ -485,18 +471,16 @@ main {
   flex-direction: column;
 }
 
-/* Bulle reçue (Gris clair) */
 .message-row.received .bubble {
   background-color: #e2e8f0;
   color: #1e293b;
-  border-bottom-left-radius: 4px; /* Coin pointu en bas à gauche */
+  border-bottom-left-radius: 4px;
 }
 
-/* Bulle envoyée (Bleu vif) */
 .message-row.sent .bubble {
   background-color: #007bff;
   color: #ffffff;
-  border-bottom-right-radius: 4px; /* Coin pointu en bas à droite */
+  border-bottom-right-radius: 4px;
 }
 
 .bubble .text {
@@ -511,7 +495,6 @@ main {
   opacity: 0.8;
 }
 
-/* Bloc Rendez-vous (Gris au dessus de l'input) */
 .rdv-block {
   background-color: #f8f9fa;
   margin: 0 20px 15px 20px;
@@ -544,7 +527,6 @@ main {
 .btn-rdv.accept { background-color: #dcfce7; color: #166534; }
 .btn-rdv.decline { background-color: #fee2e2; color: #991b1b; }
 
-/* Barre de saisie (Input + Bouton) */
 .chat-input-bar {
   display: flex;
   gap: 15px;
@@ -570,11 +552,11 @@ main {
 }
 
 .chat-input-bar button {
-  background-color: #2c3e50; /* Bleu nuit */
+  background-color: #2c3e50; 
   color: #ffffff;
   border: none;
   padding: 0 25px;
-  border-radius: 25px; /* Forme de pilule */
+  border-radius: 25px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
