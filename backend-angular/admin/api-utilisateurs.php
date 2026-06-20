@@ -224,6 +224,7 @@ try {
 
             // Suppression des certificats PDF associés dans MongoDB
             try {
+                $certifsCollection = $mongoClient->selectCollection('coursconnect_nosql', 'certif_prof');
                 $certifsCollection->deleteOne(['id_utilisateur' => $id_utilisateur]);
             } catch (Throwable $e_mongo) {
                 // Ignorer si MongoDB n'est pas disponible ou s'il n'y a pas de certificats
