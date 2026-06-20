@@ -25,16 +25,14 @@ export class EtudiantChatComponent implements OnInit {
   ngOnInit(): void {
     this.monProfil = this.authService.getUtilisateurConnecte();
 
-    // 1. On charge la liste immédiatement au premier affichage de la page
     this.chargerConversations();
 
-    // 2. On lance la boucle temporelle silencieuse (toutes les 2000 ms = 2 secondes)
     this.actualisationAuto = interval(2000).subscribe(() => {
       this.chargerConversations();
     });
   }
 
-  // 🌟 TRÈS IMPORTANT : On coupe la boucle quand on quitte la page
+  
   ngOnDestroy(): void {
     if (this.actualisationAuto) {
       this.actualisationAuto.unsubscribe();
@@ -42,7 +40,6 @@ export class EtudiantChatComponent implements OnInit {
   }
 
   chargerConversations(): void {
-    // Fait appel à la route de ton services qui contacte api-conversations.php
     this.etudiantService.getConversations(this.monProfil.id).subscribe({
       next: (data) => {
         this.conversations = data;

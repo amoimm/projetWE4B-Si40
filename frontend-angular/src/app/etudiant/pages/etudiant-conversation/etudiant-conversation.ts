@@ -111,7 +111,7 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
     this.nouveauMessage = '';
     this.scrollToBottom();
 
-    // Envoi à la BDD
+    
     this.etudiantService.envoyerMessage(this.idCours, idConv, this.monProfil.id, contenuMsg).subscribe({
       next: (response) => {
         if (!this.infoCours) this.infoCours = {};
@@ -120,12 +120,11 @@ export class EtudiantConversationComponent implements OnInit, OnDestroy {
     });
   }
 
-  // --- Fonctions de la Modale ---
+  
   ouvrirModale() { console.log("Clic reçu !");this.modaleOuverte = true; }
   fermerModale() { this.modaleOuverte = false; }
 
   soumettreRdv() {
-    //verif
     if (
       !this.formRdv.date_cours ||
       !this.formRdv.heure_cours ||

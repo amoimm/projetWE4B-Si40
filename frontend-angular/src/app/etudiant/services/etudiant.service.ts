@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class EtudiantService {
-  // --- URLs d'API REST pointant vers le backend PHP ---
   private apiUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/recuperer_etudiant.php';
   private updateUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/modifier_etudiant.php';
   private apiCoursUrl = 'http://localhost/projetWE4B-Si40/backend-angular/etudiant/api-cours.php';
@@ -20,10 +19,6 @@ export class EtudiantService {
 
   constructor(private http: HttpClient) { }
 
-  // ==========================================
-  // SECTION PROFIL
-  // ==========================================
-
   getProfilEtudiant(userId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}?user_id=${userId}`);
   }
@@ -32,19 +27,13 @@ export class EtudiantService {
     return this.http.post<any>(this.updateUrl, { user_id: userId, ...donneesMisesAJour });
   }
 
-  // ==========================================
-  // SECTION RECHERCHE DE COURS
-  // ==========================================
-
   getFiltresDisponibles(): Observable<any> {
     return this.http.get<any>(this.apiFiltresUrl);
   }
 
-  // Requête GET pour filtrer les cours (on lui passe un objet contenant tous les filtres)
   rechercherCours(filtres: any): Observable<any[]> {
     let params = new HttpParams();
 
-    // On ajoute chaque paramètre dynamiquement s'il est rempli
     if (filtres.recherche) params = params.set('recherche', filtres.recherche);
     if (filtres.prixMax !== null) params = params.set('prix_max', filtres.prixMax.toString());
     if (filtres.filtreMatiere) params = params.set('filtre_matiere', filtres.filtreMatiere);
@@ -56,20 +45,15 @@ export class EtudiantService {
     return this.http.get<any[]>(this.apiCoursUrl, { params });
   }
 
-  // ==========================================
-  // SECTION CHAT & CONVERSATIONS
-  // ==========================================
 
   getConversations(idEleve: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiConversationsUrl}?id_eleve=${idEleve}`);
   }
 
-  // Charger une conversation spécifique (infos du cours + messages)
   getConversation(idCours: number, idEleve: number): Observable<any> {
     return this.http.get<any>(`${this.apiDetailsConversationUrl}?id_cours=${idCours}&id_eleve=${idEleve}`);
   }
 
-  // Envoi d'un message en BDD (POST)
   envoyerMessage(idCours: number, idConv: number | null, idRedacteur: number, contenu: string): Observable<any> {
     const payload = {
       id_cours: idCours,
@@ -87,10 +71,6 @@ export class EtudiantService {
   annulerRdv(idRdv: number, idEleve: number): Observable<any> {
     return this.http.post<any>(this.apiSupprimerRdvUrl, { id_rdv: idRdv, id_eleve: idEleve });
   }
-
-  // ==========================================
-  // SECTION DEVENIR PROF
-  // ==========================================
 
   devenirProf(formData: FormData): Observable<any> {
     return this.http.post<any>(this.apiDevenirProfUrl, formData);

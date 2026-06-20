@@ -22,7 +22,6 @@ export class EtudiantDevenirProfComponent implements OnInit {
   matieresSelectionnees: Set<string> = new Set();
   languesSelectionnees: Set<string> = new Set();
 
-  // Le tableau qui va stocker les PDF
   fichiersCertif: File[] = [];
 
   constructor(
@@ -58,10 +57,8 @@ export class EtudiantDevenirProfComponent implements OnInit {
     }
   }
 
-  // Méthode déclenchée quand l'utilisateur choisit des fichiers PDF
   onFichiersSelectionnes(event: any): void {
     if (event.target.files && event.target.files.length > 0) {
-      // On convertit la liste de fichiers en tableau classique
       this.fichiersCertif = Array.from(event.target.files);
     }
   }
@@ -78,7 +75,6 @@ export class EtudiantDevenirProfComponent implements OnInit {
     }
 
 
-    //Envoi du log "devnir prof" dans mongoDB
     this.logService.LogDevenirProf(
       this.idUtilisateurTestLog,
       Array.from(this.matieresSelectionnees),
@@ -86,22 +82,19 @@ export class EtudiantDevenirProfComponent implements OnInit {
       this.fichiersCertif
     );
 
-    // On utilise FormData pour pouvoir envoyer des fichiers + du texte
+    
     const formData = new FormData();
     formData.append('id_utilisateur', this.monProfil.id);
 
-    // On transforme nos tableaux en chaînes JSON pour les faire passer dans le FormData
+    
     formData.append('matieres', JSON.stringify(Array.from(this.matieresSelectionnees)));
     formData.append('langues', JSON.stringify(Array.from(this.languesSelectionnees)));
 
-    // On ajoute chaque PDF sélectionné au FormData
+    
     this.fichiersCertif.forEach((fichier) => {
       formData.append('certificats[]', fichier, fichier.name);
     });
 
-
-
-    // On envoie le FormData au services
     this.etudiantService.devenirProf(formData).subscribe({
       next: (reponse) => {
         if (reponse.succes) {
