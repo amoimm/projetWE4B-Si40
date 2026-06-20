@@ -38,4 +38,7 @@ export class AuthService {
   deconnexion(): void {
     localStorage.removeItem('utilisateurConnecte');
   }
+  updateUtilisateur(nouveauProfil: any) {
+    localStorage.setItem('utilisateur', JSON.stringify(nouveauProfil));
+  }
 }

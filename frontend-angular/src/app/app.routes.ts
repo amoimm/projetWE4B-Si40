@@ -53,7 +53,7 @@ export const routes: Routes = [
   {
     path: 'enseignant',
     component: EnseignantLayout,
-    canActivate: [roleGuard('professeur')],
+    canActivate: [roleGuard('enseignant')],
     children: [
     { path: 'accueil', component: EnseignantAccueilComponent },
     { path: 'mes-cours', component: MesCoursComponent },
