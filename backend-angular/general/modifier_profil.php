@@ -24,15 +24,13 @@ try {
     $prenom       = isset($data['prenom']) ? $data['prenom'] : null;
     $nom          = isset($data['nom']) ? $data['nom'] : null;
     $email        = isset($data['email']) ? $data['email'] : null;
-    $presentation = isset($data['presentation']) ? $data['presentation'] : ''; // <-- Récupération
+    $presentation = isset($data['presentation']) ? $data['presentation'] : '';
     $ancienMdp    = isset($data['ancienMdp']) ? $data['ancienMdp'] : null;
     $nouveauMdp   = isset($data['nouveauMdp']) ? $data['nouveauMdp'] : null;
 
-    // SCÉNARIO A : Modification des informations textuelles
     if ($prenom && $nom && $email) {
 
         if (!empty($nouveauMdp)) {
-            // ... (Ta requête existante avec changement de mot de passe, ajoute juste "presentation = :presentation")
             $query = $db->prepare("UPDATE utilisateurs SET prenom = :prenom, nom = :nom, email = :email, presentation = :presentation, mot_de_passe = :mdp WHERE id_utilisateurs = :id");
             $resultat = $query->execute([
                 'prenom'       => $prenom,
@@ -43,7 +41,6 @@ try {
                 'id'           => $user_id
             ]);
         } else {
-            // Requête classique sans changement de mot de passe : on ajoute la présentation
             $query = $db->prepare("UPDATE utilisateurs SET prenom = :prenom, nom = :nom, email = :email, presentation = :presentation WHERE id_utilisateurs = :id");
             $resultat = $query->execute([
                 'prenom'       => $prenom,

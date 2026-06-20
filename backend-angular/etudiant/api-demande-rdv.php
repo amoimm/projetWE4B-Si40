@@ -32,14 +32,12 @@ try {
         'commentaire' => $commentaire
     ]);
 
-    //verif si une conv à été créée
 
     $sql_check = "SELECT id_conv FROM conversation WHERE id_cours = :id_cours AND id_eleve = :id_eleve";
     $stmt_check = $db->prepare($sql_check);
     $stmt_check->execute(['id_cours' => $data['id_cours'], 'id_eleve' => $data['id_eleve']]);
     
     if (!$stmt_check->fetch()) {
-        // 3. Créer la conversation si elle n'existe pas
         $sql_conv = "INSERT INTO conversation (id_cours, id_eleve) VALUES (:id_cours, :id_eleve)";
         $stmt_conv = $db->prepare($sql_conv);
         $stmt_conv->execute(['id_cours' => $data['id_cours'], 'id_eleve' => $data['id_eleve']]);

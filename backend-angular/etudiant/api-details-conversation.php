@@ -1,5 +1,4 @@
 <?php
-// api-details-conversation.php
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -8,7 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . '/../bdd/config.php';
 
 $id_cours = isset($_GET['id_cours']) ? (int)$_GET['id_cours'] : 0;
-$id_eleve = isset($_GET['id_eleve']) ? (int)$_GET['id_eleve'] : 1; // ID de test
+$id_eleve = isset($_GET['id_eleve']) ? (int)$_GET['id_eleve'] : 1;
 
 if ($id_cours === 0) {
     echo json_encode(["erreur" => "ID du cours manquant."]);
@@ -16,7 +15,6 @@ if ($id_cours === 0) {
 }
 
 try {
-    // 1. Récupérer les infos du cours et de la conversation
     $sql_info = "SELECT c.description, conv.id_conv, c.id_em
                  FROM cours c 
                  LEFT JOIN conversation conv ON c.id_cours = conv.id_cours AND conv.id_eleve = :id_eleve
@@ -28,14 +26,11 @@ try {
     $messages = [];
     $id_conv = $info ? $info['id_conv'] : null;
 
-    // 2. Si une conversation existe, on récupère les messages
     if ($id_conv) {
-        // Mise à jour des accusés de lecture
         $sql_lu = "UPDATE message SET lu = 1 WHERE id_conv = :id_conv AND id_redacteur != :mon_id AND lu = 0";
         $stmt_lu = $db->prepare($sql_lu);
         $stmt_lu->execute(['id_conv' => $id_conv, 'mon_id' => $id_eleve]);
 
-        // Récupération de l'historique
         $sql_msg = "SELECT id_redacteur, contenu, heure FROM message WHERE id_conv = :id_conv ORDER BY heure ASC";
         $stmt_msg = $db->prepare($sql_msg);
         $stmt_msg->execute(['id_conv' => $id_conv]);
@@ -68,7 +63,6 @@ try {
         'id_eleve' => $id_eleve
     ]);
 
-    // On renvoie TOUT à Angular
     echo json_encode([
         "info_cours" => $info,
         "messages" => $messages,

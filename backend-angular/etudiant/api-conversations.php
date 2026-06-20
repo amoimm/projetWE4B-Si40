@@ -30,7 +30,6 @@ try {
     $stmt->execute(['id_eleve' => $id_eleve]);
     $conversations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // On s'assure que les nombres sont bien formatés
     foreach ($conversations as &$conv) {
         $conv['nb_non_lus'] = (int)$conv['nb_non_lus'];
     }

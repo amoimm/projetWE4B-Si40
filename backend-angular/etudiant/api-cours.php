@@ -1,5 +1,4 @@
 <?php
-// Autorise Angular à communiquer avec ce fichier
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, OPTIONS");
 header("Content-Type: application/json; charset=UTF-8");
@@ -75,7 +74,6 @@ if (!empty($avis_filtre)) {
     $sens = ($avis_filtre === 'croissant') ? 'ASC' : 'DESC';
     $sql .= " ORDER BY noteMoyenne $sens";
 } else {
-    // Tri par défaut
     $sql .= " ORDER BY c.id_cours DESC";
 }
 
@@ -94,6 +92,6 @@ try {
     echo json_encode($coursTrouves);
 
 } catch (Exception $e) {
-    http_response_code(500); // Code d'erreur serveur
+    http_response_code(500);
     echo json_encode(["erreur" => "Erreur lors de l'exécution de la recherche", "details" => $e->getMessage()]);
 }
